@@ -1,4 +1,4 @@
-package com.payment.user.common.util;
+package com.payment.user.common.utils;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;

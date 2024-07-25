@@ -1,7 +1,7 @@
 package com.payment.user.service.impl;
 
 import com.payment.user.common.base.BaseResponse;
-import com.payment.user.common.util.BeanUtil;
+import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.entity.dto.UserDto;
 import com.payment.user.entity.model.User;
 import com.payment.user.service.UserService;
