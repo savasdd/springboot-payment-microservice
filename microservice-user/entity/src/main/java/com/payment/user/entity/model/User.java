@@ -1,6 +1,5 @@
 package com.payment.user.entity.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.user.entity.base.BaseEntity;
 import lombok.*;
 
