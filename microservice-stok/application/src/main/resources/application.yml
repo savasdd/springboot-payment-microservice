@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: stok-api
+
+server:
+  port: 8086
