@@ -1,13 +1,13 @@
 package com.payment.user.common.base;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Builder
-public class BaseResponse {
+public class BaseResponse implements Serializable {
 
     private Object data;
     private Integer count;

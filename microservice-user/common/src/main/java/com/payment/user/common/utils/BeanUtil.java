@@ -20,6 +20,11 @@ public class BeanUtil {
         return model != null ? modelMapper.map(model, dto) : null;
     }
 
+    public <T> T transform(Object model, Object dto) {
+        modelMapper.map(model, dto);
+        return (T) dto;
+    }
+
     public <D, T> List<D> mapAll(final Collection<T> list, final Class<D> dto) {
         return list.stream().map(val -> mapDto(val, dto)).toList();
     }

@@ -6,13 +6,13 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 @Builder
 @Entity
 @Table(name = "USERS")
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity implements Serializable {
 
     @Column(name = "username")

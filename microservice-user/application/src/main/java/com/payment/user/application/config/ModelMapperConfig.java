@@ -11,7 +11,8 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true).setFieldMatchingEnabled(true).setMatchingStrategy(MatchingStrategies.STRICT);
+        modelMapper.getConfiguration().setAmbiguityIgnored(true).setFieldMatchingEnabled(true).setMatchingStrategy(MatchingStrategies.STRICT).setSkipNullEnabled(true);
+
         return modelMapper;
     }
 }
