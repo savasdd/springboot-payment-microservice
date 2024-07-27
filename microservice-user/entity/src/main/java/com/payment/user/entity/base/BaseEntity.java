@@ -25,24 +25,25 @@ public abstract class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
     @Column(name = "CR_DATE", updatable = false)
     private Date createdDate;
 
-    @JsonIgnore
     @Column(name = "UP_DATE")
     private Date updatedDate;
 
     @Column(name = "status", nullable = false)
     private RecordStatus recordStatus;
 
+    @JsonIgnore
     @Version
     private Long version;
 
+    @JsonIgnore
     @CreatedBy
     @Column(name = "CR_BY")
     private String createdBy;
 
+    @JsonIgnore
     @LastModifiedDate
     @Column(name = "UP_BY")
     private String updatedBy;

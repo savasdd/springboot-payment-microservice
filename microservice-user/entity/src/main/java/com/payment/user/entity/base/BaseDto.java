@@ -1,5 +1,6 @@
 package com.payment.user.entity.base;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.payment.user.common.enums.RecordStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,9 @@ public abstract class BaseDto implements Serializable {
     private Date createdDate;
     private Date updatedDate;
     private RecordStatus recordStatus;
+    @JsonIgnore
     private String createdBy;
+    @JsonIgnore
     private String updatedBy;
 
 }

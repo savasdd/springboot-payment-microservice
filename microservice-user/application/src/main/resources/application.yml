@@ -5,7 +5,7 @@ spring:
   application:
     name: user-api
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate.ddl-auto: update
     defer-datasource-initialization: true
     properties:
@@ -31,3 +31,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+
+couchbase:
+  host: couchbase://127.0.0.1
+  username: Couchbase
+  password: Couchbase
+  bucket: PaymentBucket
