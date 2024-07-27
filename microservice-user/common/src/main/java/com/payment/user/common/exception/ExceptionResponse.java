@@ -1,5 +1,6 @@
 package com.payment.user.common.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import java.util.Date;
 public class ExceptionResponse {
     private static MessageSource messageSource;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date time;
     private int status;
     private Object error;
