@@ -12,6 +12,6 @@ import java.io.Serializable;
 public class BaseResponse implements Serializable {
 
     private Object data;
-    private Integer count;
+    private Integer count = 0;
 
 }
