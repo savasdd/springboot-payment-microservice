@@ -1,6 +1,40 @@
-spring:
-  application:
-    name: stok-api
-
 server:
   port: 8086
+
+spring:
+  application:
+    name: stock-api
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: update
+    defer-datasource-initialization: true
+    properties:
+      hibernate.enable_lazy_load_no_trans: true
+      hibernate.format_sql: true
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_stock_db
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 60000
+      max-lifetime: 2000000
+      connection-timeout: 60000
+      pool-name: stockConnectionPool
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+
+couchbase:
+  host: couchbase://127.0.0.1
+  username: Couchbase
+  password: Couchbase
+  bucket: PaymentBucket
