@@ -1,4 +1,4 @@
-package com.payment.stok.common.exception;
+package com.payment.stock.common.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

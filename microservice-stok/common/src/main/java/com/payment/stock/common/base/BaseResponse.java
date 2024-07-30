@@ -1,4 +1,4 @@
-package com.payment.stok.common.base;
+package com.payment.stock.common.base;
 
 import lombok.Builder;
 import lombok.Getter;

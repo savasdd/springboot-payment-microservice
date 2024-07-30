@@ -1,4 +1,4 @@
-package com.payment.stok.common.enums;
+package com.payment.stock.common.enums;
 
 public enum RecordStatus {
     ACTIVE,

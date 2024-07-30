@@ -1,4 +1,4 @@
-package com.payment.stok.common.exception;
+package com.payment.stock.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

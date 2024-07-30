@@ -1,4 +1,4 @@
-package com.payment.stok.common.utils;
+package com.payment.stock.common.utils;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;

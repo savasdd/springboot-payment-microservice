@@ -1,5 +1,6 @@
-package com.payment.stok.controller;
+package com.payment.stock.controller;
 
+import com.payment.stock.common.base.BaseResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
