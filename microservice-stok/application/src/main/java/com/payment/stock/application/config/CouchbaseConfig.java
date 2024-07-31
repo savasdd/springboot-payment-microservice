@@ -4,6 +4,8 @@ import com.couchbase.client.core.error.BucketNotFoundException;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.env.ClusterEnvironment;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
@@ -16,6 +18,8 @@ import org.springframework.data.couchbase.cache.CouchbaseCacheManager;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
 import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepositories;
 
+@Getter
+@Setter
 @Slf4j
 @Configuration
 @EnableCouchbaseRepositories
