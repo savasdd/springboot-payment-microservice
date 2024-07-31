@@ -27,7 +27,7 @@ public class StockServiceImpl implements StockService {
     public BaseResponse findAll(Pageable pageable) {
         List<Stock> stockDtoList = stockRepository.findByRecordStatus(RecordStatus.ACTIVE, pageable).getContent();
 
-        log.info("stockDtoList: {}", stockDtoList.size());
+        log.info("find all stock: {}", stockDtoList.size());
         return BaseResponse.builder().data(beanUtil.mapAll(stockDtoList, StockDto.class)).count(stockDtoList.size()).build();
     }
 
