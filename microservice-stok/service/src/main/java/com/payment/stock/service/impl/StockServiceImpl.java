@@ -4,7 +4,9 @@ import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.common.utils.CacheUtil;
+import com.payment.stock.common.utils.RestUtil;
 import com.payment.stock.entity.dto.StockDto;
+import com.payment.stock.entity.dto.UserDto;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.StockService;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,8 @@ import java.util.List;
 public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
     private final BeanUtil beanUtil;
+    private final RestUtil restUtil;
+    private static final String PAYMENT_USER = "http://localhost:8085/api/payment/user/";
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
     @Override
@@ -44,6 +49,11 @@ public class StockServiceImpl implements StockService {
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse save(StockDto dto) {
+        UserDto userDto = restUtil.exchangeGet(PAYMENT_USER + "findOne/" + dto.getUserId(), UserDto.class);
+
+        if (userDto == null)
+            throw new RuntimeException("user not found");
+
         Stock stock = beanUtil.mapDto(dto, Stock.class);
         Stock model = stockRepository.save(stock);
 
