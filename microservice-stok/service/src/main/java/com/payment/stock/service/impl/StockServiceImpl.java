@@ -3,6 +3,7 @@ package com.payment.stock.service.impl;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
+import com.payment.stock.common.utils.CacheUtil;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.repository.StockRepository;
@@ -10,6 +11,8 @@ import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
     private final BeanUtil beanUtil;
 
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
     @Override
     public BaseResponse findAll(Pageable pageable) {
         List<Stock> stockDtoList = stockRepository.findByRecordStatus(RecordStatus.ACTIVE, pageable).getContent();
@@ -31,11 +35,13 @@ public class StockServiceImpl implements StockService {
         return BaseResponse.builder().data(beanUtil.mapAll(stockDtoList, StockDto.class)).count(stockDtoList.size()).build();
     }
 
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.count == 0")
     @Override
     public BaseResponse findById(Long id) {
         return BaseResponse.builder().data(stockRepository.findById(id).orElseThrow(EntityNotFoundException::new)).build();
     }
 
+    @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse save(StockDto dto) {
         Stock stock = beanUtil.mapDto(dto, Stock.class);
@@ -45,6 +51,7 @@ public class StockServiceImpl implements StockService {
         return BaseResponse.builder().data(model).build();
     }
 
+    @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse update(Long id, StockDto dto) {
         Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -55,6 +62,7 @@ public class StockServiceImpl implements StockService {
         return BaseResponse.builder().data(model).build();
     }
 
+    @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse delete(Long id) {
         Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
