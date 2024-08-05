@@ -1,8 +1,9 @@
-package com.payment.user.application.config;
+package com.payment.user.common.config;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
+@Getter
 @Configuration
 public class ElasticsearchConfig {
 
@@ -25,11 +27,13 @@ public class ElasticsearchConfig {
     private String username;
     @Value("${elastic.password}")
     private String password;
+    @Value("${elastic.index-user}")
+    private String indexUser;
 
     private ElasticsearchClient esClient;
 
     @Bean
-    public ElasticsearchClient ElasticConfig() {
+    public ElasticsearchClient getEsConfig() {
         if (esClient == null) {
             final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
             credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
