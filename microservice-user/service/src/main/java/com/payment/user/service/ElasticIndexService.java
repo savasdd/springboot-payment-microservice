@@ -1,6 +1,6 @@
 package com.payment.user.service;
 
-public interface ElasticService {
+public interface ElasticIndexService {
 
     void indexUser();
 }

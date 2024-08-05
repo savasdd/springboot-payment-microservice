@@ -6,7 +6,7 @@ import com.payment.user.common.config.ElasticsearchConfig;
 import com.payment.user.common.enums.ElasticIndex;
 import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.entity.dto.ElasticUserDto;
-import com.payment.user.service.ElasticService;
+import com.payment.user.service.ElasticIndexService;
 import com.payment.user.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class ElasticServiceImpl implements ElasticService {
+public class ElasticIndexServiceImpl implements ElasticIndexService {
 
     private final UserService userService;
     private final ElasticsearchConfig esConfig;
