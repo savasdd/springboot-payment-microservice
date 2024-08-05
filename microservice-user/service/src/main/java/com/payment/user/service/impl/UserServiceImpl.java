@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -34,6 +36,12 @@ public class UserServiceImpl implements UserService {
 
         log.info("get all user {}", list.getTotalElements());
         return BaseResponse.builder().data(list.getContent()).count((int) list.getTotalElements()).build();
+    }
+
+    @Override
+    public List<UserDto> findAllDto(Pageable pageable) {
+        Page<UserDto> list = beanUtil.mapAll(repository.findAll(pageable), UserDto.class);
+        return list.getContent();
     }
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.count == 0")

@@ -28,10 +28,10 @@ public class ElasticServiceImpl implements ElasticService {
     @Override
     public void indexUser() {
         try {
-            DeleteByQueryResponse response = esConfig.getEsConfig().deleteByQuery(q -> q.index(esConfig.getIndexUser()).query(builder -> builder.match(ma -> ma)));
+            DeleteByQueryResponse response = esConfig.getEsConfig().deleteByQuery(q -> q.index(esConfig.getIndexUser()).query(builder -> builder.matchAll(ma -> ma)));
             log.info("cleared index user {}", response.took());
 
-            List<ElasticUserDto> userList = beanUtil.mapAll(List.of(userService.findAll(Pageable.ofSize(20))), ElasticUserDto.class);
+            List<ElasticUserDto> userList = beanUtil.mapAll(userService.findAllDto(Pageable.ofSize(20)), ElasticUserDto.class);
 
             userList.forEach(f -> {
                 f.setContentType(ElasticIndex.USER.getName());
@@ -49,7 +49,7 @@ public class ElasticServiceImpl implements ElasticService {
     private void index(String indexName, ElasticUserDto user) {
         try {
             IndexResponse response = esConfig.getEsConfig().index(i -> i.index(indexName).id(ElasticIndex.USER.getName() + "_" + user.getId()).document(user));
-            log.info("indexed user {}", response.version());
+            log.info("indexed user {} {}", response.version(), user.getId());
         } catch (Exception ex) {
             log.error("cannot index user {}", ex.getMessage());
         }
