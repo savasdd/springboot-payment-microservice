@@ -1,13 +1,14 @@
-package com.payment.user.service.impl;
+package com.payment.user.elastic.impl;
 
+import co.elastic.clients.elasticsearch._types.ElasticsearchException;
 import co.elastic.clients.elasticsearch._types.SearchType;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch.core.MsearchRequest;
 import co.elastic.clients.elasticsearch.core.MsearchResponse;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.config.ElasticsearchConfig;
+import com.payment.user.elastic.SearchService;
 import com.payment.user.entity.dto.ElasticUserDto;
-import com.payment.user.service.ElasticSearchService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +22,7 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class ElasticSearchServiceImpl implements ElasticSearchService {
+public class SearchServiceIImpl implements SearchService {
 
     private final ElasticsearchConfig esConfig;
 
@@ -41,9 +42,9 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
             });
             return BaseResponse.builder().data(contentDto).count((int) searchResponse.took()).build();
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return null;
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            throw new RuntimeException(ex);
         }
 
     }

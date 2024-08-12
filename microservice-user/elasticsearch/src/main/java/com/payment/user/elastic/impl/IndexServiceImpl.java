@@ -1,12 +1,12 @@
-package com.payment.user.service.impl;
+package com.payment.user.elastic.impl;
 
 import co.elastic.clients.elasticsearch.core.DeleteByQueryResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import com.payment.user.common.config.ElasticsearchConfig;
 import com.payment.user.common.enums.ElasticIndex;
 import com.payment.user.common.utils.BeanUtil;
+import com.payment.user.elastic.IndexService;
 import com.payment.user.entity.dto.ElasticUserDto;
-import com.payment.user.service.ElasticIndexService;
 import com.payment.user.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class ElasticIndexServiceImpl implements ElasticIndexService {
+public class IndexServiceImpl implements IndexService {
 
     private final UserService userService;
     private final ElasticsearchConfig esConfig;
@@ -42,6 +42,7 @@ public class ElasticIndexServiceImpl implements ElasticIndexService {
 
         } catch (Exception ex) {
             log.error(ex.getMessage());
+            throw new RuntimeException(ex);
         }
 
     }
