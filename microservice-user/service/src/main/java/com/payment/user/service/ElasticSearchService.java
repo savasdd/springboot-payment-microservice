@@ -6,4 +6,5 @@ import org.springframework.data.domain.Pageable;
 public interface ElasticSearchService {
 
     BaseResponse searchUser(String searchIndex, Pageable searchPage);
+    BaseResponse searchPerson(String searchIndex, String language, Pageable searchPage);
 }

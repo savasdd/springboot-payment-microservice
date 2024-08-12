@@ -2,10 +2,12 @@ package com.payment.user.service.impl;
 
 import co.elastic.clients.elasticsearch._types.SearchType;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.MsearchRequest;
 import co.elastic.clients.elasticsearch.core.MsearchResponse;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.config.ElasticsearchConfig;
+import com.payment.user.entity.dto.ElasticContent;
 import com.payment.user.entity.dto.ElasticUserDto;
 import com.payment.user.service.ElasticSearchService;
 import lombok.AllArgsConstructor;
@@ -48,6 +50,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 
     }
 
+
     private MsearchRequest queryUser(String searchIndex, int pageSize) {
         return MsearchRequest.of(of -> of.searches(s -> s
                 .body(bd -> bd
@@ -59,4 +62,44 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
                                 ))
                         .size(pageSize)).header(h -> h.index(esConfig.getIndexUser()))).searchType(SearchType.DfsQueryThenFetch));
     }
+
+
+    @Override
+    public BaseResponse searchPerson(String searchIndex, String language, Pageable searchPage) {
+        try {
+            List<ElasticContent> contentDto = new ArrayList<>();
+            MsearchResponse<ElasticContent> searchResponse = esConfig.getEsConfig().msearch(queryPerson(searchIndex, language, searchPage.getPageSize()), ElasticContent.class);
+
+            searchResponse.responses().forEach(f -> {
+                if (!f.isFailure()) {
+                    f.result().hits().hits().forEach(h -> {
+                        ElasticContent dto = h.source();
+                        contentDto.add(dto);
+                    });
+                }
+            });
+
+            //restHighQuery(searchIndex);
+            return BaseResponse.builder().data(contentDto).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private MsearchRequest queryPerson(String searchIndex, String language, int pageSize) {
+        return MsearchRequest.of(of -> of.searches(s -> s
+                .body(bd -> bd
+                        .query(q -> q
+                                .bool(b -> b.must(m -> m.queryString(mm -> mm
+                                                .query("*" + StringUtils.stripAccents(searchIndex).toLowerCase() + "*")
+                                                .fields(List.of("firstName", "language", "street")).defaultOperator(Operator.Or)
+                                                .fuzzyTranspositions(false)))
+                                        .filter(List.of(Query.of(f -> f.queryString(fs -> fs.query(language.trim().toUpperCase()).fields(List.of("language"))))))
+                                ))
+                        .size(pageSize)).header(h -> h.index(esConfig.getIndexPerson()))).searchType(SearchType.DfsQueryThenFetch));
+    }
+
 }

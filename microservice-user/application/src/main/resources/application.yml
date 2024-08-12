@@ -45,3 +45,4 @@ elastic:
   password: elastic123
   cluster: elasticsearch
   index-user: index_user
+  index-person: index_person

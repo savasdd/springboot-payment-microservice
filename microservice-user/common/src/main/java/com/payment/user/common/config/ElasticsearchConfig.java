@@ -29,6 +29,8 @@ public class ElasticsearchConfig {
     private String password;
     @Value("${elastic.index-user}")
     private String indexUser;
+    @Value("${elastic.index-person}")
+    private String indexPerson;
 
     private ElasticsearchClient esClient;
 
