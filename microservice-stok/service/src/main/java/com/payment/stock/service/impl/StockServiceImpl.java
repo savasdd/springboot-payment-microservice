@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -81,5 +80,10 @@ public class StockServiceImpl implements StockService {
 
         log.info("delete: {}", model);
         return BaseResponse.builder().data(model).build();
+    }
+
+    @Override
+    public List<StockDto> findAllList(Pageable pageable) {
+        return beanUtil.mapAll(stockRepository.findAll(pageable).getContent(), StockDto.class);
     }
 }
