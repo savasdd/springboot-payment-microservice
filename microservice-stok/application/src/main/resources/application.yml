@@ -44,4 +44,4 @@ elastic:
   username: elastic
   password: elastic123
   cluster: elasticsearch
-  index-user: index_stock
+  index-stock: index_stock
