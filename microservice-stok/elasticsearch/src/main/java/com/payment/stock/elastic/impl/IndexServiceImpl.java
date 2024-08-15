@@ -49,7 +49,7 @@ public class IndexServiceImpl implements IndexService {
 
     private void index(String indexName, ElasticContent content) {
         try {
-            IndexResponse response = esConfig.getEsConfig().index(i -> i.index(indexName).id(ElasticIndex.STOCK.getName() + "_" + content.getId()).document(user));
+            IndexResponse response = esConfig.getEsConfig().index(i -> i.index(indexName).id(ElasticIndex.STOCK.getName() + "_" + content.getId()).document(content));
             log.info("indexed stock {} {}", response.version(), content.getId());
         } catch (Exception ex) {
             log.error("cannot index stock {}", ex.getMessage());
