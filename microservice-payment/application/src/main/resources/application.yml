@@ -1,6 +1,47 @@
+server:
+  port: 8087
+
 spring:
   application:
     name: payment-api
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: update
+    defer-datasource-initialization: true
+    properties:
+      hibernate.enable_lazy_load_no_trans: true
+      hibernate.format_sql: true
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 60000
+      max-lifetime: 2000000
+      connection-timeout: 60000
+      pool-name: stockConnectionPool
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 
-server:
-  port: 8087
+
+couchbase:
+  host: couchbase://127.0.0.1
+  username: Couchbase
+  password: Couchbase
+  bucket: PaymentBucket
+
+elastic:
+  host: 127.0.0.1:9200
+  username: elastic
+  password: elastic123
+  cluster: elasticsearch
+  index-stock: index_stock
