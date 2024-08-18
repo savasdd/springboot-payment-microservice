@@ -37,9 +37,11 @@ public class OrderServiceImpl implements OrderService {
     public BaseResponse createOrder(OrderDTO dto) {
         Order model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
 
-        List<ProductItem> itemList = beanUtil.mapAll(dto.getProductItems(), ProductItem.class);
-        itemList.forEach(item -> item.setOrder(model));
-        itemRepository.saveAll(itemList);
+        if (!dto.getProductItems().isEmpty()) {
+            List<ProductItem> itemList = beanUtil.mapAll(dto.getProductItems(), ProductItem.class);
+            itemList.forEach(item -> item.setOrder(model));
+            itemRepository.saveAll(itemList);
+        }
 
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.createEvent(model));
         publishOutbox(outboxOrder);
