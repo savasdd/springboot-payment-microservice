@@ -8,9 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreatedEvent extends BaseEvent {
-    private static final String ORDER_CREATED_EVENT = "ORDER_CREATED";
+    public static final String EVENT = "ORDER_CREATED";
+    private Order order;
 
-    CreatedEvent(Order order) {
-        super(order.getId().toString());
+    public CreatedEvent(Order order) {
+        super(order.getId());
+        this.order = order;
     }
 }

@@ -1,18 +1,18 @@
 package com.payment.service.event;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class CancelledEvent extends BaseEvent {
-    private static final String ORDER_CANCELLED_EVENT = "ORDER_CANCELLED_EVENT";
+    public static final String EVENT = "ORDER_CANCELLED_EVENT";
     private String orderId;
-    private String reason;
+    private String description;
 
-    CancelledEvent(String orderId, String reason) {
+    public CancelledEvent(String orderId, String description) {
         super(orderId);
-        this.reason = reason;
+        this.orderId = orderId;
+        this.description = description;
     }
 }

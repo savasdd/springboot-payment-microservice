@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 
 @Getter
@@ -24,7 +23,7 @@ public abstract class BaseEntity implements Serializable {
 
     @Id
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private String id;
 
     @Column(name = "CR_DATE", updatable = false)
     private Date createdDate;

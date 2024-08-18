@@ -20,6 +20,6 @@ public class OutboxOrder extends BaseEntity implements Serializable {
     @Column(name = "aggregateId")
     private String aggregateId;
     @Column(name = "data")
-    private Byte[] data;
+    private byte[] data;
 
 }
