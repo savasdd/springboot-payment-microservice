@@ -1,16 +1,16 @@
 package com.payment.service;
 
 import com.payment.common.base.BaseResponse;
-import com.payment.entity.model.Order;
-import com.payment.entity.model.ProductItem;
+import com.payment.entity.dto.OrderDTO;
+import com.payment.entity.dto.ProductItemDTO;
 import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
-    BaseResponse createOrder(Order order);
+    BaseResponse createOrder(OrderDTO order);
 
     BaseResponse getOrder(String orderId);
 
-    BaseResponse addProduct(ProductItem productItem);
+    BaseResponse addProduct(String orderId, ProductItemDTO productItem);
 
     BaseResponse deleteProduct(String orderId, String productId);
 

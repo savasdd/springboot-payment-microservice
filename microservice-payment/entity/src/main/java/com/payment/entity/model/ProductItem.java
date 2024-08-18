@@ -18,8 +18,6 @@ public class ProductItem extends BaseEntity implements Serializable {
 
     @Column(name = "stockId", nullable = false)
     private Long stockId;
-    @Column(name = "title")
-    private String title;
     @Column(name = "price")
     private BigDecimal price = BigDecimal.ZERO;
     @Column(name = "quantity")

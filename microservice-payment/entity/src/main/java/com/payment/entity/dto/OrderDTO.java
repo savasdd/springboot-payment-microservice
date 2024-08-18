@@ -13,6 +13,7 @@ import java.util.UUID;
 @Setter
 @Builder
 public class OrderDTO {
+    private String id;
     private Long userId;
-    private List<ProductItemDTO> productItems = new ArrayList<>();
+    private List<ProductItemDTO> productItems;
 }
