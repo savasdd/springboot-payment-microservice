@@ -1,0 +1,31 @@
+package com.payment.entity;
+
+import com.payment.entity.base.BaseEntity;
+import lombok.*;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "PRODUCT_ITEM")
+@EqualsAndHashCode(callSuper = true)
+public class ProductItem extends BaseEntity implements Serializable {
+
+    @Column(name = "stockId", nullable = false)
+    private Long stockId;
+    @Column(name = "title")
+    private String title;
+    @Column(name = "price")
+    private BigDecimal price = BigDecimal.ZERO;
+    @Column(name = "quantity")
+    private Long quantity = 0L;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orderId", referencedColumnName = "id")
+    private Order order;
+}

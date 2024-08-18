@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 
 @Getter
@@ -22,8 +23,8 @@ public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1656703245648711747L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
     @Column(name = "CR_DATE", updatable = false)
     private Date createdDate;
