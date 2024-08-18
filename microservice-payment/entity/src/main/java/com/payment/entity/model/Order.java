@@ -1,4 +1,4 @@
-package com.payment.entity;
+package com.payment.entity.model;
 
 import com.payment.common.enums.OrderStatus;
 import com.payment.entity.base.BaseEntity;
