@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
@@ -46,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.createEvent(model));
         publishOutbox(outboxOrder);
+        log.info("create order success {}", model);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -63,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
         ProductItem model = itemRepository.save(productItem);
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productAddedEvent(order, model));
         publishOutbox(outboxOrder);
+        log.info("add product success {}", productItem);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -74,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
             OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productRemovedEvent(order, productId));
             publishOutbox(outboxOrder);
+            log.info("delete product success {}", productId);
         }
         return BaseResponse.builder().data("Success: " + productId).build();
     }
@@ -87,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
 
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.paidEvent(model, paymentId));
         publishOutbox(outboxOrder);
-
+        log.info("payment success {}", paymentId);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -101,6 +105,8 @@ public class OrderServiceImpl implements OrderService {
         Order model = orderRepository.save(order);
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.cancelledEvent(model, dto.getDescription()));
         publishOutbox(outboxOrder);
+
+        log.info("cancel success {}", dto.getDescription());
         return BaseResponse.builder().data(model).build();
     }
 
@@ -118,6 +124,8 @@ public class OrderServiceImpl implements OrderService {
         Order model = orderRepository.save(order);
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.submittedEvent(model));
         publishOutbox(outboxOrder);
+
+        log.info("submit success {}", orderId);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -132,6 +140,8 @@ public class OrderServiceImpl implements OrderService {
         Order model = orderRepository.save(order);
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.completedEvent(model));
         publishOutbox(outboxOrder);
+
+        log.info("complete success {}", orderId);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -147,7 +157,8 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    private void publishOutbox(OutboxOrder event) {
+    @Transactional
+    public void publishOutbox(OutboxOrder event) {
         try {
             log.info("publishing outbox event: {}", event);
             outboxRepository.deleteById(event.getId());

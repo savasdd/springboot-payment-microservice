@@ -32,6 +32,9 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
 
 couchbase:
   host: couchbase://127.0.0.1
@@ -46,6 +49,3 @@ elastic:
   cluster: elasticsearch
   index-stock: index_stock
 
-springdoc:
-  swagger-ui:
-    tags-sorter: alpha
