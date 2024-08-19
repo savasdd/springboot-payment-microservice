@@ -3,6 +3,7 @@ package com.payment.service.impl;
 import com.payment.common.base.BaseResponse;
 import com.payment.common.enums.OrderStatus;
 import com.payment.common.utils.BeanUtil;
+import com.payment.entity.dto.OrderCanselDTO;
 import com.payment.entity.dto.OrderDTO;
 import com.payment.entity.dto.ProductItemDTO;
 import com.payment.entity.model.Order;
@@ -34,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final BeanUtil beanUtil;
 
     @Override
-    public BaseResponse saveOrder(OrderDTO dto) {
+    public BaseResponse createOrder(OrderDTO dto) {
         Order model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
 
         if (!dto.getProductItems().isEmpty()) {
@@ -91,14 +92,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResponse cancel(String orderId, String description) {
+    public BaseResponse cancel(String orderId, OrderCanselDTO dto) {
         Order order = findOrder(orderId);
         if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
             throw new RuntimeException("cannot cansel order with id: " + orderId + " and status: " + order.getOrderStatus());
 
         order.setOrderStatus(OrderStatus.CANCELLED);
         Order model = orderRepository.save(order);
-        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.cancelledEvent(model, description));
+        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.cancelledEvent(model, dto.getDescription()));
         publishOutbox(outboxOrder);
         return BaseResponse.builder().data(model).build();
     }

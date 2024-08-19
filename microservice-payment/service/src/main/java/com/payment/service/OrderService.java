@@ -1,12 +1,13 @@
 package com.payment.service;
 
 import com.payment.common.base.BaseResponse;
+import com.payment.entity.dto.OrderCanselDTO;
 import com.payment.entity.dto.OrderDTO;
 import com.payment.entity.dto.ProductItemDTO;
 import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
-    BaseResponse saveOrder(OrderDTO order);
+    BaseResponse createOrder(OrderDTO order);
 
     BaseResponse getOrder(String orderId);
 
@@ -16,7 +17,7 @@ public interface OrderService {
 
     BaseResponse payment(String orderId, String paymentId);
 
-    BaseResponse cancel(String orderId, String reason);
+    BaseResponse cancel(String orderId, OrderCanselDTO dto);
 
     BaseResponse submit(String orderId);
 

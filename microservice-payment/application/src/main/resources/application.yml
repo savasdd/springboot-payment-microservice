@@ -45,3 +45,7 @@ elastic:
   password: elastic123
   cluster: elasticsearch
   index-stock: index_stock
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
