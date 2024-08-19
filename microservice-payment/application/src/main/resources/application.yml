@@ -31,6 +31,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  kafka:
+    consumer:
+      client-id: order-service-group-id
+    bootstrap-servers: localhost:9092
 
 springdoc:
   swagger-ui:
@@ -49,3 +53,48 @@ elastic:
   cluster: elasticsearch
   index-stock: index_stock
 
+schedulers:
+  outbox:
+    enable: true
+    initialDelayMillis: 3000
+    fixedRate: 1000
+
+topics:
+  created:
+    name: order-created
+    partitions: 3
+    replication: 1
+  added:
+    name: product-added
+    partitions: 3
+    replication: 1
+  removed:
+    name: product-added
+    partitions: 3
+    replication: 1
+  payment:
+    name: order-paid
+    partitions: 3
+    replication: 1
+  cancelled:
+    name: order-cancelled
+    partitions: 3
+    replication: 1
+  submitted:
+    name: order-submitted
+    partitions: 3
+    replication: 1
+  completed:
+    name: order-completed
+    partitions: 3
+    replication: 1
+
+  retryTopic:
+    name: retry-topic
+    partitions: 3
+    replication: 1
+
+  deadLetterQueue:
+    name: dead-letter-queue
+    partitions: 3
+    replication: 1

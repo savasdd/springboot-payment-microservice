@@ -1,9 +1,9 @@
 package com.payment.controller;
 
 import com.payment.common.base.BaseResponse;
-import com.payment.entity.dto.OrderCanselDTO;
-import com.payment.entity.dto.OrderDTO;
-import com.payment.entity.dto.ProductItemDTO;
+import com.payment.entity.dto.OrderCanselDto;
+import com.payment.entity.dto.OrderDto;
+import com.payment.entity.dto.ProductItemDto;
 import com.payment.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -22,14 +22,14 @@ public class PaymentController {
 
     @Operation(summary = "order no: 1", tags = "ordering payment")
     @PostMapping(value = "/create")
-    public ResponseEntity<BaseResponse> createOrder(@RequestBody OrderDTO order) {
+    public ResponseEntity<BaseResponse> createOrder(@RequestBody OrderDto order) {
         return new ResponseEntity<>(orderService.createOrder(order), HttpStatus.CREATED);
     }
 
 
     @Operation(summary = "order no: 2", tags = "ordering payment")
     @PostMapping(value = "/add-product/{orderId}")
-    public ResponseEntity<BaseResponse> addProduct(@PathVariable String orderId, @RequestBody ProductItemDTO productItem) {
+    public ResponseEntity<BaseResponse> addProduct(@PathVariable String orderId, @RequestBody ProductItemDto productItem) {
         return ResponseEntity.ok(orderService.addProduct(orderId, productItem));
     }
 
@@ -47,7 +47,7 @@ public class PaymentController {
 
     @Operation(summary = "order no: 4", tags = "ordering payment")
     @PostMapping(value = "/cancel/{orderId}")
-    public ResponseEntity<BaseResponse> cancel(@PathVariable String orderId, @RequestBody OrderCanselDTO orderCansel) {
+    public ResponseEntity<BaseResponse> cancel(@PathVariable String orderId, @RequestBody OrderCanselDto orderCansel) {
         return ResponseEntity.ok(orderService.cancel(orderId, orderCansel));
     }
 

@@ -6,13 +6,11 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
 @Builder
-public class OrderPayDTO {
+public class OrderPayDto {
     @NotBlank
     @Size(min = 6, max = 250)
     private String paymentId;
