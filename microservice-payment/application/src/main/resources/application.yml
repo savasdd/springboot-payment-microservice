@@ -33,7 +33,7 @@ spring:
       fail-on-empty-beans: false
   kafka:
     consumer:
-      client-id: order-service-group-id
+      group-id: order-service-group-id
     bootstrap-servers: localhost:9092
 
 springdoc:
