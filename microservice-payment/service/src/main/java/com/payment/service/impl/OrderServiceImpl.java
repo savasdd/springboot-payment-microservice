@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private final BeanUtil beanUtil;
 
     @Override
-    public BaseResponse createOrder(OrderDTO dto) {
+    public BaseResponse saveOrder(OrderDTO dto) {
         Order model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
 
         if (!dto.getProductItems().isEmpty()) {
@@ -78,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResponse pay(String orderId, String paymentId) {
+    public BaseResponse payment(String orderId, String paymentId) {
         Order order = findOrder(orderId);
         order.setPaymentId(paymentId);
         order.setOrderStatus(OrderStatus.PAID);
@@ -135,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResponse getAll(Pageable pageable) {
+    public BaseResponse getAllOrder(Pageable pageable) {
         List<Order> orders = orderRepository.findAll(pageable).getContent();
         log.info("orders: {}", orders);
         return BaseResponse.builder().data(orders).count(orders.size()).build();

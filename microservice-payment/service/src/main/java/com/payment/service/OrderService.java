@@ -6,7 +6,7 @@ import com.payment.entity.dto.ProductItemDTO;
 import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
-    BaseResponse createOrder(OrderDTO order);
+    BaseResponse saveOrder(OrderDTO order);
 
     BaseResponse getOrder(String orderId);
 
@@ -14,7 +14,7 @@ public interface OrderService {
 
     BaseResponse deleteProduct(String orderId, String productId);
 
-    BaseResponse pay(String orderId, String paymentId);
+    BaseResponse payment(String orderId, String paymentId);
 
     BaseResponse cancel(String orderId, String reason);
 
@@ -22,7 +22,7 @@ public interface OrderService {
 
     BaseResponse complete(String orderId);
 
-    BaseResponse getAll(Pageable pageable);
+    BaseResponse getAllOrder(Pageable pageable);
 
     BaseResponse deleteOutboxRecord();
 
