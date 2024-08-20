@@ -1,15 +1,16 @@
 package com.payment.entity.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ProductItemDto {
+public class ProductItemDto implements Serializable {
     private Long stockId;
     private BigDecimal price;
     private Long quantity;

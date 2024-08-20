@@ -36,9 +36,9 @@ public class PublisherKafka implements Publisher {
             ProducerRecord<String, byte[]> message = new ProducerRecord<>(topic, key, objectMapper.writeValueAsBytes(data));
             var result = kafkaTemplate.send(message);
 
-            log.info("publish kafka: {} {}", result, key);
+            log.info("PUBLISH KAFKA: {} {}", data, key);
         } catch (Exception e) {
-            log.error("publish kafka error", e);
+            log.error("Publish kafka error", e);
         }
     }
 

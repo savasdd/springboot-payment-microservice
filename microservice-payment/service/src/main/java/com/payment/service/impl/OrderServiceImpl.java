@@ -1,6 +1,7 @@
 package com.payment.service.impl;
 
 import com.payment.common.base.BaseResponse;
+import com.payment.common.config.KafkaTopicsConfig;
 import com.payment.common.enums.OrderStatus;
 import com.payment.common.utils.BeanUtil;
 import com.payment.entity.dto.OrderCanselDto;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.lang.model.type.UnknownTypeException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -33,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final OutboxOrderRepository outboxRepository;
     private final Publisher publisher;
     private final OutboxSerializer outboxSerializer;
+    private final KafkaTopicsConfig topicsConfig;
     private final BeanUtil beanUtil;
 
     @Override
@@ -162,9 +165,9 @@ public class OrderServiceImpl implements OrderService {
         try {
             log.info("publishing outbox event: {}", event);
             outboxRepository.deleteById(event.getId());
-            publisher.publish(event.getEventType(), event.getAggregateId(), event); //TODO topicName
+            publisher.publish(getTopicName(event.getEventType()), event.getAggregateId(), event);
 
-            log.info("outbox event published and deleted: {}", event);
+            log.info("outbox event published and deleted: {}", event.getId());
         } catch (Exception e) {
             log.error("exception while publishing outbox event: {}", e.getLocalizedMessage());
         }
@@ -172,6 +175,19 @@ public class OrderServiceImpl implements OrderService {
 
     private Order findOrder(String orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+    }
+
+    private String getTopicName(String eventType) {
+        return switch (eventType) {
+            case "ORDER_CANCELLED_EVENT" -> topicsConfig.getCancelled().getName();
+            case "ORDER_COMPLETED" -> topicsConfig.getCompleted().getName();
+            case "ORDER_CREATED" -> topicsConfig.getCreated().getName();
+            case "ORDER_PAID" -> topicsConfig.getPayment().getName();
+            case "PRODUCT_ITEM_ADDED" -> topicsConfig.getAdded().getName();
+            case "PRODUCT_ITEM_REMOVED" -> topicsConfig.getRemoved().getName();
+            case "ORDER_SUBMITTED" -> topicsConfig.getSubmitted().getName();
+            default -> throw new EntityNotFoundException("Type not found");
+        };
     }
 
 }
