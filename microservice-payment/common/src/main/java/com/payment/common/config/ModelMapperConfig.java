@@ -1,4 +1,4 @@
-package com.payment.application.config;
+package com.payment.common.config;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

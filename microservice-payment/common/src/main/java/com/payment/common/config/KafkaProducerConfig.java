@@ -1,4 +1,4 @@
-package com.payment.application.config;
+package com.payment.common.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;

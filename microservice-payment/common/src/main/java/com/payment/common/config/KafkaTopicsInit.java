@@ -1,6 +1,5 @@
-package com.payment.application.config;
+package com.payment.common.config;
 
-import com.payment.entity.dto.TopicConfigDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -30,7 +29,7 @@ public class KafkaTopicsInit {
         createTopics(topicsConfig.getDeadLetterQueue());
     }
 
-    private void createTopics(TopicConfigDto configDto) {
+    private void createTopics(KafkaTopicsConfigDto configDto) {
         try {
             NewTopic topic = new NewTopic(configDto.getName(), configDto.getPartitions(), configDto.getReplication().shortValue());
             kafkaAdmin.createOrModifyTopics(topic);

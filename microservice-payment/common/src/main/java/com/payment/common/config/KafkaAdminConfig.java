@@ -1,4 +1,4 @@
-package com.payment.application.config;
+package com.payment.common.config;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.springframework.beans.factory.annotation.Value;

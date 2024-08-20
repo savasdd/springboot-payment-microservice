@@ -1,4 +1,4 @@
-package com.payment.entity.dto;
+package com.payment.common.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopicConfigDto {
+public class KafkaTopicsConfigDto {
     private String name;
     private Integer partitions = 1;
     private Integer replication = 1;
