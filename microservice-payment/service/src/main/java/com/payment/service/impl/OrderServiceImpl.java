@@ -165,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             log.info("publishing outbox event: {}", event);
             //outboxRepository.deleteById(event.getId());
-            publisher.publish(getTopicName(event.getEventType()), event.getAggregateId(), event);
+            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
 
             log.info("outbox event published and deleted: {}", event.getId());
         } catch (Exception e) {
@@ -177,17 +177,5 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
     }
 
-    private String getTopicName(String eventType) {
-        return switch (eventType) {
-            case "ORDER_CANCELLED_EVENT" -> topicsConfig.getCancelled().getName();
-            case "ORDER_COMPLETED" -> topicsConfig.getCompleted().getName();
-            case "ORDER_CREATED" -> topicsConfig.getCreated().getName();
-            case "ORDER_PAID" -> topicsConfig.getPayment().getName();
-            case "PRODUCT_ITEM_ADDED" -> topicsConfig.getAdded().getName();
-            case "PRODUCT_ITEM_REMOVED" -> topicsConfig.getRemoved().getName();
-            case "ORDER_SUBMITTED" -> topicsConfig.getSubmitted().getName();
-            default -> throw new EntityNotFoundException("Type not found");
-        };
-    }
 
 }
