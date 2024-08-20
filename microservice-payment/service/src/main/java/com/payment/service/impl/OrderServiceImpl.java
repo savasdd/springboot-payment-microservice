@@ -164,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
     public void publishOutbox(OutboxOrder event) {
         try {
             log.info("publishing outbox event: {}", event);
-            outboxRepository.deleteById(event.getId());
+            //outboxRepository.deleteById(event.getId());
             publisher.publish(getTopicName(event.getEventType()), event.getAggregateId(), event);
 
             log.info("outbox event published and deleted: {}", event.getId());
