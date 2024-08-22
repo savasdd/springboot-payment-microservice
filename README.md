@@ -1,0 +1,8 @@
+- notification send request and push firebase
+- notification configure to kafka
+- payment send request to user and stock
+- user add jwt token and security
+- apigateway create and upstream
+- euraka create and configure
+- report send request with parameter and generate report (pdf,excell)
+- report search elastic with parameter
