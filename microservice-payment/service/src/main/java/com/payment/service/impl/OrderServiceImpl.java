@@ -160,11 +160,10 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    @Transactional
     public void publishOutbox(OutboxOrder event) {
         try {
             log.info("publishing outbox event: {}", event);
-            //outboxRepository.deleteById(event.getId());
+            outboxRepository.deleteById(event.getId());
             publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
 
             log.info("outbox event published and deleted: {}", event.getId());
