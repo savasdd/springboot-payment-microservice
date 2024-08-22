@@ -155,9 +155,10 @@ public class OrderServiceImpl implements OrderService {
         return BaseResponse.builder().data(orders).count(orders.size()).build();
     }
 
+    @Transactional
     @Override
-    public BaseResponse deleteOutboxRecord() {
-        return null;
+    public void deleteOutboxRecord() {
+        outboxRepository.deleteOutboxRecordByLimit();
     }
 
     public void publishOutbox(OutboxOrder event) {

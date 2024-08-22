@@ -25,6 +25,6 @@ public interface OrderService {
 
     BaseResponse getAllOrder(Pageable pageable);
 
-    BaseResponse deleteOutboxRecord();
+    void deleteOutboxRecord();
 
 }

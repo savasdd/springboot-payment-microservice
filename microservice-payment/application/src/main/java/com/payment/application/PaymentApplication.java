@@ -7,11 +7,13 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = "com.payment")
 @EntityScan(basePackages = "com.payment")
 @EnableJpaRepositories(basePackages = "com.payment")
 @EnableKafka
+@EnableScheduling
 @EnableCaching(mode = AdviceMode.ASPECTJ)
 public class PaymentApplication {
 
