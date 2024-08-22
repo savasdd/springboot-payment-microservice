@@ -4,6 +4,7 @@ import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.common.utils.CacheUtil;
+import com.payment.stock.common.utils.ConstantUtil;
 import com.payment.stock.common.utils.RestUtil;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.dto.UserDto;
@@ -28,7 +29,6 @@ public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
-    private static final String PAYMENT_USER = "http://localhost:8085/api/payment/user/";
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
     @Override
@@ -48,7 +48,7 @@ public class StockServiceImpl implements StockService {
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse save(StockDto dto) {
-        UserDto userDto = restUtil.exchangeGet(PAYMENT_USER + "findOne/" + dto.getUserId(), UserDto.class);
+        UserDto userDto = restUtil.exchangeGet(ConstantUtil.USER_URL + "findOne/" + dto.getUserId(), UserDto.class);
 
         if (userDto == null)
             throw new RuntimeException("user not found");

@@ -4,9 +4,12 @@ import com.payment.common.base.BaseResponse;
 import com.payment.common.config.KafkaTopicsConfig;
 import com.payment.common.enums.OrderStatus;
 import com.payment.common.utils.BeanUtil;
+import com.payment.common.utils.ConstantUtil;
+import com.payment.common.utils.RestUtil;
 import com.payment.entity.dto.OrderCanselDto;
 import com.payment.entity.dto.OrderDto;
 import com.payment.entity.dto.ProductItemDto;
+import com.payment.entity.dto.StockDto;
 import com.payment.entity.model.Order;
 import com.payment.entity.model.OutboxOrder;
 import com.payment.entity.model.ProductItem;
@@ -23,8 +26,11 @@ import org.springframework.stereotype.Service;
 
 import javax.lang.model.type.UnknownTypeException;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.Transient;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,21 +43,40 @@ public class OrderServiceImpl implements OrderService {
     private final OutboxSerializer outboxSerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final BeanUtil beanUtil;
+    private final RestUtil restUtil;
 
+    @Transient
     @Override
     public BaseResponse createOrder(OrderDto dto) {
-        Order model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
+        List<ProductItem> itemNewList = new ArrayList<>();
+        List<ProductItem> itemList = new ArrayList<>();
 
-        if (!dto.getProductItems().isEmpty()) {
-            List<ProductItem> itemList = beanUtil.mapAll(dto.getProductItems(), ProductItem.class);
-            itemList.forEach(item -> item.setOrder(model));
-            itemRepository.saveAll(itemList);
+        dto.getProductItems().forEach(item -> {
+            StockDto stock = restUtil.exchangeGet(ConstantUtil.STOCK_URL + "findOne/" + item.getStockId(), StockDto.class);
+            ProductItem product = beanUtil.mapDto(item, ProductItem.class);
+            if (stock != null && item.getQuantity() <= stock.getAvailableQuantity()) {
+                itemNewList.add(product);
+            } else {
+                product.setStockName(stock != null ? stock.getStockName() : "");
+                itemList.add(product);
+            }
+        });
+
+        if (!itemNewList.isEmpty()) {
+            Order model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
+            dto.setId(model.getId());
+            itemNewList.forEach(item -> {
+                item.setOrder(model);
+            });
+            itemRepository.saveAll(itemNewList);
+
+            OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.createEvent(model));
+            publishOutbox(outboxOrder);
+            log.info("create order success {}", model);
         }
 
-        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.createEvent(model));
-        publishOutbox(outboxOrder);
-        log.info("create order success {}", model);
-        return BaseResponse.builder().data(model).build();
+
+        return !itemList.isEmpty() ? BaseResponse.builder().data("Stokta olmayan ürünler var: " + getStockName(itemList)).build() : BaseResponse.builder().data(dto).build();
     }
 
     @Override
@@ -177,5 +202,9 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
     }
 
+
+    private String getStockName(List<ProductItem> itemDtoList) {
+        return itemDtoList.stream().map(ProductItem::getStockName).collect(Collectors.joining(",", "[", "]"));
+    }
 
 }

@@ -26,4 +26,7 @@ public class ProductItem extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", referencedColumnName = "id")
     private Order order;
+
+    @Transient
+    private String stockName;
 }
