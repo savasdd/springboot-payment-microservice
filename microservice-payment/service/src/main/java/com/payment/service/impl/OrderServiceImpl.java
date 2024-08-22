@@ -30,6 +30,7 @@ import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -56,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
             ProductItem product = beanUtil.mapDto(item, ProductItem.class);
             if (stock != null && item.getQuantity() <= stock.getAvailableQuantity()) {
                 itemNewList.add(product);
+                publishStock(stock);
             } else {
                 product.setStockName(stock != null ? stock.getStockName() : "");
                 itemList.add(product);
@@ -89,6 +91,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = findOrder(orderId);
         ProductItem productItem = beanUtil.mapDto(dto, ProductItem.class);
         productItem.setOrder(order);
+        publishStock(null);
 
         ProductItem model = itemRepository.save(productItem);
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productAddedEvent(order, model));
@@ -102,6 +105,7 @@ public class OrderServiceImpl implements OrderService {
         if (itemRepository.existsById(productId)) {
             Order order = findOrder(orderId);
             itemRepository.deleteById(productId);
+            publishStock(null);
 
             OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productRemovedEvent(order, productId));
             publishOutbox(outboxOrder);
@@ -195,6 +199,17 @@ public class OrderServiceImpl implements OrderService {
             log.info("outbox event published and deleted: {}", event.getId());
         } catch (Exception e) {
             log.error("exception while publishing outbox event: {}", e.getLocalizedMessage());
+        }
+    }
+
+    public void publishStock(StockDto event) {
+        try {
+            log.info("publishing stock event: {}", event);
+            publisher.publish(topicsConfig.getTopicName(""), String.valueOf(UUID.randomUUID()), event);
+
+            log.info("stock event published: {}", event.getId());
+        } catch (Exception e) {
+            log.error("exception while publishing stock event: {}", e.getLocalizedMessage());
         }
     }
 
