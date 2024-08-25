@@ -28,10 +28,8 @@ import javax.lang.model.type.UnknownTypeException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Transient;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
             ProductItem product = beanUtil.mapDto(item, ProductItem.class);
             if (stock != null && item.getQuantity() <= stock.getAvailableQuantity()) {
                 itemNewList.add(product);
-                updateStockRest(item.getStockId(), false, item.getQuantity());
+                updateStockRest(item.getStockId(), item.getQuantity());
             } else {
                 product.setStockName(stock != null ? stock.getStockName() : "");
                 itemList.add(product);
@@ -67,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
 
         if (!itemNewList.isEmpty()) {
             Order model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
+            model.setOrderNo(generateOrderNo());
             dto.setId(model.getId());
             itemNewList.forEach(item -> {
                 item.setOrder(model);
@@ -79,17 +78,22 @@ public class OrderServiceImpl implements OrderService {
         }
 
 
-        return !itemList.isEmpty() ? BaseResponse.builder().data("Stokta olmayan ürünler var: " + getStockName(itemList)).build() : BaseResponse.builder().data(dto).build();
+        return !itemList.isEmpty() ? BaseResponse.builder().data("Stokta Bulunamadı: " + getStockName(itemList)).build() : BaseResponse.builder().data(dto).build();
     }
 
     @Override
     public BaseResponse getOrder(String orderId) {
-        return BaseResponse.builder().data(findOrder(orderId)).build();
+        return BaseResponse.builder().data(orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found"))).build();
     }
 
     @Override
-    public BaseResponse addProduct(String orderId, ProductItemDto dto) {
-        Order order = findOrder(orderId);
+    public BaseResponse getOrderNo(String orderNo) {
+        return BaseResponse.builder().data(orderRepository.findByOrderNo(orderNo)).build();
+    }
+
+    @Override
+    public BaseResponse addProduct(String orderNo, ProductItemDto dto) {
+        Order order = findOrderNo(orderNo);
         ProductItem productItem = beanUtil.mapDto(dto, ProductItem.class);
         productItem.setOrder(order);
 
@@ -101,9 +105,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResponse deleteProduct(String orderId, String productId) {
+    public BaseResponse deleteProduct(String orderNo, String productId) {
         if (itemRepository.existsById(productId)) {
-            Order order = findOrder(orderId);
+            Order order = findOrderNo(orderNo);
             itemRepository.deleteById(productId);
 
             OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productRemovedEvent(order, productId));
@@ -114,8 +118,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResponse payment(String orderId, String paymentId) {
-        Order order = findOrder(orderId);
+    public BaseResponse payment(String orderNo) {
+        String paymentId = generatePaymentNo();
+        Order order = findOrderNo(orderNo);
         order.setPaymentId(paymentId);
         order.setOrderStatus(OrderStatus.PAID);
         Order model = orderRepository.save(order);
@@ -127,10 +132,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResponse cancel(String orderId, OrderCanselDto dto) {
-        Order order = findOrder(orderId);
+    public BaseResponse cancel(String orderNo, OrderCanselDto dto) {
+        Order order = findOrderNo(orderNo);
         if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
-            throw new RuntimeException("cannot cansel order with id: " + orderId + " and status: " + order.getOrderStatus());
+            throw new RuntimeException("cannot cansel order with id: " + orderNo + " and status: " + order.getOrderStatus());
 
         order.setOrderStatus(OrderStatus.CANCELLED);
         Order model = orderRepository.save(order);
@@ -142,11 +147,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResponse submit(String orderId) {
-        Order order = findOrder(orderId);
+    public BaseResponse submit(String orderNo) {
+        Order order = findOrderNo(orderNo);
 
         if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
-            throw new RuntimeException("cannot submit order with id: " + orderId + " and status: " + order.getOrderStatus());
+            throw new RuntimeException("cannot submit order with id: " + orderNo + " and status: " + order.getOrderStatus());
 
         if (!order.getOrderStatus().equals(OrderStatus.PAID))
             throw new EntityNotFoundException("Order not paid");
@@ -156,23 +161,23 @@ public class OrderServiceImpl implements OrderService {
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.submittedEvent(model));
         publishOutbox(outboxOrder);
 
-        log.info("submit success {}", orderId);
+        log.info("submit success {}", orderNo);
         return BaseResponse.builder().data(model).build();
     }
 
     @Override
-    public BaseResponse complete(String orderId) {
-        Order order = findOrder(orderId);
+    public BaseResponse complete(String orderNo) {
+        Order order = findOrderNo(orderNo);
 
         if (order.getOrderStatus().equals(OrderStatus.CANCELLED) || !order.getOrderStatus().equals(OrderStatus.SUBMITTED))
-            throw new RuntimeException("cannot complete order with id: " + orderId + " and status: " + order.getOrderStatus());
+            throw new RuntimeException("cannot complete order with id: " + orderNo + " and status: " + order.getOrderStatus());
 
         order.setOrderStatus(OrderStatus.COMPLETED);
         Order model = orderRepository.save(order);
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.completedEvent(model));
         publishOutbox(outboxOrder);
 
-        log.info("complete success {}", orderId);
+        log.info("complete success {}", orderNo);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -201,21 +206,39 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    public void updateStockRest(Long id, boolean isAdd, Integer quantity) {
+    public void updateStockRest(Long id, Integer quantity) {
         try {
-            Integer stock = restUtil.exchangeGet(ConstantUtil.STOCK_URL + "update-quantity/" + id, Map.of("idAdd", isAdd, "quantity", quantity));
+            Integer stock = restUtil.exchangeGet(ConstantUtil.STOCK_URL + "update-quantity/" + id, quantity);
+            log.info("update stock: {}", stock);
         } catch (Exception e) {
             log.error("exception while update stock: {}", e.getLocalizedMessage());
         }
     }
 
-    private Order findOrder(String orderId) {
-        return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+
+    private Order findOrderNo(String orderNo) {
+        return orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
     }
 
 
     private String getStockName(List<ProductItem> itemDtoList) {
         return itemDtoList.stream().map(ProductItem::getStockName).collect(Collectors.joining(",", "[", "]"));
+    }
+
+    private String generateOrderNo() {
+        int min = 10000;
+        int max = 90000;
+
+        Set<Integer> set = new Random().ints(min, max - min + 1).distinct().limit(6).boxed().collect(Collectors.toSet());
+        return set.stream().findFirst().get() + String.valueOf(LocalDate.now().getYear());
+    }
+
+    private String generatePaymentNo() {
+        int min = 100000;
+        int max = 900000;
+
+        Set<Integer> set = new Random().ints(min, max - min + 1).distinct().limit(6).boxed().collect(Collectors.toSet());
+        return "000" + set.stream().findFirst().get();
     }
 
 }

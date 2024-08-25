@@ -16,6 +16,8 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public class Order extends BaseEntity implements Serializable {
 
+    @Column(name = "orderNo")
+    private String orderNo;
     @Column(name = "userId", nullable = false)
     private Long userId;
     @Column(name = "paymentId")

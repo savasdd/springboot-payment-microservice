@@ -26,41 +26,40 @@ public class PaymentController {
         return new ResponseEntity<>(orderService.createOrder(order), HttpStatus.CREATED);
     }
 
-
     @Operation(summary = "order no: 2", tags = "ordering payment")
-    @PostMapping(value = "/add-product/{orderId}")
-    public ResponseEntity<BaseResponse> addProduct(@PathVariable String orderId, @RequestBody ProductItemDto productItem) {
-        return ResponseEntity.ok(orderService.addProduct(orderId, productItem));
+    @PostMapping(value = "/add-product/{orderNo}")
+    public ResponseEntity<BaseResponse> addProduct(@PathVariable String orderNo, @RequestBody ProductItemDto productItem) {
+        return ResponseEntity.ok(orderService.addProduct(orderNo, productItem));
     }
 
     @Operation(summary = "order no: 3", tags = "ordering payment")
-    @DeleteMapping(value = "/delete-product/{orderId}/{productId}")
-    public ResponseEntity<BaseResponse> deleteProduct(@PathVariable String orderId, @PathVariable String productId) {
-        return ResponseEntity.ok(orderService.deleteProduct(orderId, productId));
+    @DeleteMapping(value = "/delete-product/{orderNo}/{productId}")
+    public ResponseEntity<BaseResponse> deleteProduct(@PathVariable String orderNo, @PathVariable String productId) {
+        return ResponseEntity.ok(orderService.deleteProduct(orderNo, productId));
     }
 
     @Operation(summary = "order no: 4", tags = "ordering payment")
-    @GetMapping(value = "/payment/{orderId}/{paymentId}")
-    public ResponseEntity<BaseResponse> payment(@PathVariable String orderId, @PathVariable String paymentId) {
-        return ResponseEntity.ok(orderService.payment(orderId, paymentId));
+    @GetMapping(value = "/payment/{orderNo}")
+    public ResponseEntity<BaseResponse> payment(@PathVariable String orderNo) {
+        return ResponseEntity.ok(orderService.payment(orderNo));
     }
 
     @Operation(summary = "order no: 4", tags = "ordering payment")
-    @PostMapping(value = "/cancel/{orderId}")
-    public ResponseEntity<BaseResponse> cancel(@PathVariable String orderId, @RequestBody OrderCanselDto orderCansel) {
-        return ResponseEntity.ok(orderService.cancel(orderId, orderCansel));
+    @PostMapping(value = "/cancel/{orderNo}")
+    public ResponseEntity<BaseResponse> cancel(@PathVariable String orderNo, @RequestBody OrderCanselDto orderCansel) {
+        return ResponseEntity.ok(orderService.cancel(orderNo, orderCansel));
     }
 
     @Operation(summary = "order no: 5", tags = "ordering payment")
-    @GetMapping(value = "/submit/{orderId}")
-    public ResponseEntity<BaseResponse> submit(@PathVariable String orderId) {
-        return ResponseEntity.ok(orderService.submit(orderId));
+    @GetMapping(value = "/submit/{orderNo}")
+    public ResponseEntity<BaseResponse> submit(@PathVariable String orderNo) {
+        return ResponseEntity.ok(orderService.submit(orderNo));
     }
 
     @Operation(summary = "order no: 6", tags = "ordering payment")
-    @GetMapping(value = "/complete/{orderId}")
-    public ResponseEntity<BaseResponse> complete(@PathVariable String orderId) {
-        return ResponseEntity.ok(orderService.complete(orderId));
+    @GetMapping(value = "/complete/{orderNo}")
+    public ResponseEntity<BaseResponse> complete(@PathVariable String orderNo) {
+        return ResponseEntity.ok(orderService.complete(orderNo));
     }
 
     @GetMapping(value = "/findAll")
@@ -71,5 +70,10 @@ public class PaymentController {
     @GetMapping(value = "/findOne/{orderId}")
     public ResponseEntity<BaseResponse> getOrder(@PathVariable String orderId) {
         return ResponseEntity.ok(orderService.getOrder(orderId));
+    }
+
+    @GetMapping(value = "/findOne/{orderNo}")
+    public ResponseEntity<BaseResponse> getOrderNo(@PathVariable String orderNo) {
+        return ResponseEntity.ok(orderService.getOrderNo(orderNo));
     }
 }

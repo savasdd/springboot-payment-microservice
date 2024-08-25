@@ -17,7 +17,7 @@ public interface StockService {
 
     BaseResponse delete(Long id);
 
-    BaseResponse updateStockQuantity(Long id, boolean isAdd, Integer quantity);
+    BaseResponse updateStockQuantity(Long id, Integer quantity);
 
     List<StockDto> findAllList(Pageable pageable);
 }

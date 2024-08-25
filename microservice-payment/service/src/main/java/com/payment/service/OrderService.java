@@ -11,17 +11,19 @@ public interface OrderService {
 
     BaseResponse getOrder(String orderId);
 
-    BaseResponse addProduct(String orderId, ProductItemDto productItem);
+    BaseResponse getOrderNo(String orderNo);
 
-    BaseResponse deleteProduct(String orderId, String productId);
+    BaseResponse addProduct(String orderNo, ProductItemDto productItem);
 
-    BaseResponse payment(String orderId, String paymentId);
+    BaseResponse deleteProduct(String orderNo, String productId);
 
-    BaseResponse cancel(String orderId, OrderCanselDto dto);
+    BaseResponse payment(String orderNo);
 
-    BaseResponse submit(String orderId);
+    BaseResponse cancel(String orderNo, OrderCanselDto dto);
 
-    BaseResponse complete(String orderId);
+    BaseResponse submit(String orderNo);
+
+    BaseResponse complete(String orderNo);
 
     BaseResponse getAllOrder(Pageable pageable);
 

@@ -83,9 +83,9 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public BaseResponse updateStockQuantity(Long id, boolean isAdd, Integer quantity) {
+    public BaseResponse updateStockQuantity(Long id, Integer quantity) {
         Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        stock.setAvailableQuantity(isAdd ? stock.getAvailableQuantity() + quantity : (stock.getAvailableQuantity() > quantity ? stock.getAvailableQuantity() - quantity : 0));
+        stock.setAvailableQuantity(stock.getAvailableQuantity() > quantity ? stock.getAvailableQuantity() - quantity : 0);
         stockRepository.save(stock);
         log.info("updateStockQuantity: {}", stock);
         return BaseResponse.builder().data(stock).build();
