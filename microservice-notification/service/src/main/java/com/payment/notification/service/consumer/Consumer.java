@@ -3,6 +3,7 @@ package com.payment.notification.service.consumer;
 import com.payment.notification.common.content.KafkaContent;
 import com.payment.notification.common.event.NotificationEvent;
 import com.payment.notification.common.utils.SerializerUtil;
+import com.payment.notification.service.NotificationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 public class Consumer {
 
     private final SerializerUtil serializerUtil;
+    private final NotificationService service;
 
     @KafkaListener(groupId = "${spring.kafka.consumer.group-id}", topics = {"${topics.notification.name}"}, id = "orders-consumer")
     public void process(Acknowledgment ack, ConsumerRecord<String, byte[]> consumerRecord) {
@@ -28,7 +30,7 @@ public class Consumer {
             ack.acknowledge();
 
             log.info("CONSUMER NOTIFICATION: {}", getRecordInfo(consumerRecord));
-            log.info(event.getMessage());
+            service.sendNotification(event);
         } catch (Exception ex) {
             log.error("ack exception while processing record: {}", getRecordInfo(consumerRecord), ex);
         }

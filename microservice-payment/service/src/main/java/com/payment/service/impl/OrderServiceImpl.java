@@ -98,6 +98,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = findOrderNo(orderNo);
         ProductItem productItem = beanUtil.mapDto(dto, ProductItem.class);
         productItem.setOrder(order);
+        productItem.setOrderNo(order.getOrderNo());
         ProductItem model = itemRepository.save(productItem);
 
         log.info("add product success {}", productItem);
