@@ -70,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
             dto.setId(order.getId());
             itemNewList.forEach(item -> {
                 item.setOrder(order);
+                item.setOrderNo(order.getOrderNo());
             });
             itemRepository.saveAll(itemNewList);
 

@@ -27,6 +27,9 @@ public class ProductItem extends BaseEntity implements Serializable {
     @JoinColumn(name = "orderId", referencedColumnName = "id")
     private Order order;
 
+    @Column(name = "orderNo")
+    private String orderNo;
+
     @Transient
     private String stockName;
 }
