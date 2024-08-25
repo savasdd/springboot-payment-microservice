@@ -43,4 +43,9 @@ public class StockController {
         return new ResponseEntity<>(stockService.delete(id), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/update-quantity/{id}")
+    public ResponseEntity<BaseResponse> updateStockQuantity(@PathVariable Long id, @RequestParam boolean isAdd, @RequestParam Integer quantity) {
+        return new ResponseEntity<>(stockService.updateStockQuantity(id, isAdd, quantity), HttpStatus.OK);
+    }
+
 }
