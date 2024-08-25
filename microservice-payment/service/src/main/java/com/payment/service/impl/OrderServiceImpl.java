@@ -68,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
             Order order = orderRepository.save(beanUtil.mapDto(dto, Order.class));
             order.setOrderNo(generateOrderNo());
             dto.setId(order.getId());
+            dto.setOrderNo(order.getOrderNo());
             itemNewList.forEach(item -> {
                 item.setOrder(order);
                 item.setOrderNo(order.getOrderNo());
@@ -124,6 +125,10 @@ public class OrderServiceImpl implements OrderService {
     public BaseResponse payment(String orderNo) {
         String paymentId = generatePaymentNo();
         Order order = findOrderNo(orderNo);
+
+        if (order.getOrderStatus().equals(OrderStatus.CANCELLED))
+            throw new RuntimeException("cannot payment order with id: " + orderNo + " and status: " + order.getOrderStatus());
+
         order.setPaymentId(paymentId);
         order.setOrderStatus(OrderStatus.PAID);
         Order model = orderRepository.save(order);

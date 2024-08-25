@@ -14,6 +14,7 @@ import java.util.List;
 public class OrderDto implements Serializable {
 
     private String id;
+    private String orderNo;
     @Schema(example = "3")
     private Long userId;
     private List<ProductItemDto> productItems;
