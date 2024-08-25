@@ -30,6 +30,7 @@ import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
             ProductItem product = beanUtil.mapDto(item, ProductItem.class);
             if (stock != null && item.getQuantity() <= stock.getAvailableQuantity()) {
                 itemNewList.add(product);
-                publishStock(stock);
+                updateStockRest(item.getStockId(), false, item.getQuantity());
             } else {
                 product.setStockName(stock != null ? stock.getStockName() : "");
                 itemList.add(product);
@@ -91,7 +92,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = findOrder(orderId);
         ProductItem productItem = beanUtil.mapDto(dto, ProductItem.class);
         productItem.setOrder(order);
-        publishStock(null);
 
         ProductItem model = itemRepository.save(productItem);
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productAddedEvent(order, model));
@@ -105,7 +105,6 @@ public class OrderServiceImpl implements OrderService {
         if (itemRepository.existsById(productId)) {
             Order order = findOrder(orderId);
             itemRepository.deleteById(productId);
-            publishStock(null);
 
             OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productRemovedEvent(order, productId));
             publishOutbox(outboxOrder);
@@ -202,14 +201,11 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    public void publishStock(StockDto event) {
+    public void updateStockRest(Long id, boolean isAdd, Integer quantity) {
         try {
-            log.info("publishing stock event: {}", event);
-            publisher.publish(topicsConfig.getTopicName(""), String.valueOf(UUID.randomUUID()), event);
-
-            log.info("stock event published: {}", event.getId());
+            Integer stock = restUtil.exchangeGet(ConstantUtil.STOCK_URL + "update-quantity/" + id, Map.of("idAdd", isAdd, "quantity", quantity));
         } catch (Exception e) {
-            log.error("exception while publishing stock event: {}", e.getLocalizedMessage());
+            log.error("exception while update stock: {}", e.getLocalizedMessage());
         }
     }
 

@@ -13,5 +13,5 @@ import java.math.BigDecimal;
 public class ProductItemDto implements Serializable {
     private Long stockId;
     private BigDecimal price;
-    private Long quantity;
+    private Integer quantity;
 }

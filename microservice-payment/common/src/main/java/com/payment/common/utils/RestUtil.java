@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Component
@@ -26,6 +27,11 @@ public class RestUtil {
         ResponseEntity<BaseResponse> response = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(getHeaders()), BaseResponse.class);
         T resp = beanUtil.mapDto(Objects.requireNonNull(response.getBody()).getData(), dto);
         return response.getStatusCode().value() == 200 ? resp : null;
+    }
+
+    public Integer exchangeGet(String uri, Map<String, Object> params) {
+        ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(getHeaders()), Object.class, params);
+        return response.getStatusCode().value();
     }
 
     public <T> List<T> exchangeAsList(String uri, ParameterizedTypeReference<List<T>> responseType) {

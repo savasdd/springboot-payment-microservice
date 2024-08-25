@@ -21,7 +21,7 @@ public class ProductItem extends BaseEntity implements Serializable {
     @Column(name = "price")
     private BigDecimal price = BigDecimal.ZERO;
     @Column(name = "quantity")
-    private Long quantity = 0L;
+    private Integer quantity = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", referencedColumnName = "id")
