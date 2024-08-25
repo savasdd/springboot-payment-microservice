@@ -38,4 +38,13 @@ public class SerializerUtil {
             throw new RuntimeException(ex.getLocalizedMessage());
         }
     }
+
+    public <T> T serializeToDDto(byte[] data, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(data, clazz);
+        } catch (Exception ex) {
+            log.error("error while serializing data dto: ${}", ex.getLocalizedMessage());
+            throw new RuntimeException(ex.getLocalizedMessage());
+        }
+    }
 }
