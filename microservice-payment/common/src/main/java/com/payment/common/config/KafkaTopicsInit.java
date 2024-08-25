@@ -27,6 +27,7 @@ public class KafkaTopicsInit {
         createTopics(topicsConfig.getCompleted());
         createTopics(topicsConfig.getRetryTopic());
         createTopics(topicsConfig.getDeadLetterQueue());
+        createTopics(topicsConfig.getNotification());
     }
 
     private void createTopics(KafkaTopicsConfigDto configDto) {
