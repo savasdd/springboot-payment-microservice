@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.lang.model.type.UnknownTypeException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Transient;
 import javax.transaction.Transactional;
@@ -74,10 +73,8 @@ public class OrderServiceImpl implements OrderService {
             });
             itemRepository.saveAll(itemNewList);
 
-            OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.createEvent(order));
-            publishOutbox(outboxOrder);
             log.info("create order success {}", order);
-
+            publishOutbox(outboxSerializer.createEvent(order));
             publishNotification(order.getUserId(), ConstantUtil.ORDER_SUCCESS + " - " + order.getOrderNo());
         }
 
@@ -100,12 +97,10 @@ public class OrderServiceImpl implements OrderService {
         Order order = findOrderNo(orderNo);
         ProductItem productItem = beanUtil.mapDto(dto, ProductItem.class);
         productItem.setOrder(order);
-
         ProductItem model = itemRepository.save(productItem);
-        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productAddedEvent(order, model));
-        publishOutbox(outboxOrder);
-        log.info("add product success {}", productItem);
 
+        log.info("add product success {}", productItem);
+        publishOutbox(outboxSerializer.productAddedEvent(order, model));
         publishNotification(order.getUserId(), ConstantUtil.PRODUCT_ADD + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
@@ -116,10 +111,8 @@ public class OrderServiceImpl implements OrderService {
             Order order = findOrderNo(orderNo);
             itemRepository.deleteById(productId);
 
-            OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productRemovedEvent(order, productId));
-            publishOutbox(outboxOrder);
             log.info("delete product success {}", productId);
-
+            publishOutbox(outboxSerializer.productRemovedEvent(order, productId));
             publishNotification(order.getUserId(), ConstantUtil.PRODUCT_REMOVE + " - " + order.getOrderNo());
         }
         return BaseResponse.builder().data("Success: " + productId).build();
@@ -133,10 +126,8 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.PAID);
         Order model = orderRepository.save(order);
 
-        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.paidEvent(model, paymentId));
-        publishOutbox(outboxOrder);
-
         log.info("payment success {}", paymentId);
+        publishOutbox(outboxSerializer.paidEvent(model, paymentId));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_PAYMENT + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
@@ -149,10 +140,9 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderStatus(OrderStatus.CANCELLED);
         Order model = orderRepository.save(order);
-        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.cancelledEvent(model, dto.getDescription()));
-        publishOutbox(outboxOrder);
 
         log.info("cancel success {}", dto.getDescription());
+        publishOutbox(outboxSerializer.cancelledEvent(model, dto.getDescription()));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_CANSEL + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
@@ -169,10 +159,9 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderStatus(OrderStatus.SUBMITTED);
         Order model = orderRepository.save(order);
-        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.submittedEvent(model));
-        publishOutbox(outboxOrder);
 
         log.info("submit success {}", orderNo);
+        publishOutbox(outboxSerializer.submittedEvent(model));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_SUBMIT + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
@@ -186,10 +175,9 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderStatus(OrderStatus.COMPLETED);
         Order model = orderRepository.save(order);
-        OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.completedEvent(model));
-        publishOutbox(outboxOrder);
 
         log.info("complete success {}", orderNo);
+        publishOutbox(outboxSerializer.completedEvent(model));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_COMPETE + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
@@ -245,11 +233,12 @@ public class OrderServiceImpl implements OrderService {
 
     public void publishOutbox(OutboxOrder event) {
         try {
-            log.info("publishing outbox event: {}", event);
-            outboxRepository.deleteById(event.getId());
-            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
+            OutboxOrder outboxOrder = outboxRepository.save(event);
+            log.info("publishing outbox event: {}", outboxOrder);
+            outboxRepository.deleteById(outboxOrder.getId());
+            publisher.publish(topicsConfig.getTopicName(outboxOrder.getEventType()), outboxOrder.getAggregateId(), outboxOrder);
 
-            log.info("outbox event published and deleted: {}", event.getId());
+            log.info("outbox event published and deleted: {}", outboxOrder.getId());
         } catch (Exception e) {
             log.error("exception while publishing outbox event: {}", e.getLocalizedMessage());
         }
