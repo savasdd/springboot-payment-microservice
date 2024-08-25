@@ -6,6 +6,7 @@ import com.payment.common.enums.OrderStatus;
 import com.payment.common.utils.BeanUtil;
 import com.payment.common.utils.ConstantUtil;
 import com.payment.common.utils.RestUtil;
+import com.payment.entity.content.KafkaContent;
 import com.payment.entity.dto.OrderCanselDto;
 import com.payment.entity.dto.OrderDto;
 import com.payment.entity.dto.ProductItemDto;
@@ -41,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
     private final OutboxOrderRepository outboxRepository;
     private final Publisher publisher;
     private final OutboxSerializer outboxSerializer;
+    private final NotificationSerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
@@ -64,17 +66,19 @@ public class OrderServiceImpl implements OrderService {
         });
 
         if (!itemNewList.isEmpty()) {
-            Order model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
-            model.setOrderNo(generateOrderNo());
-            dto.setId(model.getId());
+            Order order = orderRepository.save(beanUtil.mapDto(dto, Order.class));
+            order.setOrderNo(generateOrderNo());
+            dto.setId(order.getId());
             itemNewList.forEach(item -> {
-                item.setOrder(model);
+                item.setOrder(order);
             });
             itemRepository.saveAll(itemNewList);
 
-            OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.createEvent(model));
+            OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.createEvent(order));
             publishOutbox(outboxOrder);
-            log.info("create order success {}", model);
+            log.info("create order success {}", order);
+
+            publishNotification(order.getUserId(), ConstantUtil.ORDER_SUCCESS + " - " + order.getOrderNo());
         }
 
 
@@ -101,6 +105,8 @@ public class OrderServiceImpl implements OrderService {
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productAddedEvent(order, model));
         publishOutbox(outboxOrder);
         log.info("add product success {}", productItem);
+
+        publishNotification(order.getUserId(), ConstantUtil.PRODUCT_ADD + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
 
@@ -113,6 +119,8 @@ public class OrderServiceImpl implements OrderService {
             OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.productRemovedEvent(order, productId));
             publishOutbox(outboxOrder);
             log.info("delete product success {}", productId);
+
+            publishNotification(order.getUserId(), ConstantUtil.PRODUCT_REMOVE + " - " + order.getOrderNo());
         }
         return BaseResponse.builder().data("Success: " + productId).build();
     }
@@ -127,7 +135,9 @@ public class OrderServiceImpl implements OrderService {
 
         OutboxOrder outboxOrder = outboxRepository.save(outboxSerializer.paidEvent(model, paymentId));
         publishOutbox(outboxOrder);
+
         log.info("payment success {}", paymentId);
+        publishNotification(order.getUserId(), ConstantUtil.ORDER_PAYMENT + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
 
@@ -143,6 +153,7 @@ public class OrderServiceImpl implements OrderService {
         publishOutbox(outboxOrder);
 
         log.info("cancel success {}", dto.getDescription());
+        publishNotification(order.getUserId(), ConstantUtil.ORDER_CANSEL + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
 
@@ -162,6 +173,7 @@ public class OrderServiceImpl implements OrderService {
         publishOutbox(outboxOrder);
 
         log.info("submit success {}", orderNo);
+        publishNotification(order.getUserId(), ConstantUtil.ORDER_SUBMIT + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
 
@@ -178,6 +190,7 @@ public class OrderServiceImpl implements OrderService {
         publishOutbox(outboxOrder);
 
         log.info("complete success {}", orderNo);
+        publishNotification(order.getUserId(), ConstantUtil.ORDER_COMPETE + " - " + order.getOrderNo());
         return BaseResponse.builder().data(model).build();
     }
 
@@ -194,17 +207,6 @@ public class OrderServiceImpl implements OrderService {
         outboxRepository.deleteOutboxRecordByLimit();
     }
 
-    public void publishOutbox(OutboxOrder event) {
-        try {
-            log.info("publishing outbox event: {}", event);
-            outboxRepository.deleteById(event.getId());
-            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
-
-            log.info("outbox event published and deleted: {}", event.getId());
-        } catch (Exception e) {
-            log.error("exception while publishing outbox event: {}", e.getLocalizedMessage());
-        }
-    }
 
     public void updateStockRest(Long id, Integer quantity) {
         try {
@@ -239,6 +241,30 @@ public class OrderServiceImpl implements OrderService {
 
         Set<Integer> set = new Random().ints(min, max - min + 1).distinct().limit(6).boxed().collect(Collectors.toSet());
         return "000" + set.stream().findFirst().get();
+    }
+
+    public void publishOutbox(OutboxOrder event) {
+        try {
+            log.info("publishing outbox event: {}", event);
+            outboxRepository.deleteById(event.getId());
+            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
+
+            log.info("outbox event published and deleted: {}", event.getId());
+        } catch (Exception e) {
+            log.error("exception while publishing outbox event: {}", e.getLocalizedMessage());
+        }
+    }
+
+    public void publishNotification(Long userId, String message) {
+        try {
+            KafkaContent event = notifySerializer.notification(UUID.randomUUID().toString(), String.valueOf(userId), message);
+            log.info("publishing notification event: {}", event);
+            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
+
+            log.info("notification event published: {}", event.getAggregateId());
+        } catch (Exception e) {
+            log.error("exception while publishing notification    event: {}", e.getLocalizedMessage());
+        }
     }
 
 }

@@ -27,7 +27,7 @@ public class OutboxSerializer {
     }
 
     public OutboxOrder paidEvent(Order order, String paymentId) {
-        return generateOutboxOrder(order.getId(), new PaidEvent(order.getId(), paymentId), PaidEvent.EVENT);
+        return generateOutboxOrder(order.getId(), new PaymentEvent(order.getId(), paymentId), PaymentEvent.EVENT);
     }
 
     public OutboxOrder productAddedEvent(Order order, ProductItem productItem) {
@@ -41,7 +41,6 @@ public class OutboxSerializer {
     public OutboxOrder submittedEvent(Order order) {
         return generateOutboxOrder(order.getId(), new SubmittedEvent(order.getId()), SubmittedEvent.EVENT);
     }
-
 
     private OutboxOrder generateOutboxOrder(String aggregateId, Object data, String eventType) {
         return OutboxOrder.builder().aggregateId(aggregateId).eventType(eventType).data(serializerUtil.serializeToBytes(data)).build();

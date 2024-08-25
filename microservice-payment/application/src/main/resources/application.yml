@@ -98,3 +98,8 @@ topics:
     name: dead-letter-queue
     partitions: 3
     replication: 1
+
+  notification:
+    name: notification-queue
+    partitions: 3
+    replication: 1
