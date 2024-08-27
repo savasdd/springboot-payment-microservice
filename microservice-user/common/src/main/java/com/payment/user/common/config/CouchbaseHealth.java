@@ -1,4 +1,4 @@
-package com.payment.user.application.config;
+package com.payment.user.common.config;
 
 import com.couchbase.client.core.diagnostics.ClusterState;
 import com.couchbase.client.core.diagnostics.DiagnosticsResult;

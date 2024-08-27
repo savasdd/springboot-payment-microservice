@@ -1,14 +1,19 @@
 package com.payment.user.service.impl;
 
 import com.payment.user.common.base.BaseResponse;
+import com.payment.user.common.config.KafkaTopicsConfig;
 import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.common.utils.CacheUtil;
+import com.payment.user.common.utils.ConstantUtil;
+import com.payment.user.entity.content.KafkaContent;
 import com.payment.user.entity.dto.UserDto;
 import com.payment.user.entity.model.User;
 import com.payment.user.entity.vo.UserVo;
 import com.payment.user.repository.CityRepository;
 import com.payment.user.repository.UserRepository;
 import com.payment.user.service.UserService;
+import com.payment.user.service.publisher.NotifySerializer;
+import com.payment.user.service.publisher.Publisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -27,6 +33,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final CityRepository cityRepository;
+    private final NotifySerializer notifySerializer;
+    private final KafkaTopicsConfig topicsConfig;
+    private final Publisher publisher;
     private final BeanUtil beanUtil;
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
@@ -58,6 +67,7 @@ public class UserServiceImpl implements UserService {
         User model = repository.save(user);
 
         log.info("save user: {}", model);
+        publishNotification(user.getId(), ConstantUtil.USER_CREATE);
         return BaseResponse.builder().data(beanUtil.mapDto(model, UserDto.class)).build();
     }
 
@@ -70,6 +80,7 @@ public class UserServiceImpl implements UserService {
         User model = repository.save(user);
 
         log.info("update user: {}", model);
+        publishNotification(user.getId(), ConstantUtil.USER_UPDATE);
         return BaseResponse.builder().data(beanUtil.mapDto(model, UserDto.class)).build();
     }
 
@@ -79,6 +90,19 @@ public class UserServiceImpl implements UserService {
         repository.deleteById(id);
 
         log.info("delete user: {}", id);
+        publishNotification(id, ConstantUtil.USER_DELETE);
         return BaseResponse.builder().build();
+    }
+
+    private void publishNotification(Long userId, String message) {
+        try {
+            KafkaContent event = notifySerializer.notification(UUID.randomUUID().toString(), String.valueOf(userId), message);
+            log.info("publishing notification event: {}", event);
+            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
+
+            log.info("notification event published: {}", event.getAggregateId());
+        } catch (Exception e) {
+            log.error("exception while publishing notification    event: {}", e.getLocalizedMessage());
+        }
     }
 }

@@ -2,7 +2,9 @@ package com.payment.user.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.payment.user.common.enums.RecordStatus;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
@@ -12,6 +14,8 @@ import java.util.Date;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class BaseDto implements Serializable {
 
     @Serial
