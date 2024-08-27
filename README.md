@@ -1,6 +1,6 @@
 - notification send request and push firebase
-- notification configure to kafka
-- payment send request to user and stock
+- notification configure to kafka +
+- payment send request to user and stock +
 - user add jwt token and security
 - apigateway create and upstream
 - euraka create and configure
