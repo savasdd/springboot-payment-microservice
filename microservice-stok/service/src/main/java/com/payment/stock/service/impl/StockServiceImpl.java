@@ -1,16 +1,19 @@
 package com.payment.stock.service.impl;
 
 import com.payment.stock.common.base.BaseResponse;
+import com.payment.stock.common.config.KafkaTopicsConfig;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.common.utils.CacheUtil;
 import com.payment.stock.common.utils.ConstantUtil;
 import com.payment.stock.common.utils.RestUtil;
+import com.payment.stock.entity.content.KafkaContent;
 import com.payment.stock.entity.dto.StockDto;
-import com.payment.stock.entity.dto.UserDto;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.StockService;
+import com.payment.stock.service.publisher.NotifySerializer;
+import com.payment.stock.service.publisher.Publisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +24,16 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
+    private final NotifySerializer notifySerializer;
+    private final KafkaTopicsConfig topicsConfig;
+    private final Publisher publisher;
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
 
@@ -48,15 +55,11 @@ public class StockServiceImpl implements StockService {
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse save(StockDto dto) {
-        UserDto userDto = restUtil.exchangeGet(ConstantUtil.USER_URL + "findOne/" + dto.getUserId(), UserDto.class);
-
-        if (userDto == null)
-            throw new RuntimeException("user not found");
-
         Stock stock = beanUtil.mapDto(dto, Stock.class);
         Stock model = stockRepository.save(stock);
 
         log.info("save: {}", model);
+        publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -68,6 +71,7 @@ public class StockServiceImpl implements StockService {
         Stock model = stockRepository.save(update);
 
         log.info("update: {}", model);
+        publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -79,6 +83,7 @@ public class StockServiceImpl implements StockService {
         Stock model = stockRepository.save(stock);
 
         log.info("delete: {}", model);
+        publishNotification(stock.getUserId(), ConstantUtil.STOCK_DELETE);
         return BaseResponse.builder().data(model).build();
     }
 
@@ -94,5 +99,17 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<StockDto> findAllList(Pageable pageable) {
         return beanUtil.mapAll(stockRepository.findAll(pageable).getContent(), StockDto.class);
+    }
+
+    private void publishNotification(Long userId, String message) {
+        try {
+            KafkaContent event = notifySerializer.notification(UUID.randomUUID().toString(), String.valueOf(userId), message);
+            log.info("publishing notification event: {}", event);
+            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
+
+            log.info("notification event published: {}", event.getAggregateId());
+        } catch (Exception e) {
+            log.error("exception while publishing notification    event: {}", e.getLocalizedMessage());
+        }
     }
 }

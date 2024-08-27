@@ -1,4 +1,4 @@
-package com.payment.stock.application.config;
+package com.payment.stock.common.config;
 
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;

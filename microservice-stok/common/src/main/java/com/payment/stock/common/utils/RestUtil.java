@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,12 @@ public class RestUtil {
         ResponseEntity<BaseResponse> response = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(getHeaders()), BaseResponse.class);
         T resp = beanUtil.mapDto(Objects.requireNonNull(response.getBody()).getData(), dto);
         return response.getStatusCode().value() == 200 ? resp : null;
+    }
+
+    public Integer exchangeGet(String uri, Integer quantity) {
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(uri).queryParam("quantity", quantity);
+        ResponseEntity<Object> response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.GET, new HttpEntity<>(getHeaders()), Object.class);
+        return response.getStatusCode().value();
     }
 
     public <T> List<T> exchangeAsList(String uri, ParameterizedTypeReference<List<T>> responseType) {

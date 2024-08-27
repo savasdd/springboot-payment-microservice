@@ -1,4 +1,4 @@
-package com.payment.stock.application.config;
+package com.payment.stock.common.config;
 
 import com.couchbase.client.core.diagnostics.DiagnosticsResult;
 import com.couchbase.client.java.Cluster;

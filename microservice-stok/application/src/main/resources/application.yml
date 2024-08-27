@@ -31,6 +31,10 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  kafka:
+    consumer:
+      group-id: order-service-group-id
+    bootstrap-servers: localhost:9092
 
 
 couchbase:
@@ -45,3 +49,19 @@ elastic:
   password: elastic123
   cluster: elasticsearch
   index-stock: index_stock
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+
+schedulers:
+  outbox:
+    enable: true
+    initialDelayMillis: 3000
+    fixedRate: 600000
+
+topics:
+  notification:
+    name: notification-queue
+    partitions: 3
+    replication: 1
