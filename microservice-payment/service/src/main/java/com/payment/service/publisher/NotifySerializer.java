@@ -1,4 +1,4 @@
-package com.payment.service.impl;
+package com.payment.service.publisher;
 
 import com.payment.common.utils.SerializerUtil;
 import com.payment.entity.content.KafkaContent;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class NotificationSerializer {
+public class NotifySerializer {
     private final SerializerUtil serializerUtil;
 
     public KafkaContent notification(String id, String userId, String message) {

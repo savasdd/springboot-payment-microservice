@@ -18,6 +18,8 @@ import com.payment.repository.OrderRepository;
 import com.payment.repository.OutboxOrderRepository;
 import com.payment.repository.ProductItemRepository;
 import com.payment.service.OrderService;
+import com.payment.service.publisher.NotifySerializer;
+import com.payment.service.publisher.OutboxSerializer;
 import com.payment.service.publisher.Publisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     private final OutboxOrderRepository outboxRepository;
     private final Publisher publisher;
     private final OutboxSerializer outboxSerializer;
-    private final NotificationSerializer notifySerializer;
+    private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
@@ -251,7 +253,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    public void publishNotification(Long userId, String message) {
+    private void publishNotification(Long userId, String message) {
         try {
             KafkaContent event = notifySerializer.notification(UUID.randomUUID().toString(), String.valueOf(userId), message);
             log.info("publishing notification event: {}", event);
