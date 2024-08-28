@@ -57,13 +57,14 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
     public Cluster couchbaseCluster(ClusterEnvironment couchbaseClusterEnvironment) {
         try {
             log.info("Connecting to Couchbase cluster at {}", host);
-            Cluster connect=Cluster.connect(getConnectionString(), getUserName(), getPassword());
+            Cluster connect = Cluster.connect(getConnectionString(), getUserName(), getPassword());
 
             CouchbaseHealthIndicator indicator = new CouchbaseHealthIndicator(connect);
             Health health = indicator.health();
-            var up=health.getStatus().equals(Status.UP);
-            var down=health.getStatus().equals(Status.DOWN);
+            var up = health.getStatus().equals(Status.UP);
+            var down = health.getStatus().equals(Status.DOWN);
 
+            log.info("Couchbase connected status:{}", health.getStatus());
             return connect;
         } catch (Exception e) {
             log.error("Error connecting to Couchbase cluster", e);
@@ -74,7 +75,7 @@ public class CouchbaseConfig extends AbstractCouchbaseConfiguration {
 
     @Bean
     public CacheManager cacheManager1Day() {
-        Cluster cluster=Cluster.connect(getConnectionString(), getUserName(), getPassword());
+        Cluster cluster = Cluster.connect(getConnectionString(), getUserName(), getPassword());
         return CouchbaseCacheManager.create(new SimpleCouchbaseClientFactory(cluster, getBucketName(), null));
     }
 
