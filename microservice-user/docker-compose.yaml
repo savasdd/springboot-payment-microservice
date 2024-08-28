@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  user:
+    image: userapi
+    container_name: user-api
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=db_url
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=host:9092
+    expose:
+      - "8085"
+    ports:
+      - "8085:8085"
+    command: -p 8085
