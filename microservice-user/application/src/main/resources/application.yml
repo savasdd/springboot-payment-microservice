@@ -5,6 +5,8 @@ server:
 spring:
   application:
     name: user-api
+  banner:
+    location: banner.txt
   jpa:
     show-sql: false
     hibernate.ddl-auto: update
