@@ -6,11 +6,11 @@ services:
     container_name: user-api
     restart: always
     environment:
-      - SPRING_DATASOURCE_URL=db_url
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://HOST:5432/payment_user_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=host:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=HOST:9092
     expose:
       - "8085"
     ports:
