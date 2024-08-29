@@ -18,7 +18,7 @@ services:
       - "8087"
     ports:
       - "8087:8087"
-    command: -p 8085
+    command: -p 8087
 
 networks:
   nw_containers:
