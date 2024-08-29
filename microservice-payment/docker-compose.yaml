@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  user:
+    image: payment
+    container_name: payment-api
+    networks:
+      nw_containers:
+        ipv4_address: 10.5.0.8
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://10.5.0.2:5432/payment_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=10.5.0.4:9092
+    expose:
+      - "8087"
+    ports:
+      - "8087:8087"
+    command: -p 8085
+
+networks:
+  nw_containers:
+    external:
+      name: custom_bridge
