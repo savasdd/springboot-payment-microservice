@@ -1,5 +1,9 @@
 server:
   port: 8086
+  local: 127.0.0.1
+  kafka_prod: 10.5.0.4:9092
+  couchbase_prod: 10.5.0.6
+  postgresql: 10.5.0.2
 
 spring:
   application:
@@ -18,7 +22,7 @@ spring:
       repositories:
         enabled: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/payment_stock_db
+    url: jdbc:postgresql://${server.local}:5432/payment_stock_db
     username: postgres
     password: postgres
     hikari:
@@ -34,11 +38,11 @@ spring:
   kafka:
     consumer:
       group-id: order-service-group-id
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${server.kafka_prod}
 
 
 couchbase:
-  host: couchbase://127.0.0.1
+  host: couchbase://${server.couchbase_prod}
   username: Couchbase
   password: Couchbase
   bucket: PaymentBucket
