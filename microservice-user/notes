@@ -1,6 +1,0 @@
-https://potatoes.hashnode.dev/how-to-dockerize-a-spring-boot-app-with-postgresql
--Dspring.config.location=file:/Users/savasdede/Desktop/svsdd/Conf/application_user.yml
-
-docker rmi userapi -f
-docker build . -t userapi
-docker logs --since=1h 'container_id' -f
