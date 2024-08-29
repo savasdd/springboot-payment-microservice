@@ -6,3 +6,6 @@ docker logs --since=1h 'container_id' -f
 
 CONF
 -Dspring.config.location=file:/Users/savasdede/Desktop/svsdd/Conf/application_user.yml
+
+BUILD
+mvn clean verify -P prod
