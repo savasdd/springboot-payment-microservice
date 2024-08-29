@@ -11,7 +11,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 @SpringBootApplication(scanBasePackages = "com.payment.user")
 @EntityScan(basePackages = "com.payment.user")
 @EnableJpaRepositories("com.payment.user")
-@PropertySource({"file:/Users/savasdede/Desktop/svsdd/Conf/application_user.yml"})
 public class UserApplication {
 
     public static void main(String[] args) {
