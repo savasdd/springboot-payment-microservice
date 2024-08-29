@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.payment.notification.application</groupId>
-    <artifactId>application</artifactId>
+    <artifactId>notification</artifactId>
 
 
     <properties>
