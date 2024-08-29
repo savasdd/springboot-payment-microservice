@@ -1,7 +1,8 @@
 server:
   port: 8087
   local: 127.0.0.1
-  kafka: 10.5.0.4
+  kafka_local: 127.0.0.1:9093
+  kafka_prod: 10.5.0.4:9092
   db: 10.5.0.2
 
 spring:
@@ -37,7 +38,7 @@ spring:
   kafka:
     consumer:
       group-id: order-service-group-id
-    bootstrap-servers: ${server.local}:9092
+    bootstrap-servers: ${server.kafka_local}
 
 springdoc:
   swagger-ui:
