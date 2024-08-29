@@ -3,3 +3,6 @@ https://potatoes.hashnode.dev/how-to-dockerize-a-spring-boot-app-with-postgresql
 docker rmi userapi -f
 docker build . -t userapi
 docker logs --since=1h 'container_id' -f
+
+docker network ls
+docker network create --gateway 10.5.0.1 --subnet 10.5.0.0/16 custom_bridge
