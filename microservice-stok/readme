@@ -1,0 +1,8 @@
+
+DOCKER
+docker rmi userapi -f
+docker build . -t userapi
+docker logs --since=1h 'container_id' -f
+
+CONF
+-Dspring.config.location=file:/Users/savasdede/Desktop/svsdd/Conf/application_user.yml
