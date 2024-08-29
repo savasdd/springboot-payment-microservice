@@ -2,17 +2,25 @@ version: '3.3'
 
 services:
   user:
-    image: userapi
+    image: user
     container_name: user-api
+    networks:
+      nw_containers:
+        ipv4_address: 10.5.0.8
     restart: always
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://HOST:5432/payment_user_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://10.5.0.2:5432/payment_user_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=HOST:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=10.5.0.4:9092
     expose:
       - "8085"
     ports:
       - "8085:8085"
     command: -p 8085
+
+networks:
+  nw_containers:
+    external:
+      name: custom_bridge
