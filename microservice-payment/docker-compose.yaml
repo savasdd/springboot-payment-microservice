@@ -6,7 +6,7 @@ services:
     container_name: payment-api
     networks:
       nw_containers:
-        ipv4_address: 10.5.0.8
+        ipv4_address: 10.5.0.12
     restart: always
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://10.5.0.2:5432/payment_db
@@ -22,5 +22,5 @@ services:
 
 networks:
   nw_containers:
-    external:
       name: custom_bridge
+      external: true
