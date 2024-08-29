@@ -2,9 +2,6 @@ server:
   port: 8085
   local: 127.0.0.1
   kafka_local: 127.0.0.1:9093
-  kafka_prod: 10.5.0.4:9092
-  couchbase_prod: 10.5.0.6
-  postgresql: 10.5.0.2
 
 spring:
   application:
@@ -41,10 +38,10 @@ spring:
   kafka:
     consumer:
       group-id: order-service-group-id
-    bootstrap-servers: ${server.kafka_prod}
+    bootstrap-servers: ${server.kafka_local}
 
 couchbase:
-  host: couchbase://${server.couchbase_prod}
+  host: couchbase://${server.local}
   username: Couchbase
   password: Couchbase
   bucket: PaymentBucket
