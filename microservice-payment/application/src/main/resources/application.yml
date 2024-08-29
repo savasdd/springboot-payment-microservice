@@ -37,7 +37,7 @@ spring:
   kafka:
     consumer:
       group-id: order-service-group-id
-    bootstrap-servers: ${server.local}:9092
+    bootstrap-servers: ${server.kafka}:9092
 
 springdoc:
   swagger-ui:
