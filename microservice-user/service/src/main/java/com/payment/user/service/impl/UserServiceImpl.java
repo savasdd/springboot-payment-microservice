@@ -1,7 +1,7 @@
 package com.payment.user.service.impl;
 
 import com.payment.user.common.base.BaseResponse;
-import com.payment.user.common.config.KafkaTopicsConfig;
+import com.payment.user.common.config.kafka.KafkaTopicsConfig;
 import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.common.utils.CacheUtil;
 import com.payment.user.common.utils.ConstantUtil;
@@ -17,11 +17,11 @@ import com.payment.user.service.publisher.Publisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final CityRepository cityRepository;
     private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
+    private final PasswordEncoder passwordEncoder;
     private final Publisher publisher;
     private final BeanUtil beanUtil;
 
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse save(UserVo dto) {
         User user = beanUtil.mapDto(dto, User.class);
         user.setCity(cityRepository.findById(dto.getCity().getId()).orElse(null));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User model = repository.save(user);
 
         log.info("save user: {}", model);
@@ -76,6 +78,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse update(Long id, UserVo dto) {
         User user = beanUtil.transform(dto, repository.findById(id).orElse(null));
         user.setCity(cityRepository.findById(dto.getCity().getId()).orElse(null));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         User model = repository.save(user);
 

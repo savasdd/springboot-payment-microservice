@@ -1,4 +1,4 @@
-package com.payment.user.common.config;
+package com.payment.user.common.config.couchbase;
 
 import com.couchbase.client.core.error.BucketNotFoundException;
 import com.couchbase.client.java.Bucket;

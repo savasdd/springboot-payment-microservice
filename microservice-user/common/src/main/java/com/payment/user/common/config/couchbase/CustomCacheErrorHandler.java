@@ -1,4 +1,4 @@
-package com.payment.user.common.config;
+package com.payment.user.common.config.couchbase;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;

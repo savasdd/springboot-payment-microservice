@@ -1,4 +1,4 @@
-package com.payment.user.common.config;
+package com.payment.user.common.config.couchbase;
 
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;

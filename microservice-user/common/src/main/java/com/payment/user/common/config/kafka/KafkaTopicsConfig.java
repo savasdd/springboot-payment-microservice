@@ -1,4 +1,4 @@
-package com.payment.user.common.config;
+package com.payment.user.common.config.kafka;
 
 import lombok.Getter;
 import lombok.Setter;

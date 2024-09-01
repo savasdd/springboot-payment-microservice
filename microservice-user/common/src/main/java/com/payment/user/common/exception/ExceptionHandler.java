@@ -1,5 +1,6 @@
 package com.payment.user.common.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,6 +24,7 @@ import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.security.SignatureException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,28 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {RuntimeException.class})
     public ResponseEntity<ExceptionResponse> runtimeException(Exception ex, HttpServletRequest request) {
         log.error("RuntimeException", ex);
+
+        if (ex instanceof BadCredentialsException) {
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The username or password is incorrect.", null), request.getRequestURI());
+            return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+        }
+        if (ex instanceof AccountStatusException) {
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The account is locked.", null), request.getRequestURI());
+            return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+        if (ex instanceof AccessDeniedException) {
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("You are not authorized to access this resource.", null), request.getRequestURI());
+            return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+        if (ex instanceof SignatureException) {
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The JWT signature is invalid.", null), request.getRequestURI());
+            return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+        if (ex instanceof ExpiredJwtException) {
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The JWT token has expired.", null), request.getRequestURI());
+            return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+
         ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage(ex.getMessage(), null), request.getRequestURI());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
