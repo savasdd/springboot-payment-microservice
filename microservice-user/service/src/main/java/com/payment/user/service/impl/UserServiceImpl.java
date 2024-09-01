@@ -7,9 +7,12 @@ import com.payment.user.common.utils.CacheUtil;
 import com.payment.user.common.utils.ConstantUtil;
 import com.payment.user.entity.content.KafkaContent;
 import com.payment.user.entity.dto.UserDto;
+import com.payment.user.entity.model.Role;
 import com.payment.user.entity.model.User;
+import com.payment.user.entity.vo.RoleVo;
 import com.payment.user.entity.vo.UserVo;
 import com.payment.user.repository.CityRepository;
+import com.payment.user.repository.RoleRepository;
 import com.payment.user.repository.UserRepository;
 import com.payment.user.service.UserService;
 import com.payment.user.service.publisher.NotifySerializer;
@@ -33,6 +36,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final CityRepository cityRepository;
+    private final RoleRepository roleRepository;
     private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final PasswordEncoder passwordEncoder;
@@ -65,6 +69,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse save(UserVo dto) {
         User user = beanUtil.mapDto(dto, User.class);
         user.setCity(cityRepository.findById(dto.getCity().getId()).orElse(null));
+        user.setRoles(roleRepository.findAllByIdIn(getRoleIds(dto.getRoles())));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User model = repository.save(user);
 
@@ -78,6 +83,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse update(Long id, UserVo dto) {
         User user = beanUtil.transform(dto, repository.findById(id).orElse(null));
         user.setCity(cityRepository.findById(dto.getCity().getId()).orElse(null));
+        user.setRoles(roleRepository.findAllByIdIn(getRoleIds(dto.getRoles())));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         User model = repository.save(user);
@@ -107,5 +113,9 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             log.error("exception while publishing notification    event: {}", e.getLocalizedMessage());
         }
+    }
+
+    private List<Long> getRoleIds(List<RoleVo> roles) {
+        return roles.stream().map(RoleVo::getId).toList();
     }
 }

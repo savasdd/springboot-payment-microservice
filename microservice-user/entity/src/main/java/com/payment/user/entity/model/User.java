@@ -3,10 +3,12 @@ package com.payment.user.entity.model;
 import com.payment.user.entity.base.BaseEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,11 +38,16 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     @JoinColumn(name = "city", referencedColumnName = "id")
     private City city;
 
-    //UserRoles
+    @ManyToMany
+    @JoinTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        getRoles().forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getName())));
+        return grantedAuthorities;
     }
 
     @Override

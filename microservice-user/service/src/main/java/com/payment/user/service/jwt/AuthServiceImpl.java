@@ -2,6 +2,7 @@ package com.payment.user.service.jwt;
 
 import com.payment.user.entity.dto.LoginDto;
 import com.payment.user.entity.dto.TokenDto;
+import com.payment.user.entity.model.Role;
 import com.payment.user.entity.model.User;
 import com.payment.user.repository.UserRepository;
 import com.payment.user.service.AuthService;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -29,9 +31,13 @@ public class AuthServiceImpl implements AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
 
         String token = jwtService.generateToken(user);
-        TokenDto response = TokenDto.builder().token(token).expiresIn(jwtService.getExpirationTime()).build();
+        TokenDto response = TokenDto.builder().token(token).expiresIn(jwtService.getExpirationTime()).roles(getRoles(user.getRoles())).build();
 
-        log.info("Authenticated user: {} {} {}", user.getFirstName(), user.getLastName(), user.getUsername());
+        log.info("Authenticated user: {} {} - {}", user.getFirstName(), user.getLastName(), user.getUsername());
         return response;
+    }
+
+    private List<String> getRoles(List<Role> roles) {
+        return roles.stream().map(Role::getName).toList();
     }
 }

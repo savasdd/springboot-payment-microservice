@@ -5,6 +5,7 @@ import com.payment.user.entity.base.BaseDto;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,4 +22,5 @@ public class UserDto extends BaseDto implements Serializable {
     private String email;
     private String address;
     private CityDto city;
+    private List<RoleDto> roles;
 }

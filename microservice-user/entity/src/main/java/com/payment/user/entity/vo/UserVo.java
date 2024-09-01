@@ -1,11 +1,13 @@
 package com.payment.user.entity.vo;
 
 import com.payment.user.entity.base.BaseDto;
+import com.payment.user.entity.dto.RoleDto;
 import com.payment.user.entity.model.City;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,5 +28,6 @@ public class UserVo extends BaseDto implements Serializable {
     private String email;
     @Schema(example = "Ankara")
     private String address;
-    private City city;
+    private CityVo city;
+    private List<RoleVo> roles;
 }
