@@ -33,6 +33,8 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private String email;
     @Column(name = "address")
     private String address;
+    @Column(name = "token")
+    private String token;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city", referencedColumnName = "id")

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -27,11 +28,19 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenDto authenticate(LoginDto loginDto) {
+        TokenDto response = null;
         User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow(EntityNotFoundException::new);
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword(),user.getAuthorities()));
 
-        String token = jwtService.generateToken(user);
-        TokenDto response = TokenDto.builder().token(token).expiresIn(jwtService.getExpirationTime()).roles(getRoles(user.getRoles())).build();
+        if (Objects.isNull(user.getToken()) || jwtService.validateExpiration(user.getToken())) {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword(), user.getAuthorities()));
+
+            String token = jwtService.generateToken(user);
+            user.setToken(token);
+            userRepository.save(user);
+            response = TokenDto.builder().token(token).expiresIn(jwtService.getExpirationTime()).roles(getRoles(user.getRoles())).build();
+        } else
+            response = TokenDto.builder().token(user.getToken()).expiresIn(jwtService.getExpirationTime()).roles(getRoles(user.getRoles())).build();
+
 
         log.info("Authenticated user: {} {} - {}", user.getFirstName(), user.getLastName(), user.getUsername());
         return response;

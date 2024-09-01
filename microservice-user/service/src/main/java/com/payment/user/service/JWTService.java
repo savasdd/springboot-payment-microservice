@@ -18,7 +18,7 @@ public interface JWTService {
 
     Long getExpirationTime();
 
-     Boolean validateToken(String token, UserDetails userDetails);
+    Boolean validateToken(String token, UserDetails userDetails);
 
     Boolean validateExpiration(String token);
 

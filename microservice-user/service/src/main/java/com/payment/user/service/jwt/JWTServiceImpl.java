@@ -57,7 +57,7 @@ public class JWTServiceImpl implements JWTService {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
-        return username != null && username.equals(userDetails.getUsername());
+        return username != null && username.equals(userDetails.getUsername()) && validateExpiration(token);
     }
 
     public Boolean validateExpiration(String token) {
