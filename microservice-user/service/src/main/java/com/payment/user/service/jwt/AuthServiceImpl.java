@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenDto authenticate(LoginDto loginDto) {
         User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow(EntityNotFoundException::new);
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword(),user.getAuthorities()));
 
         String token = jwtService.generateToken(user);
         TokenDto response = TokenDto.builder().token(token).expiresIn(jwtService.getExpirationTime()).roles(getRoles(user.getRoles())).build();
