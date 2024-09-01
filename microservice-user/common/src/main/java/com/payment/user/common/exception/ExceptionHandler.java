@@ -48,23 +48,23 @@ public class ExceptionHandler {
         log.error("RuntimeException", ex);
 
         if (ex instanceof BadCredentialsException) {
-            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The username or password is incorrect.", null), request.getRequestURI());
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, getLangMessage("The username or password is incorrect.", null), request.getRequestURI());
             return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
         }
         if (ex instanceof AccountStatusException) {
-            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The account is locked.", null), request.getRequestURI());
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, getLangMessage("The account is locked.", null), request.getRequestURI());
             return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
         }
         if (ex instanceof AccessDeniedException) {
-            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("You are not authorized to access this resource.", null), request.getRequestURI());
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, getLangMessage("You are not authorized to access this resource.", null), request.getRequestURI());
             return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
         }
         if (ex instanceof SignatureException) {
-            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The JWT signature is invalid.", null), request.getRequestURI());
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, getLangMessage("The JWT signature is invalid.", null), request.getRequestURI());
             return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
         }
         if (ex instanceof ExpiredJwtException) {
-            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage("The JWT token has expired.", null), request.getRequestURI());
+            ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, getLangMessage("The JWT token has expired.", null), request.getRequestURI());
             return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
         }
 
