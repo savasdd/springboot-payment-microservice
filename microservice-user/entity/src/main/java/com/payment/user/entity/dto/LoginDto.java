@@ -1,5 +1,6 @@
 package com.payment.user.entity.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginDto implements Serializable {
+    @Schema(example = "svsdd")
     private String username;
+    @Schema(example = "123")
     private String password;
 }
