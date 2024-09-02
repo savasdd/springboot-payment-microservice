@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ConstantUtil {
-    public static final String STOCK_URL = "http://localhost:8086/api/payment/stocks/";
+    public static final String stockService= "stockService";
 
     public static final String ORDER_SUCCESS = "Sipariş Başarılıyla Oluşturuldu";
     public static final String PRODUCT_ADD = "Ürün Başarılıyla Eklendi";

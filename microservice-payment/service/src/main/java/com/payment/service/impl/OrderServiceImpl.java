@@ -16,6 +16,7 @@ import com.payment.entity.model.OutboxOrder;
 import com.payment.entity.model.ProductItem;
 import com.payment.repository.OrderRepository;
 import com.payment.repository.OutboxOrderRepository;
+import com.payment.repository.ParameterRepository;
 import com.payment.repository.ProductItemRepository;
 import com.payment.service.OrderService;
 import com.payment.service.publisher.NotifySerializer;
@@ -28,7 +29,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
@@ -41,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductItemRepository itemRepository;
     private final OutboxOrderRepository outboxRepository;
+    private final ParameterRepository parameterRepository;
     private final Publisher publisher;
     private final OutboxSerializer outboxSerializer;
     private final NotifySerializer notifySerializer;
@@ -48,14 +49,14 @@ public class OrderServiceImpl implements OrderService {
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
 
-    @Transient
+    @Transactional
     @Override
     public BaseResponse createOrder(OrderDto dto) {
         List<ProductItem> itemNewList = new ArrayList<>();
         List<ProductItem> itemList = new ArrayList<>();
 
         dto.getProductItems().forEach(item -> {
-            StockDto stock = restUtil.exchangeGet(ConstantUtil.STOCK_URL + "findOne/" + item.getStockId(), StockDto.class);
+            StockDto stock = restUtil.exchangeGet(getUrlParam() + "findOne/" + item.getStockId(), StockDto.class);
             ProductItem product = beanUtil.mapDto(item, ProductItem.class);
             if (stock != null && item.getQuantity() <= stock.getAvailableQuantity()) {
                 itemNewList.add(product);
@@ -207,7 +208,7 @@ public class OrderServiceImpl implements OrderService {
 
     public void updateStockRest(Long id, Integer quantity) {
         try {
-            Integer stock = restUtil.exchangeGet(ConstantUtil.STOCK_URL + "update-quantity/" + id, quantity);
+            Integer stock = restUtil.exchangeGet(getUrlParam() + "update-quantity/" + id, quantity);
             log.info("update stock: {}", stock);
         } catch (Exception e) {
             log.error("exception while update stock: {}", e.getLocalizedMessage());
@@ -222,6 +223,10 @@ public class OrderServiceImpl implements OrderService {
 
     private String getStockName(List<ProductItem> itemDtoList) {
         return itemDtoList.stream().map(ProductItem::getStockName).collect(Collectors.joining(",", "[", "]"));
+    }
+
+    private String getUrlParam() {
+        return parameterRepository.findByKey(ConstantUtil.stockService).orElseThrow(() -> new EntityNotFoundException("Not Found")).getValue();
     }
 
     private String generateOrderNo() {
