@@ -39,6 +39,8 @@ spring:
     consumer:
       group-id: order-service-group-id
     bootstrap-servers: ${server.kafka_prod}
+  banner:
+    location: banner.txt
 
 springdoc:
   swagger-ui:
