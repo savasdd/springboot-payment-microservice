@@ -1,7 +1,8 @@
 package com.payment.notification.service;
 
-import com.payment.notification.common.event.NotificationEvent;
+import com.payment.notification.common.base.BaseResponse;
+import com.payment.notification.common.dto.NotificationDto;
 
 public interface NotificationService {
-    void sendNotification(NotificationEvent event);
+    BaseResponse sendNotification(NotificationDto dto);
 }

@@ -1,6 +1,7 @@
 package com.payment.notification.service.consumer;
 
 import com.payment.notification.common.content.KafkaContent;
+import com.payment.notification.common.dto.NotificationDto;
 import com.payment.notification.common.event.NotificationEvent;
 import com.payment.notification.common.utils.SerializerUtil;
 import com.payment.notification.service.NotificationService;
@@ -30,7 +31,7 @@ public class Consumer {
             ack.acknowledge();
 
             log.info("CONSUMER NOTIFICATION: {}", getRecordInfo(consumerRecord));
-            service.sendNotification(event);
+            service.sendNotification(NotificationDto.builder().title("Test").token(null).topic("notification").body(event.getMessage()).build());
         } catch (Exception ex) {
             log.error("ack exception while processing record: {}", getRecordInfo(consumerRecord), ex);
         }
