@@ -36,3 +36,6 @@ topics:
     name: notification-queue
     partitions: 3
     replication: 1
+
+firebase:
+  configFile: firebase.json
