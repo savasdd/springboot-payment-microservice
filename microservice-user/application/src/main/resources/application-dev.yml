@@ -40,6 +40,11 @@ spring:
       group-id: order-service-group-id
     bootstrap-servers: ${server.kafka_local}
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${server.local}:8761/eureka
+
 couchbase:
   host: couchbase://${server.local}
   username: Couchbase
