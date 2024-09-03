@@ -8,8 +8,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
 
-@EnableEurekaClient
 @EnableKafka
+@EnableEurekaClient
 @SpringBootApplication(scanBasePackages = "com.payment.user")
 @EntityScan(basePackages = "com.payment.user")
 @EnableJpaRepositories("com.payment.user")
