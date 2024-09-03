@@ -40,6 +40,11 @@ spring:
   banner:
     location: banner.txt
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${server.local}:8761/eureka
+
 springdoc:
   swagger-ui:
     tags-sorter: alpha
