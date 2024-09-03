@@ -6,6 +6,8 @@ server:
 spring:
   application:
     name: discovery-api
+  banner:
+    location: banner.txt
 
 eureka:
   instance:
