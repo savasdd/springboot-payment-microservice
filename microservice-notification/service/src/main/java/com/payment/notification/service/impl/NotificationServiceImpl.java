@@ -26,7 +26,7 @@ public class NotificationServiceImpl implements NotificationService {
         String gsonJson = gson.toJson(message);
         String response = send(message);
 
-        log.info("Sending notification message: {} token: {} response: {}", gsonJson, dto.getToken(), response);
+        log.info("Sending notification message: {} response: {}", gsonJson, response);
         return BaseResponse.builder().data("Send Success").build();
     }
 
