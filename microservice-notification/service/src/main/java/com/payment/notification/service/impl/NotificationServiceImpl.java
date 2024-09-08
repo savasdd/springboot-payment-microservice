@@ -61,6 +61,6 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private WebpushConfig getWebpushConfig(NotificationDto dto) {
-        return WebpushConfig.builder().setNotification(WebpushNotification.builder().setTag(dto.getTitle()).setBody(dto.getBody()).build()).build();
+        return WebpushConfig.builder().setNotification(WebpushNotification.builder().setTag(dto.getTitle()).setBody(dto.getBody()).build()).putData("userId", dto.getUserId()).build();
     }
 }

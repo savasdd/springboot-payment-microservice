@@ -13,6 +13,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class NotificationDto implements Serializable {
 
+    @Schema(example = "22")
+    private String userId;
     @Schema(example = "Bildirim")
     private String title;
     @Schema(example = "Deneme")

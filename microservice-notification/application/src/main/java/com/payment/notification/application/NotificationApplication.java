@@ -6,7 +6,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.kafka.annotation.EnableKafka;
 
 @EnableKafka
-@EnableEurekaClient
+//@EnableEurekaClient
 @SpringBootApplication(scanBasePackages = "com.payment.notification")
 public class NotificationApplication {
 
