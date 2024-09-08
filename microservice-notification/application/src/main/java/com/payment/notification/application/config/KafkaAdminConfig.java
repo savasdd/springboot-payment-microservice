@@ -1,4 +1,4 @@
-package com.payment.notification.common.config;
+package com.payment.notification.application.config;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,5 +1,7 @@
-package com.payment.notification.common.dto;
+package com.payment.notification.entity.model;
 
+import com.payment.notification.common.dto.FirebaseDto;
+import com.payment.notification.entity.base.BaseEntity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

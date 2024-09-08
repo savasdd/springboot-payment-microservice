@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/controller/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/controller/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/entity/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/repository/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />

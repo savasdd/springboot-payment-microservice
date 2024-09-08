@@ -1,13 +1,13 @@
-package com.payment.notification.common.config;
+package com.payment.notification.application.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.payment.notification.common.dto.FirebaseData;
-import com.payment.notification.common.dto.FirebaseDataRepository;
 import com.payment.notification.common.enums.RecordStatus;
 import com.payment.notification.common.utils.ConstantUtil;
+import com.payment.notification.entity.model.FirebaseData;
+import com.payment.notification.repository.FirebaseDataRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

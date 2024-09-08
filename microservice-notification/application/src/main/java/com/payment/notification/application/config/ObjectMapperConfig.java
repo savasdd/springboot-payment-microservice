@@ -1,4 +1,4 @@
-package com.payment.notification.common.config;
+package com.payment.notification.application.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package com.payment.notification.common.dto;
+package com.payment.notification.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.payment.notification.common.enums.RecordStatus;
