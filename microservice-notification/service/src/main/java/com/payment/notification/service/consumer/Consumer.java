@@ -27,7 +27,7 @@ public class Consumer {
     public void process(Acknowledgment ack, ConsumerRecord<String, byte[]> consumerRecord) {
         try {
             KafkaContent content = serializerUtil.deserialize(consumerRecord.value(), KafkaContent.class);
-            NotificationEvent event = serializerUtil.serializeToDDto(content.getData(), NotificationEvent.class);
+            NotificationEvent event = serializerUtil.serializeToDto(content.getData(), NotificationEvent.class);
             ack.acknowledge();
 
             log.info("CONSUMER NOTIFICATION: {}", getRecordInfo(consumerRecord));

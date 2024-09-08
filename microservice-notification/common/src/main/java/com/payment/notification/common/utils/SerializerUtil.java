@@ -39,7 +39,7 @@ public class SerializerUtil {
         }
     }
 
-    public <T> T serializeToDDto(byte[] data, Class<T> clazz) {
+    public <T> T serializeToDto(byte[] data, Class<T> clazz) {
         try {
             return objectMapper.readValue(data, clazz);
         } catch (Exception ex) {
