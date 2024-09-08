@@ -1,9 +1,9 @@
 package com.payment.notification.service.consumer;
 
 import com.payment.notification.common.content.KafkaContent;
-import com.payment.notification.common.dto.NotificationDto;
 import com.payment.notification.common.event.NotificationEvent;
 import com.payment.notification.common.utils.SerializerUtil;
+import com.payment.notification.entity.dto.NotificationDto;
 import com.payment.notification.service.NotificationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,11 +1,10 @@
 package com.payment.notification.service.impl;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.payment.notification.common.base.BaseResponse;
-import com.payment.notification.common.dto.NotificationDto;
+import com.payment.notification.entity.dto.NotificationDto;
 import com.payment.notification.service.NotificationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j

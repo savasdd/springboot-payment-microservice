@@ -1,7 +1,7 @@
 package com.payment.notification.controller;
 
 import com.payment.notification.common.base.BaseResponse;
-import com.payment.notification.common.dto.NotificationDto;
+import com.payment.notification.entity.dto.NotificationDto;
 import com.payment.notification.service.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.payment.notification.common.dto;
+package com.payment.notification.entity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
