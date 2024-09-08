@@ -29,6 +29,7 @@ public class FirebaseConfig {
 
     private String configFile;
     private final FirebaseDataRepository repository;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public void firebaseInit() {
@@ -36,8 +37,7 @@ public class FirebaseConfig {
             FirebaseData firebaseData = repository.findBySenderIdAndRecordStatus(ConstantUtil.FCM_SENDER_ID, RecordStatus.ACTIVE).orElse(null);
 
             File file = new File(new ClassPathResource(configFile).getURI());
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(file, firebaseData.getData());
+            objectMapper.writeValue(file, firebaseData.getData());
 
             FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(new FileInputStream(file))).build();
 
