@@ -1,5 +1,6 @@
 package com.payment.notification.service.impl;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -20,31 +23,33 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public BaseResponse sendNotification(NotificationDto dto) {
+        try {
+            Message message = getMessage(dto);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String gsonJson = gson.toJson(message);
+            String response = send(message);
 
-        Message message = getMessage(dto);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String gsonJson = gson.toJson(message);
-        String response = send(message);
+            log.info("Sending notification message: {} response: {}", gsonJson, response);
+        } catch (Exception e) {
+            log.error("Failed to send notification: {}", e.getMessage());
+            throw new RuntimeException(e);
 
-        log.info("Sending notification message: {} response: {}", gsonJson, response);
+        }
+
         return BaseResponse.builder().data("Send Success").build();
     }
 
-    private String send(Message message) {
-        try {
-            return FirebaseMessaging.getInstance().sendAsync(message).get();
-        } catch (Exception e) {
-            log.error("Error while sending notification", e);
-            return null;
-        }
+    private String send(Message message) throws ExecutionException, InterruptedException {
+        return FirebaseMessaging.getInstance().sendAsync(message).get();
     }
 
     private Message getMessage(NotificationDto dto) {
         AndroidConfig androidConfig = getAndroidConfig(dto.getTopic());
         ApnsConfig apnsConfig = getApnsConfig(dto.getTopic());
+        WebpushConfig webpushConfig = getWebpushConfig(dto);
         Notification notification = Notification.builder().setTitle(dto.getTitle()).setBody(dto.getBody()).build();
 
-        return Message.builder().setNotification(notification).setAndroidConfig(androidConfig).setApnsConfig(apnsConfig).setToken(dto.getToken()).build();
+        return Message.builder().setNotification(notification).setAndroidConfig(androidConfig).setApnsConfig(apnsConfig).setWebpushConfig(webpushConfig).setToken(dto.getToken()).build();
     }
 
     private ApnsConfig getApnsConfig(String topic) {
@@ -52,6 +57,10 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private AndroidConfig getAndroidConfig(String topic) {
-        return AndroidConfig.builder().setTtl(Duration.ofMinutes(2).toMillis()).setCollapseKey(topic).setPriority(AndroidConfig.Priority.HIGH).setNotification(AndroidNotification.builder().setTag(topic).build()).build();
+        return AndroidConfig.builder().setTtl(Duration.ofMinutes(2).toMillis()).setCollapseKey(topic).setNotification(AndroidNotification.builder().setTag(topic).build()).build();
+    }
+
+    private WebpushConfig getWebpushConfig(NotificationDto dto) {
+        return WebpushConfig.builder().setNotification(WebpushNotification.builder().setTag(dto.getTitle()).setBody(dto.getBody()).build()).build();
     }
 }
