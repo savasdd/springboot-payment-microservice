@@ -7,6 +7,8 @@ import com.payment.notification.common.base.BaseResponse;
 import com.payment.notification.common.enums.RecordStatus;
 import com.payment.notification.common.utils.ConstantUtil;
 import com.payment.notification.entity.dto.NotificationDto;
+import com.payment.notification.entity.model.FirebaseLog;
+import com.payment.notification.repository.FirebaseLogRepository;
 import com.payment.notification.repository.FirebaseTokenRepository;
 import com.payment.notification.service.NotificationService;
 import lombok.AllArgsConstructor;
@@ -24,13 +26,14 @@ import java.util.concurrent.ExecutionException;
 public class NotificationServiceImpl implements NotificationService {
 
     private final FirebaseTokenRepository repository;
+    private final FirebaseLogRepository logRepository;
 
     @Override
     public BaseResponse sendNotification(NotificationDto dto) {
         try {
             dto.setTitle(dto.getTitle() != null ? dto.getTitle() : ConstantUtil.FCM_TITLE);
             dto.setTopic(ConstantUtil.FCM_TOPIC);
-            dto.setToken(repository.findBySenderIdAndRecordStatus(ConstantUtil.FCM_SENDER_ID, RecordStatus.ACTIVE).orElseThrow(()->new EntityNotFoundException("Token Not Found!")).getToken());
+            dto.setToken(repository.findBySenderIdAndRecordStatus(ConstantUtil.FCM_SENDER_ID, RecordStatus.ACTIVE).orElseThrow(() -> new EntityNotFoundException("Token Not Found!")).getToken());
 
             Message message = getMessage(dto);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -38,6 +41,7 @@ public class NotificationServiceImpl implements NotificationService {
             String response = send(message);
 
             log.info("Sending notification message: {} response: {}", gsonJson, response);
+            createLog(dto);
         } catch (Exception e) {
             log.error("Failed to send notification: {}", e.getMessage());
             throw new RuntimeException(e);
@@ -70,5 +74,11 @@ public class NotificationServiceImpl implements NotificationService {
 
     private WebpushConfig getWebpushConfig(NotificationDto dto) {
         return WebpushConfig.builder().setNotification(WebpushNotification.builder().setTag(dto.getTitle()).setBody(dto.getBody()).build()).putData("userId", dto.getUserId()).build();
+    }
+
+    private void createLog(NotificationDto dto) {
+        FirebaseLog firebaseLog = FirebaseLog.builder().userId(dto.getUserId()).title(dto.getTitle()).body(dto.getBody()).topic(dto.getTopic()).token(dto.getToken()).build();
+        logRepository.save(firebaseLog);
+        log.info("createLog: {}", firebaseLog);
     }
 }
