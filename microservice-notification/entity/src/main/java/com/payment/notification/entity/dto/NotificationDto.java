@@ -1,5 +1,6 @@
 package com.payment.notification.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -19,8 +20,9 @@ public class NotificationDto implements Serializable {
     private String title;
     @Schema(example = "Deneme")
     private String body;
+    @JsonIgnore
     @Schema(example = "notification")
     private String topic;
-    @Schema(example = "ffce688d-4e53-46b8-a32a-49cf7e15a18dffce688d-4e53-46b8-a32a-49cf7e15a18d")
+    @JsonIgnore
     private String token;
 }

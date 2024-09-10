@@ -1,9 +1,12 @@
 package com.payment.notification.entity.model;
 
-import com.payment.notification.entity.dto.FirebaseDto;
 import com.payment.notification.entity.base.BaseEntity;
+import com.payment.notification.entity.dto.FirebaseDto;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
@@ -17,15 +20,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "FIREBASE_DATA")
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-public class FirebaseData extends BaseEntity implements Serializable {
+@Table(name = "FIREBASE_TOKEN")
+public class FirebaseToken extends BaseEntity implements Serializable {
 
     @Column(name = "senderId")
     private String senderId;
 
-    @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
-    private FirebaseDto data;
+    @Column(name = "token")
+    private String token;
 
 }

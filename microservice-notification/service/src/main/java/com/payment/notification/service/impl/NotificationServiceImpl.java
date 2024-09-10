@@ -4,13 +4,17 @@ import com.google.firebase.messaging.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.payment.notification.common.base.BaseResponse;
+import com.payment.notification.common.enums.RecordStatus;
+import com.payment.notification.common.utils.ConstantUtil;
 import com.payment.notification.entity.dto.NotificationDto;
+import com.payment.notification.repository.FirebaseTokenRepository;
 import com.payment.notification.service.NotificationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 
@@ -19,9 +23,15 @@ import java.util.concurrent.ExecutionException;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class NotificationServiceImpl implements NotificationService {
 
+    private final FirebaseTokenRepository repository;
+
     @Override
     public BaseResponse sendNotification(NotificationDto dto) {
         try {
+            dto.setTitle(dto.getTitle() != null ? dto.getTitle() : ConstantUtil.FCM_TITLE);
+            dto.setTopic(ConstantUtil.FCM_TOPIC);
+            dto.setToken(repository.findBySenderIdAndRecordStatus(ConstantUtil.FCM_SENDER_ID, RecordStatus.ACTIVE).orElseThrow(()->new EntityNotFoundException("Token Not Found!")).getToken());
+
             Message message = getMessage(dto);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String gsonJson = gson.toJson(message);

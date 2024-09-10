@@ -31,7 +31,7 @@ public class Consumer {
             ack.acknowledge();
 
             log.info("CONSUMER NOTIFICATION: {}", getRecordInfo(consumerRecord));
-            service.sendNotification(NotificationDto.builder().title("Test").token(null).topic("notification").body(event.getMessage()).build());
+            service.sendNotification(NotificationDto.builder().body(event.getMessage()).build());
         } catch (Exception ex) {
             log.error("ack exception while processing record: {}", getRecordInfo(consumerRecord), ex);
         }
