@@ -59,19 +59,20 @@ public class StockServiceImpl implements StockService {
         Stock model = stockRepository.save(stock);
 
         log.info("save: {}", model);
-        publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE);
+        publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
         return BaseResponse.builder().data(model).build();
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse update(Long id, StockDto dto) {
+        dto.setId(id);
         Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         Stock update = beanUtil.transform(dto, stock);
         Stock model = stockRepository.save(update);
 
         log.info("update: {}", model);
-        publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE);
+        publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
         return BaseResponse.builder().data(model).build();
     }
 
@@ -83,7 +84,7 @@ public class StockServiceImpl implements StockService {
         Stock model = stockRepository.save(stock);
 
         log.info("delete: {}", model);
-        publishNotification(stock.getUserId(), ConstantUtil.STOCK_DELETE);
+        publishNotification(stock.getUserId(), ConstantUtil.STOCK_DELETE + " [" + stock.getStockName() + "]");
         return BaseResponse.builder().data(model).build();
     }
 

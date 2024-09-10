@@ -20,6 +20,6 @@ public class StockDto extends BaseDto implements Serializable {
     private String stockName;
     @Schema(example = "1")
     private Integer availableQuantity;
-    @Schema(example = "1")
+    @Schema(example = "Adet")
     private UnitType unitType;
 }
