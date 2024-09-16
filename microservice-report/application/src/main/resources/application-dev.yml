@@ -1,5 +1,5 @@
 server:
-  port: 8089
+  port: 8088
   local: 127.0.0.1
 
 spring:
