@@ -1,6 +1,6 @@
 package com.payment.report.controller;
 
-import com.payment.report.common.BaseResponse;
+import com.payment.report.common.base.BaseResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
