@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  user:
+    image: report
+    container_name: report-api
+    networks:
+      nw_containers:
+        ipv4_address: 10.5.0.12
+    restart: always
+    expose:
+      - "8088"
+    ports:
+      - "8088:8088"
+    command: -p 8088
+
+networks:
+  nw_containers:
+      name: custom_bridge
+      external: true
