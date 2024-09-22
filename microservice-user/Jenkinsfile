@@ -15,7 +15,7 @@ pipeline {
 		stage('Build'){
 			steps {
 			echo "Java VERSION"
-                	sh 'java -version'
+                	//sh 'java -version'
                 	echo "Maven VERSION"
 			        sh 'mvn -version'
                 	echo 'Building microservice-user project...'
