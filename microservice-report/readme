@@ -7,3 +7,6 @@ docker logs --since=1h 'container_id' -f
 
 BUILD
 mvn clean verify -P prod
+
+
+https://satyacodes.medium.com/spring-boot-reporting-with-jasper-reports-d4ed3128f0fe
