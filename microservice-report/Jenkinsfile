@@ -18,9 +18,9 @@ pipeline {
                 	sh 'java -version'
                 	echo "Maven VERSION"
 			        sh 'mvn -version'
-                	echo 'Building microservice-user project...'
+                	echo 'Building microservice-report project...'
                 	sh '''
-                	cd microservice-user/
+                	cd microservice-report/
                 	mvn clean
                 	mvn clean install -Pprod -DskipTests
                 	'''
