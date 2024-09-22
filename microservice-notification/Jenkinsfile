@@ -17,7 +17,7 @@ pipeline {
 			echo "Java VERSION"
                 	sh 'java -version'
                 	echo "Maven VERSION"
-			        sh 'mvn -version'
+                	sh 'mvn -version'
                 	echo 'Building microservice-notification project...'
                 	sh '''
                 	cd microservice-notification/
