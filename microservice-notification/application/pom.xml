@@ -10,7 +10,8 @@
     </parent>
 
     <groupId>com.payment.notification.application</groupId>
-    <artifactId>notification</artifactId>
+    <artifactId>payment-notification</artifactId>
+    <version>0.0.1</version>
 
 
     <properties>
@@ -19,6 +20,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.boot.version>2.7.18</spring.boot.version>
         <maven.test.skip>true</maven.test.skip>
+        <docker.name>savas2013</docker.name>
+        <docker.REGISTRY_USERNAME>savas2013</docker.REGISTRY_USERNAME>
+        <docker.REGISTRY_PASSWORD>savas2024</docker.REGISTRY_PASSWORD>
     </properties>
 
     <dependencies>
@@ -115,6 +119,41 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <configuration>
+                    <from>
+                        <image>openjdk:17-jdk-alpine</image>
+                        <auth>
+                            <username>${docker.REGISTRY_USERNAME}</username>
+                            <password>${docker.REGISTRY_PASSWORD}</password>
+                        </auth>
+                    </from>
+                    <to>
+                        <image>${docker.name}/${project.artifactId}:${project.version}</image>
+                        <auth>
+                            <username>${docker.REGISTRY_USERNAME}</username>
+                            <password>${docker.REGISTRY_PASSWORD}</password>
+                        </auth>
+                    </to>
+                    <container>
+                        <environment></environment>
+                        <ports>
+                            <port>8085</port>
+                        </ports>
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                    </container>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
