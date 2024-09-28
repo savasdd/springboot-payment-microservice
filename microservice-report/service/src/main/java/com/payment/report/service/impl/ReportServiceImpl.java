@@ -34,7 +34,7 @@ public class ReportServiceImpl implements ReportService {
         parameters.put("header", "Users Report");
         parameters.put("createdBy", "Savaş Dede");
 
-        return contentService.download(fileType, fileName, new ArrayList<UserDto>(users), parameters);
+        return contentService.download(fileType, fileName, new ArrayList<>(users), parameters);
     }
 
 
