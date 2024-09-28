@@ -21,7 +21,7 @@
         <maven.test.skip>true</maven.test.skip>
         <docker.name>savas2013</docker.name>
         <docker.REGISTRY_USERNAME>savas2013</docker.REGISTRY_USERNAME>
-        <docker.REGISTRY_PASSWORD>savas2024</docker.REGISTRY_PASSWORD>
+        <docker.REGISTRY_PASSWORD>savas**</docker.REGISTRY_PASSWORD>
     </properties>
 
     <dependencies>

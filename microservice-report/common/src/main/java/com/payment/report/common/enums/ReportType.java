@@ -28,4 +28,16 @@ public enum ReportType {
 
         throw new IllegalArgumentException("Invalid value for Contact type Enum: " + value);
     }
+
+    @JsonCreator
+    public static String getExtension(String value) {
+        for (ReportType contact : values()) {
+            String currentContact = contact.getContactType();
+            if (currentContact.equals(value)) {
+                return "." + value;
+            }
+        }
+
+        return value;
+    }
 }

@@ -1,11 +1,13 @@
 package com.payment.report.controller;
 
-import com.payment.report.common.base.BaseResponse;
+import com.payment.report.service.ReportService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -13,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ReportController {
 
-    @GetMapping(value = "/all")
-    public ResponseEntity<BaseResponse> findAll() {
-        return ResponseEntity.ok(BaseResponse.builder().data("Report Success").build());
+    private final ReportService reportService;
+
+    @GetMapping(value = "/download-user")
+    public ResponseEntity<Resource> getUserReport(@RequestParam String fileType, @RequestParam String filename) throws Exception {
+        return reportService.downloadUserReport(fileType, filename);
     }
 }
