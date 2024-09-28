@@ -32,7 +32,7 @@ public class ReportServiceImpl implements ReportService {
         parameters.put("comanyName", "THY TECHNOLOGIES");
         parameters.put("address", "Ankara");
         parameters.put("header", "Users Report");
-        parameters.put("createdBy", "Savaş Dede");
+        parameters.put("createdBy", "Savas Dede");
 
         return contentService.download(fileType, fileName, new ArrayList<>(users), parameters);
     }
