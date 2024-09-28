@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
@@ -87,6 +88,13 @@ public class ReportContentService {
                 docxExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
                 docxExporter.setExporterOutput(new SimpleWriterExporterOutput(outputStream));
                 docxExporter.exportReport();
+                break;
+            case PDF:
+                // Export to PDF (RTF format)
+                JRPdfExporter pdfExporter = new JRPdfExporter();
+                pdfExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+                pdfExporter.exportReport();
                 break;
             default:
                 // Export to PDF by default

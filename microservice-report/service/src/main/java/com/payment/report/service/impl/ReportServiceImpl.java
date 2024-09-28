@@ -1,33 +1,15 @@
 package com.payment.report.service.impl;
 
 import com.payment.report.common.content.ReportContentService;
-import com.payment.report.common.enums.ReportType;
 import com.payment.report.entity.UserDto;
 import com.payment.report.service.ReportService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.engine.export.JRRtfExporter;
-import net.sf.jasperreports.engine.export.JRXmlExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimpleWriterExporterOutput;
-import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

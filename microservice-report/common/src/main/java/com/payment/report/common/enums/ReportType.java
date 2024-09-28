@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ReportType {
-    CSV("CSV"), XLSX("XLSX"), XML("XML"), DOC("DOC");
+    CSV("CSV"), XLSX("XLSX"), XML("XML"), DOC("DOC"), PDF("PDF");
 
     private final String reportType;
 
@@ -19,6 +19,7 @@ public enum ReportType {
 
     @JsonCreator
     public static ReportType fromValue(String value) {
+        value = value.trim().toUpperCase();
         for (ReportType contact : values()) {
             String currentContact = contact.getContactType();
             if (currentContact.equals(value)) {
@@ -31,6 +32,7 @@ public enum ReportType {
 
     @JsonCreator
     public static String getExtension(String value) {
+        value = value.trim().toUpperCase();
         for (ReportType contact : values()) {
             String currentContact = contact.getContactType();
             if (currentContact.equals(value)) {
