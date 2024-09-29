@@ -40,14 +40,6 @@ spring:
   banner:
     location: banner.txt
 
-logging:
-  level:
-    root: info
-    org:
-      springframework: info
-      mybatis: error
-  config: classpath:logback-spring.xml
-
 eureka:
   client:
     service-url:
