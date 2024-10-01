@@ -135,7 +135,7 @@
                     <container>
                         <environment></environment>
                         <ports>
-                            <port>8085</port>
+                            <port>8088</port>
                         </ports>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                     </container>
