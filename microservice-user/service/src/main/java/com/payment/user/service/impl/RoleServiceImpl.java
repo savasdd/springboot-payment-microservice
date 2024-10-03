@@ -27,7 +27,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public BaseResponse getById(Long id) {
-        return BaseResponse.builder().data(repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()))).build();
+        return BaseResponse.success(repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @Override
@@ -35,7 +35,7 @@ public class RoleServiceImpl implements RoleService {
         List<Role> list = repository.findAll(pageable).getContent();
         log.info("getAll role list size: {}", list.size());
 
-        return BaseResponse.builder().data(beanUtil.mapAll(list, RoleDto.class)).count(list.size()).build();
+        return BaseResponse.success(beanUtil.mapAll(list, RoleDto.class), list.size());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class RoleServiceImpl implements RoleService {
         Role model = repository.save(beanUtil.mapDto(role, Role.class));
         log.info("save role: {}", model);
 
-        return BaseResponse.builder().data(beanUtil.mapDto(model, RoleDto.class)).build();
+        return BaseResponse.success(beanUtil.mapDto(model, RoleDto.class));
     }
 
     @Override
@@ -53,13 +53,13 @@ public class RoleServiceImpl implements RoleService {
         repository.save(model);
 
         log.info("update role: {}", model);
-        return BaseResponse.builder().data(beanUtil.mapDto(model, RoleDto.class)).build();
+        return BaseResponse.success(beanUtil.mapDto(model, RoleDto.class));
     }
 
     @Override
     public BaseResponse delete(Long id) {
         repository.deleteById(id);
         log.info("delete role: {}", id);
-        return BaseResponse.builder().build();
+        return BaseResponse.success("delete role success");
     }
 }

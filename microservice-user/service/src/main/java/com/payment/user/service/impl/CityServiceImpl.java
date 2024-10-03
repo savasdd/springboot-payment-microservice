@@ -23,14 +23,14 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public BaseResponse getCityById(Long id) {
-        return BaseResponse.builder().data(cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()))).build();
+        return BaseResponse.success(cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString())));
     }
 
     @Override
     public BaseResponse findAll(Pageable pageable) {
         List<City> cityList = cityRepository.findAll(pageable).getContent();
         log.info("getAll city list size: {}", cityList.size());
-        return BaseResponse.builder().data(cityList).count(cityList.size()).build();
+        return BaseResponse.success(cityList, cityList.size());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CityServiceImpl implements CityService {
         City cityEntity = cityRepository.save(city);
         log.info("save city: {}", cityEntity);
 
-        return BaseResponse.builder().data(cityEntity).build();
+        return BaseResponse.success(cityEntity);
     }
 
     @Override
@@ -48,13 +48,13 @@ public class CityServiceImpl implements CityService {
         cityRepository.save(model);
 
         log.info("update city: {}", model);
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @Override
     public BaseResponse deleteCity(Long id) {
         cityRepository.deleteById(id);
         log.info("delete city: {}", id);
-        return BaseResponse.builder().build();
+        return BaseResponse.success("delete success");
     }
 }

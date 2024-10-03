@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         Page<UserDto> list = beanUtil.mapAll(repository.findAll(pageable), UserDto.class);
 
         log.info("get all user {}", list.getTotalElements());
-        return BaseResponse.builder().data(list.getContent()).count((int) list.getTotalElements()).build();
+        return BaseResponse.success(list.getContent(),(int)list.getTotalElements());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.count == 0")
     @Override
     public BaseResponse findById(Long id) {
-        return BaseResponse.builder().data(beanUtil.mapDto(repository.findById(id).orElse(null), UserDto.class)).build();
+        return BaseResponse.success(beanUtil.mapDto(repository.findById(id).orElse(null), UserDto.class));
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("save user: {}", model);
         publishNotification(user.getId(), ConstantUtil.USER_CREATE);
-        return BaseResponse.builder().data(beanUtil.mapDto(model, UserDto.class)).build();
+        return BaseResponse.success(beanUtil.mapDto(model, UserDto.class));
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("update user: {}", model);
         publishNotification(user.getId(), ConstantUtil.USER_UPDATE);
-        return BaseResponse.builder().data(beanUtil.mapDto(model, UserDto.class)).build();
+        return BaseResponse.success(beanUtil.mapDto(model, UserDto.class));
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("delete user: {}", id);
         publishNotification(id, ConstantUtil.USER_DELETE);
-        return BaseResponse.builder().build();
+        return BaseResponse.success("delete success");
     }
 
     private void publishNotification(Long userId, String message) {
