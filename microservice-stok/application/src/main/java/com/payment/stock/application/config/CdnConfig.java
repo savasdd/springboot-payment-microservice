@@ -25,7 +25,7 @@ import java.io.FileInputStream;
 @Configuration
 @RequiredArgsConstructor
 @ConfigurationProperties(prefix = "cdn")
-public class CDNConfig {
+public class CdnConfig {
 
     private String configFile;
     private String bucketName;
