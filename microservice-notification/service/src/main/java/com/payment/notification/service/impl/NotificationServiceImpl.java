@@ -48,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         }
 
-        return BaseResponse.builder().data("Send Success").build();
+        return BaseResponse.success("Send Success");
     }
 
     private String send(Message message) throws ExecutionException, InterruptedException {
