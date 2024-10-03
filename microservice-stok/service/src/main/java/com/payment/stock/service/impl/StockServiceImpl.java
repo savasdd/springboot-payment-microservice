@@ -1,6 +1,5 @@
 package com.payment.stock.service.impl;
 
-import com.google.cloud.storage.Bucket;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.KafkaTopicsConfig;
 import com.payment.stock.common.enums.RecordStatus;
@@ -44,13 +43,13 @@ public class StockServiceImpl implements StockService {
         List<Stock> stockDtoList = stockRepository.findByRecordStatus(RecordStatus.ACTIVE, pageable).getContent();
 
         log.info("find all stock: {}", stockDtoList.size());
-        return BaseResponse.builder().data(beanUtil.mapAll(stockDtoList, StockDto.class)).count(stockDtoList.size()).build();
+        return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockDto.class), stockDtoList.size());
     }
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.count == 0")
     @Override
     public BaseResponse findById(Long id) {
-        return BaseResponse.builder().data(stockRepository.findById(id).orElseThrow(EntityNotFoundException::new)).build();
+        return BaseResponse.success(stockRepository.findById(id).orElseThrow(EntityNotFoundException::new));
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
@@ -61,7 +60,7 @@ public class StockServiceImpl implements StockService {
 
         log.info("save: {}", model);
         publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
@@ -74,7 +73,7 @@ public class StockServiceImpl implements StockService {
 
         log.info("update: {}", model);
         publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
@@ -86,7 +85,7 @@ public class StockServiceImpl implements StockService {
 
         log.info("delete: {}", model);
         publishNotification(stock.getUserId(), ConstantUtil.STOCK_DELETE + " [" + stock.getStockName() + "]");
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class StockServiceImpl implements StockService {
         stock.setAvailableQuantity(stock.getAvailableQuantity() > quantity ? stock.getAvailableQuantity() - quantity : 0);
         stockRepository.save(stock);
         log.info("updateStockQuantity: {}", stock);
-        return BaseResponse.builder().data(stock).build();
+        return BaseResponse.success(stock);
     }
 
     @Override
