@@ -84,17 +84,17 @@ public class OrderServiceImpl implements OrderService {
         }
 
 
-        return !itemList.isEmpty() ? BaseResponse.builder().data("Stokta Bulunamadı: " + getStockName(itemList)).build() : BaseResponse.builder().data(dto).build();
+        return !itemList.isEmpty() ? BaseResponse.success("Stokta Bulunamadı: " + getStockName(itemList)) : BaseResponse.success(dto);
     }
 
     @Override
     public BaseResponse getOrder(String orderId) {
-        return BaseResponse.builder().data(orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found"))).build();
+        return BaseResponse.success(orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found")));
     }
 
     @Override
     public BaseResponse getOrderNo(String orderNo) {
-        return BaseResponse.builder().data(orderRepository.findByOrderNo(orderNo)).build();
+        return BaseResponse.success(orderRepository.findByOrderNo(orderNo));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("add product success {}", productItem);
         publishOutbox(outboxSerializer.productAddedEvent(order, model));
         publishNotification(order.getUserId(), ConstantUtil.PRODUCT_ADD + " - " + order.getOrderNo());
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
             publishOutbox(outboxSerializer.productRemovedEvent(order, productId));
             publishNotification(order.getUserId(), ConstantUtil.PRODUCT_REMOVE + " - " + order.getOrderNo());
         }
-        return BaseResponse.builder().data("Success: " + productId).build();
+        return BaseResponse.success("Delete product success");
     }
 
     @Override
@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("payment success {}", paymentId);
         publishOutbox(outboxSerializer.paidEvent(model, paymentId));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_PAYMENT + " - " + order.getOrderNo());
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("cancel success {}", dto.getDescription());
         publishOutbox(outboxSerializer.cancelledEvent(model, dto.getDescription()));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_CANSEL + " - " + order.getOrderNo());
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("submit success {}", orderNo);
         publishOutbox(outboxSerializer.submittedEvent(model));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_SUBMIT + " - " + order.getOrderNo());
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @Override
@@ -189,14 +189,14 @@ public class OrderServiceImpl implements OrderService {
         log.info("complete success {}", orderNo);
         publishOutbox(outboxSerializer.completedEvent(model));
         publishNotification(order.getUserId(), ConstantUtil.ORDER_COMPETE + " - " + order.getOrderNo());
-        return BaseResponse.builder().data(model).build();
+        return BaseResponse.success(model);
     }
 
     @Override
     public BaseResponse getAllOrder(Pageable pageable) {
         List<Order> orders = orderRepository.findAll(pageable).getContent();
         log.info("orders: {}", orders);
-        return BaseResponse.builder().data(orders).count(orders.size()).build();
+        return BaseResponse.success(orders, orders.size());
     }
 
     @Transactional
