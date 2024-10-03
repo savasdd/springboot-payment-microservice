@@ -15,8 +15,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class CdnController {
     private final CdnService cdnService;
 
-    @PostMapping(value = "/upload/{stockId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BaseResponse> uploadFile(@PathVariable("stockId") Long stockId, @RequestParam("file") MultipartFile file) {
+    @GetMapping(value = "/all")
+    public ResponseEntity<BaseResponse> getAll() {
+        return ResponseEntity.ok(cdnService.getAll());
+    }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaseResponse> uploadFile(@RequestParam("stockId") Long stockId, @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(cdnService.fileUpload(stockId, file));
+    }
+
+    @GetMapping(value = "/image")
+    public ResponseEntity<byte[]> getImage(@RequestParam("stockId") Long stockId) {
+        return cdnService.getImage(stockId);
     }
 }

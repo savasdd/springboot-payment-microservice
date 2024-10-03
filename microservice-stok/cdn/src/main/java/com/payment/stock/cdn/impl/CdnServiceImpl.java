@@ -4,6 +4,7 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.payment.stock.cdn.CdnService;
 import com.payment.stock.common.base.BaseResponse;
+import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.entity.dto.ImageDto;
 import com.payment.stock.entity.model.Image;
@@ -12,12 +13,16 @@ import com.payment.stock.repository.StockRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.FileTypeMap;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -38,7 +43,7 @@ public class CdnServiceImpl implements CdnService {
 
             if (!Objects.isNull(blob)) {
                 ImageDto dto = ImageDto.builder().name(blob.getName()).link(blob.getMediaLink()).size(file.getSize()).build();
-                saveImage(stockId, dto);
+                saveImage(stockId, blob.getBlobId().getBucket(), dto);
                 log.info("File successfully uploaded to CDN: {}", fileName);
                 return BaseResponse.success(dto);
             }
@@ -50,9 +55,27 @@ public class CdnServiceImpl implements CdnService {
         }
     }
 
-    private void saveImage(Long stockId, ImageDto dto) {
+    @Override
+    public ResponseEntity<byte[]> getImage(Long stockId) {
+        Optional<Image> image = imageRepository.findByStock_IdAndRecordStatus(stockId, RecordStatus.ACTIVE);
+
+        if (image.isPresent()) {
+            Blob blob = bucket.getStorage().get(image.get().getBucketName(), image.get().getName());
+            return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(image.get().getName()))).body(blob.getContent(Blob.BlobSourceOption.generationMatch()));
+        }
+
+        return null;
+    }
+
+    @Override
+    public BaseResponse getAll() {
+        return BaseResponse.success(imageRepository.getAllImage(RecordStatus.ACTIVE));
+    }
+
+    private void saveImage(Long stockId, String bucketName, ImageDto dto) {
         Image image = beanUtil.mapDto(dto, Image.class);
         image.setStock(stockRepository.findById(stockId).orElseThrow(() -> new EntityNotFoundException("Stock not found")));
+        image.setBucketName(bucketName);
         imageRepository.save(image);
     }
 
