@@ -41,6 +41,11 @@ spring:
     bootstrap-servers: ${server.kafka_prod}
   banner:
     location: banner.txt
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 3MB
+      max-request-size: 3MB
 
 eureka:
   client:
@@ -75,3 +80,7 @@ topics:
     name: notification-queue
     partitions: 3
     replication: 1
+
+cdn:
+  configFile: CDN.json
+  bucketName: springbootfirebase-cd166.appspot.com

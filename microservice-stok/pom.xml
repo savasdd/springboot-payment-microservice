@@ -189,6 +189,13 @@
             <artifactId>spring-kafka-test</artifactId>
         </dependency>
 
+        <!--CDN-->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <version>2.40.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springdoc</groupId>
