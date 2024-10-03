@@ -1,7 +1,7 @@
 package com.payment.stock.entity.model;
 
 import com.payment.stock.entity.base.BaseEntity;
-import com.payment.stock.entity.dto.CDNDto;
+import com.payment.stock.entity.dto.CdnDto;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,10 +22,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "CDN_DATA")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-public class CDNData extends BaseEntity implements Serializable {
+public class CdnData extends BaseEntity implements Serializable {
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
-    private CDNDto data;
+    private CdnDto data;
 
 }

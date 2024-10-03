@@ -5,8 +5,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.payment.stock.entity.model.CDNData;
-import com.payment.stock.repository.CDNRepository;
+import com.payment.stock.entity.model.CdnData;
+import com.payment.stock.repository.CdnRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,13 +29,13 @@ public class CDNConfig {
 
     private String configFile;
     private String bucketName;
-    private final CDNRepository repository;
+    private final CdnRepository repository;
     private final ObjectMapper objectMapper;
 
     @Bean
     public Bucket firebaseInit() {
         try {
-            CDNData data = repository.getActiveCDN().orElse(null);
+            CdnData data = repository.getActiveCDN().orElse(null);
 
             File file = new File(new ClassPathResource(configFile).getURI());
             objectMapper.writeValue(file, data.getData());

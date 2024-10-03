@@ -15,6 +15,7 @@
         <module>repository</module>
         <module>service</module>
         <module>elasticsearch</module>
+        <module>cdn</module>
         <module>controller</module>
         <module>application</module>
     </modules>

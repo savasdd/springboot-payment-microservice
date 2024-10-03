@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
-public class CDNDto implements Serializable {
+public class CdnDto implements Serializable {
 
     private String type;
     private String project_id;
