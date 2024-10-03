@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.Serial;
 
 @Slf4j
-public class GeneralException extends Exception {
+public class GeneralException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = -2803799245666892878L;
