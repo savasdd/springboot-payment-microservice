@@ -11,4 +11,6 @@ public interface CdnService {
     ResponseEntity<byte[]> getImage(Long stockId);
 
     BaseResponse getAll();
+
+    BaseResponse delete(Long stockId);
 }

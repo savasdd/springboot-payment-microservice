@@ -15,4 +15,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     @Query(value = "select new com.payment.stock.entity.dto.ImageInfoDto(v.stock.id,v.name) from Image v where v.recordStatus=:status order by v.stock.id desc")
     List<ImageInfoDto> getAllImage(RecordStatus status);
+
 }

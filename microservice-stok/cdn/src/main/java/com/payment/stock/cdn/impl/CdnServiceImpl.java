@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.activation.FileTypeMap;
 import java.math.BigInteger;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -61,7 +62,7 @@ public class CdnServiceImpl implements CdnService {
         Blob blob = bucket.getStorage().get(image.getBucketName(), image.getName());
 
         log.info("get file successfully from CDN: {}", image.getName());
-        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(image.getName()))).body(blob.getContent(Blob.BlobSourceOption.generationMatch()));
+        return !Objects.isNull(blob)? ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(image.getName()))).body(blob.getContent(Blob.BlobSourceOption.generationMatch())): ResponseEntity.noContent().build();
     }
 
     @Override
@@ -69,7 +70,27 @@ public class CdnServiceImpl implements CdnService {
         return BaseResponse.success(imageRepository.getAllImage(RecordStatus.ACTIVE));
     }
 
+    @Override
+    public BaseResponse delete(Long stockId) {
+        Image image = imageRepository.findByStock_IdAndRecordStatus(stockId, RecordStatus.ACTIVE).orElseThrow(() -> new RuntimeException("Image not found"));
+        boolean blob = bucket.getStorage().delete(image.getBucketName(), image.getName());
+
+        if (blob) {
+            image.setRecordStatus(RecordStatus.DELETED);
+            imageRepository.delete(image);
+        }
+
+        log.info("delete file successfully from CDN: {}", image.getName());
+        return BaseResponse.success("Delete file successfully from CDN: " + blob);
+    }
+
     private void saveImage(Stock stock, String bucketName, ImageDto dto) {
+        Optional<Image> imageOpt = imageRepository.findByStock_IdAndRecordStatus(stock.getId(), RecordStatus.ACTIVE);
+        if (imageOpt.isPresent()) {
+            imageOpt.get().setRecordStatus(RecordStatus.DELETED);
+            imageRepository.save(imageOpt.get());
+        }
+
         Image image = beanUtil.mapDto(dto, Image.class);
         image.setStock(stock);
         image.setBucketName(bucketName);

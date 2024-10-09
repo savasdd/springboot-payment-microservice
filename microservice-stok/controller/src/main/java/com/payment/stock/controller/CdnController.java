@@ -29,4 +29,9 @@ public class CdnController {
     public ResponseEntity<byte[]> getImage(@RequestParam("stockId") Long stockId) {
         return cdnService.getImage(stockId);
     }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> delete(@RequestParam("stockId") Long stockId) {
+        return ResponseEntity.ok(cdnService.delete(stockId));
+    }
 }
