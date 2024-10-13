@@ -9,8 +9,35 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: notification
+        - id: user
           order: 0
+          uri: lb://user-api
+          predicates:
+            - Host=**
+            - Path=/api/payment/user/**
+          filters:
+            - NotifyFilter
+
+        - id: stock
+          order: 1
+          uri: lb://stock-api
+          predicates:
+            - Host=**
+            - Path=/api/payment/stocks/**
+          filters:
+            - NotifyFilter
+
+        - id: payment
+          order: 2
+          uri: lb://payment-api
+          predicates:
+            - Host=**
+            - Path=/api/order/**
+          filters:
+            - NotifyFilter
+
+        - id: notification
+          order: 3
           uri: lb://notification-api
           predicates:
             - Host=**
@@ -18,3 +45,11 @@ spring:
           filters:
             - NotifyFilter
 
+        - id: report
+          order: 4
+          uri: lb://report-api
+          predicates:
+            - Host=**
+            - Path=/api/payment/reports/**
+          filters:
+            - NotifyFilter
