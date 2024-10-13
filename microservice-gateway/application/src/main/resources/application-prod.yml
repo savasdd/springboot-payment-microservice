@@ -5,6 +5,8 @@ server:
 spring:
   application:
     name: gateway-api
+  config:
+    import: predicate.yml
 
 eureka:
   client:
