@@ -114,21 +114,6 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${openapi.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webmvc-core</artifactId>
-            <version>${openapi.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-javadoc</artifactId>
-            <version>${openapi.version}</version>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
