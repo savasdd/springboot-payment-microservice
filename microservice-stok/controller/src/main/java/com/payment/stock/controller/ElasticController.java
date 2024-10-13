@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/elastic")
+@RequestMapping(value = "/api/payment/stocks/elastic")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ElasticController {
     private final IndexService indexService;

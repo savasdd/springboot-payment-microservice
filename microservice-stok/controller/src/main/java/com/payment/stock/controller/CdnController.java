@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(value = "/api/payment/cdn")
+@RequestMapping(value = "/api/payment/stocks/cdn")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CdnController {
     private final CdnService cdnService;
