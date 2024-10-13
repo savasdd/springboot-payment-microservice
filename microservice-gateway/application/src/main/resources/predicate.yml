@@ -14,7 +14,7 @@ spring:
           uri: lb://user-api
           predicates:
             - Host=**
-            - Path=/api/payment/auth/**
+            - Path=/api/payment/users/**
           filters:
             - NotifyFilter
 

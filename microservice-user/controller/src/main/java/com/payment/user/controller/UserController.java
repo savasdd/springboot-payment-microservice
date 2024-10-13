@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/payment/user")
+@RequestMapping(value = "/api/payment/users")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
     private final UserService userService;

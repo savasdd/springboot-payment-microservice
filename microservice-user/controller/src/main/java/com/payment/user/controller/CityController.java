@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/payment/city")
+@RequestMapping(value = "/api/payment/users/city")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CityController {
 

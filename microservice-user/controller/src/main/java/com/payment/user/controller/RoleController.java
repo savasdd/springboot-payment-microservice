@@ -14,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/payment/role")
+@RequestMapping(value = "/api/payment/users/role")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class RoleController {
 

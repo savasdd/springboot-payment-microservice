@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/payment/elastic")
+@RequestMapping(value = "/api/payment/users/elastic")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ElasticController {
 

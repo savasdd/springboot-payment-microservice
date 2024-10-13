@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/payment/auth")
+@RequestMapping(value = "/api/payment/users/auth")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthController {
     private final AuthService authService;
