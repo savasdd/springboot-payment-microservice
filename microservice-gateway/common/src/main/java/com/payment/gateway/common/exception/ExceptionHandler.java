@@ -13,7 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.*;
@@ -27,49 +26,49 @@ public class ExceptionHandler {
     private final MessageSource messageSource;
 
     @org.springframework.web.bind.annotation.ExceptionHandler(GeneralException.class)
-    public ResponseEntity<ExceptionResponse> generalException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ExceptionResponse> generalException(Exception ex) {
         log.error("GeneralException", ex);
-        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, getLangMessage(ex.getMessage(), null), request.getRequestURI());
+        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, getLangMessage(ex.getMessage(), null), null);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {RuntimeException.class})
-    public ResponseEntity<ExceptionResponse> runtimeException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ExceptionResponse> runtimeException(Exception ex ) {
         log.error("RuntimeException", ex);
-        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage(ex.getMessage(), null), request.getRequestURI());
+        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage(ex.getMessage(), null), null);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 
     @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionResponse> constraintViolationException(ConstraintViolationException ex, HttpServletRequest request) {
+    public ResponseEntity<ExceptionResponse> constraintViolationException(ConstraintViolationException ex ) {
         log.error("ConstraintViolationException", ex);
-        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, StringUtils.join(getViolationsMsg(ex), ","), request.getRequestURI());
+        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, StringUtils.join(getViolationsMsg(ex), ","), null);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> methodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    public ResponseEntity<ExceptionResponse> methodArgumentNotValidException(MethodArgumentNotValidException ex ) {
         log.error("MethodArgumentNotValidException", ex);
         final List<String> allError = ex.getBindingResult().getAllErrors().stream().map(m -> getLangMessage(m.getDefaultMessage(),
                 m.getArguments() != null ? Arrays.stream(m.getArguments()).filter(f -> !(f instanceof DefaultMessageSourceResolvable)).toArray() : null)).toList();
-        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, StringUtils.join(allError, ","), request.getRequestURI());
+        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, StringUtils.join(allError, ","),null);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<ExceptionResponse> MethodArgumentTypeMismatchException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ExceptionResponse> MethodArgumentTypeMismatchException(Exception ex ) {
         log.error("MethodArgumentTypeMismatchException", ex);
-        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, getLangMessage(ex.getMessage(), null), request.getRequestURI());
+        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, getLangMessage(ex.getMessage(), null), null);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<ExceptionResponse> unknownException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ExceptionResponse> unknownException(Exception ex ) {
         log.error("Exception", ex);
-        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage(ex.getMessage(), null), request.getRequestURI());
+        ExceptionResponse error = new ExceptionResponse(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR, getLangMessage(ex.getMessage(), null), null);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
