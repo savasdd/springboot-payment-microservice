@@ -1,0 +1,22 @@
+server:
+  port: 8085
+  kafka_prod: 10.5.0.4:9092
+
+spring:
+  application:
+    name: gateway-api
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${server.local}:8761/eureka
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+
+schedulers:
+  outbox:
+    enable: true
+    initialDelayMillis: 3000
+    fixedRate: 600000
