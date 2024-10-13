@@ -62,10 +62,6 @@ public class GlobalsFilter implements GlobalFilter, WebFilter, Ordered {
 
                     return super.writeWith(fluxBody.buffer().handle((dataBuffers, sink) -> {
 
-                        //String authorization = request.getHeaders().containsKey("Authorization") ? request.getHeaders().get("Authorization").toString() : null;
-                        //String token = authorization != null ? authorization.substring(7, authorization.length()) : null;
-                        //AuthorityDto user = jwtService.getAuthority(token);
-
                         DefaultDataBuffer joinedBuffers = new DefaultDataBufferFactory().join(dataBuffers);
                         byte[] content = new byte[joinedBuffers.readableByteCount()];
                         joinedBuffers.read(content);
