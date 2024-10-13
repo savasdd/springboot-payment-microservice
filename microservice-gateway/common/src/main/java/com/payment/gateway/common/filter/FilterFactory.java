@@ -16,8 +16,8 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
         return (exchange, chain) -> {
             var request = exchange.getRequest();
             String path = request.getPath().toString();
-//            var authorization = request.getHeaders().containsKey("Authorization") ? request.getHeaders().get("Authorization").toString() : null;
-//            var token = authorization.substring(7, authorization.length());
+            var authorization = request.getHeaders().containsKey("Authorization") ? request.getHeaders().get("Authorization").toString() : null;
+            var token = authorization.substring(7, authorization.length());
 //            var user = null;
 //
 //            if ((StringUtils.contains(path, "/all") ||
