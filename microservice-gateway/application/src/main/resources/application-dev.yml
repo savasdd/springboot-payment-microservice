@@ -23,3 +23,7 @@ schedulers:
     enable: true
     initialDelayMillis: 3000
     fixedRate: 600000
+
+api:
+  url:
+    users: http://localhost:8880/api/payment/users/auth/
