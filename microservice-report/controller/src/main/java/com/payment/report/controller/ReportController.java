@@ -18,7 +18,7 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping(value = "/download", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @GetMapping(value = "/download", produces = MediaType.APPLICATION_JSON_VALUE, consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     public ResponseEntity<Resource> getUserReport(@RequestParam String fileType, @RequestParam String fileName) throws Exception {
         return reportService.downloadUserReport(fileType, fileName);
     }

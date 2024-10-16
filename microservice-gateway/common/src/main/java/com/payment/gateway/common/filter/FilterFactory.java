@@ -26,19 +26,22 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse serverResponse = exchange.getResponse();
+            serverResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
             String path = request.getPath().toString();
-            String authorization = request.getHeaders().containsKey("Authorization") ? request.getHeaders().get("Authorization").toString() : null;
+            String authorization = getAuthHeader(request);
             String token = !Objects.isNull(authorization) ? authorization.substring(7, authorization.length()) : null;
 
-            if (Objects.isNull(authorization) || !authorization.startsWith("Bearer ") || Objects.isNull(token))
-                serverResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
+            if (Objects.isNull(authorization) || !authorization.startsWith("Bearer ") || Objects.isNull(token)) {
+                return serverResponse.setComplete();
+            }
 
             TokenVo tokenVo = new TokenVo();
             tokenVo.setToken(token);
             BaseResponse response = restUtil.exchangePost(getUrl(), tokenVo);
 
-            if (!Objects.isNull(response) && response.getData().equals(true))
+            if (!Objects.isNull(response) && response.getData().equals(true)) {
                 return chain.filter(exchange);
+            }
 
             return serverResponse.setComplete();
         };
@@ -47,6 +50,10 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
 
     private String getUrl() {
         return urlConfig.getUsers() + "valid-token";
+    }
+
+    private String getAuthHeader(ServerHttpRequest request) {
+        return request.getHeaders().containsKey("Authorization") ? request.getHeaders().getOrEmpty("Authorization").get(0) : null;
     }
 
 }
