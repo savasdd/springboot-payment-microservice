@@ -24,18 +24,17 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class StockServiceImpl implements StockService {
+    private static final List<String> LANG = List.of("TR", "EN");
     private final StockRepository stockRepository;
     private final StockDetailRepository detailRepository;
     private final NotifySerializer notifySerializer;
@@ -47,7 +46,7 @@ public class StockServiceImpl implements StockService {
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
     @Override
     public BaseResponse findAll(Pageable pageable) {
-        List<Stock> stockDtoList = stockRepository.findByRecordStatus(RecordStatus.ACTIVE, pageable).getContent();
+        List<Stock> stockDtoList = stockRepository.findAllStockByStatus(RecordStatus.ACTIVE, LANG, pageable).getContent();
 
         log.info("find all stock: {}", stockDtoList.size());
         return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockDto.class), stockDtoList.size());
