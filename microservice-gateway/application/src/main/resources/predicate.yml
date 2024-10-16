@@ -16,7 +16,7 @@ spring:
             - Host=**
             - Path=/api/payment/users/**
           filters:
-            - NotifyFilter
+            - JwtFilter
 
         - id: stock
           order: 1
@@ -25,7 +25,7 @@ spring:
             - Host=**
             - Path=/api/payment/stocks/**
           filters:
-            - NotifyFilter
+            - JwtFilter
 
         - id: payment
           order: 2
@@ -34,7 +34,7 @@ spring:
             - Host=**
             - Path=/api/order/**
           filters:
-            - NotifyFilter
+            - JwtFilter
 
         - id: notification
           order: 3
@@ -43,7 +43,7 @@ spring:
             - Host=**
             - Path=/api/payment/notification/**
           filters:
-            - NotifyFilter
+            - JwtFilter
 
         - id: report
           order: 4
@@ -52,4 +52,4 @@ spring:
             - Host=**
             - Path=/api/payment/reports/**
           filters:
-            - NotifyFilter
+            - JwtFilter
