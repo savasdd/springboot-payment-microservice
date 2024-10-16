@@ -15,6 +15,8 @@ spring:
       hibernate.format_sql: true
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_versioned_data: true
   data:
     jpa:
       repositories:

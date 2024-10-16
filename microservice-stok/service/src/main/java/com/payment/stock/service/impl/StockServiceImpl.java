@@ -10,6 +10,7 @@ import com.payment.stock.common.utils.RestUtil;
 import com.payment.stock.entity.content.KafkaContent;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.model.Stock;
+import com.payment.stock.entity.model.StockDetail;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.StockService;
 import com.payment.stock.service.publisher.NotifySerializer;
@@ -21,6 +22,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -49,13 +51,17 @@ public class StockServiceImpl implements StockService {
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.count == 0")
     @Override
     public BaseResponse findById(Long id) {
-        return BaseResponse.success(stockRepository.findById(id).orElseThrow(EntityNotFoundException::new));
+        Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        StockDto dto = beanUtil.mapDto(stock, StockDto.class);
+
+        return BaseResponse.success(dto);
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse save(StockDto dto) {
         Stock stock = beanUtil.mapDto(dto, Stock.class);
+        stock.getDetails().forEach(d -> d.setStock(stock));
         Stock model = stockRepository.save(stock);
 
         log.info("save: {}", model);
@@ -65,10 +71,17 @@ public class StockServiceImpl implements StockService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
+    @Transactional
     public BaseResponse update(Long id, StockDto dto) {
         dto.setId(id);
         Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         Stock update = beanUtil.transform(dto, stock);
+        update.getDetails().forEach(d -> d.setStock(update));
+
+        //List<StockDetail> stockDetails = beanUtil.mapAll(dto.getDetails(), StockDetail.class);
+        //stockDetails.forEach(d -> d.setStock(stock));
+        //update.setDetails(stockDetails);
+
         Stock model = stockRepository.save(update);
 
         log.info("update: {}", model);
