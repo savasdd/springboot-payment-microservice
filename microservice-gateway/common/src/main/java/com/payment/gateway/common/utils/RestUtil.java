@@ -36,9 +36,13 @@ public class RestUtil {
     }
 
     public BaseResponse exchangePost(String uri, Object object) {
-        HttpEntity<Object> request = new HttpEntity<>(object, getHeaders());
-        ResponseEntity<BaseResponse> response = restTemplate.exchange(uri, HttpMethod.POST, request, BaseResponse.class);
-        return response.getStatusCode().value() == 200 ? response.getBody() : null;
+        try {
+            HttpEntity<Object> request = new HttpEntity<>(object, getHeaders());
+            ResponseEntity<BaseResponse> response = restTemplate.exchange(uri, HttpMethod.POST, request, BaseResponse.class);
+            return response.getStatusCode().value() == 200 ? response.getBody() : null;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public <T> List<T> exchangeAsList(String uri, ParameterizedTypeReference<List<T>> responseType) {

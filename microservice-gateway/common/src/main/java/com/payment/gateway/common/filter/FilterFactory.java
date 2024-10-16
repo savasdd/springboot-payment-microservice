@@ -28,7 +28,7 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
             ServerHttpResponse serverResponse = exchange.getResponse();
             String path = request.getPath().toString();
             String authorization = request.getHeaders().containsKey("Authorization") ? request.getHeaders().get("Authorization").toString() : null;
-            String token = authorization.substring(7, authorization.length());
+            String token = !Objects.isNull(authorization) ? authorization.substring(7, authorization.length()) : null;
 
             if (Objects.isNull(authorization) || !authorization.startsWith("Bearer ") || Objects.isNull(token))
                 serverResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
