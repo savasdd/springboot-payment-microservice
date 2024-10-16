@@ -8,16 +8,18 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 @Component
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class RestUtil {
+public class RestUtil implements Serializable {
 
     private final RestTemplate restTemplate;
     private final BeanUtil beanUtil;

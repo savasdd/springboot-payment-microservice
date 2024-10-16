@@ -17,7 +17,7 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping(value = "/download-user")
+    @GetMapping(value = "/download")
     public ResponseEntity<Resource> getUserReport(@RequestParam String fileType, @RequestParam String fileName) throws Exception {
         return reportService.downloadUserReport(fileType, fileName);
     }
