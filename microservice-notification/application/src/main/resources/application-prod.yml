@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8882
   kafka_prod: 10.5.0.4:9092
 
 

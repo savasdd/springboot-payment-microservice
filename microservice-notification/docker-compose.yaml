@@ -11,10 +11,10 @@ services:
     environment:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=10.5.0.4:9092
     expose:
-      - "8088"
+      - "8882"
     ports:
-      - "8088:8088"
-    command: -p 8088
+      - "8882:8882"
+    command: -p 8882
 
 networks:
   nw_containers:
