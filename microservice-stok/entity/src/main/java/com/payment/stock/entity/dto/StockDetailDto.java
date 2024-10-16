@@ -6,11 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class StockDetailDto extends BaseDto implements Serializable {
 
     @Schema(example = "Test")

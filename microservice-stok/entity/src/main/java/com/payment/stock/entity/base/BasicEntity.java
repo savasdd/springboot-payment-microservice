@@ -2,8 +2,11 @@ package com.payment.stock.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.payment.stock.common.enums.RecordStatus;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -13,9 +16,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @MappedSuperclass
+@SuperBuilder(toBuilder = true)
 public abstract class BasicEntity implements Serializable {
 
     @Serial
@@ -25,20 +29,25 @@ public abstract class BasicEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Basic
     @Column(name = "CR_DATE", updatable = false)
     private Date createdDate;
 
+    @Basic
     @Column(name = "UP_DATE")
     private Date updatedDate;
 
+    @Basic
     @Column(name = "status", nullable = false)
     private RecordStatus recordStatus;
 
+    @Basic
     @JsonIgnore
     @CreatedBy
     @Column(name = "CR_BY")
     private String createdBy;
 
+    @Basic
     @JsonIgnore
     @LastModifiedDate
     @Column(name = "UP_BY")

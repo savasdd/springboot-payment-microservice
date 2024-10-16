@@ -11,12 +11,14 @@ import com.payment.stock.entity.content.KafkaContent;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.entity.model.StockDetail;
+import com.payment.stock.repository.StockDetailRepository;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.StockService;
 import com.payment.stock.service.publisher.NotifySerializer;
 import com.payment.stock.service.publisher.Publisher;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,7 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -33,6 +37,7 @@ import java.util.UUID;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
+    private final StockDetailRepository detailRepository;
     private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final Publisher publisher;
@@ -71,22 +76,22 @@ public class StockServiceImpl implements StockService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
-    @Transactional
     public BaseResponse update(Long id, StockDto dto) {
         dto.setId(id);
         Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        Stock update = beanUtil.transform(dto, stock);
-        update.getDetails().forEach(d -> d.setStock(update));
+        BeanUtils.copyProperties(dto, stock);
 
-        //List<StockDetail> stockDetails = beanUtil.mapAll(dto.getDetails(), StockDetail.class);
-        //stockDetails.forEach(d -> d.setStock(stock));
-        //update.setDetails(stockDetails);
+        stock.getDetails().forEach(d -> d.setRecordStatus(RecordStatus.DELETED));
+        dto.getDetails().forEach(f -> {
+            StockDetail detail = detailRepository.findById(f.getId()).orElseThrow(EntityNotFoundException::new);
+            BeanUtils.copyProperties(f, detail);
+            detail.setStock(stock);
+        });
 
-        Stock model = stockRepository.save(update);
-
-        log.info("update: {}", model);
+        stockRepository.saveAndFlush(stock);
+        log.info("update: {}", stock);
         publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
-        return BaseResponse.success(model);
+        return BaseResponse.success(stock);
     }
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)

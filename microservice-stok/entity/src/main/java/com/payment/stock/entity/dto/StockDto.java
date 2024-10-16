@@ -12,11 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class StockDto extends BaseDto implements Serializable {
 
     @Schema(example = "22")
@@ -27,5 +23,5 @@ public class StockDto extends BaseDto implements Serializable {
     private Integer availableQuantity;
     @Schema(example = "Adet")
     private UnitType unitType;
-    private List<StockDetailDto> details = new ArrayList<>();
+    private List<StockDetailDto> details;
 }

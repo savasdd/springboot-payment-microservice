@@ -7,9 +7,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "STOCK_DETAILS")
 @EqualsAndHashCode(callSuper = true)
@@ -24,8 +21,8 @@ public class StockDetail extends BasicEntity implements Serializable {
     @Column(name = "language")
     private String language;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "STOCK_ID", referencedColumnName = "ID")
+    @ToString.Exclude
     private Stock stock;
 }
