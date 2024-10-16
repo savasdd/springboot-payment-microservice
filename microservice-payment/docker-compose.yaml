@@ -15,10 +15,10 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=10.5.0.4:9092
     expose:
-      - "8087"
+      - "8884"
     ports:
-      - "8087:8087"
-    command: -p 8087
+      - "8884:8884"
+    command: -p 8884
 
 networks:
   nw_containers:
