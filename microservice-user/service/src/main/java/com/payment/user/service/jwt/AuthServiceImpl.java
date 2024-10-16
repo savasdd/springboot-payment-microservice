@@ -1,7 +1,9 @@
 package com.payment.user.service.jwt;
 
+import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.dto.LoginDto;
 import com.payment.user.entity.dto.TokenDto;
+import com.payment.user.entity.dto.TokenVo;
 import com.payment.user.entity.model.Role;
 import com.payment.user.entity.model.User;
 import com.payment.user.repository.UserRepository;
@@ -44,6 +46,11 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Authenticated user: {} {} - {}", user.getFirstName(), user.getLastName(), user.getUsername());
         return response;
+    }
+
+    @Override
+    public BaseResponse validate(TokenVo vo) {
+        return BaseResponse.success(!jwtService.validateExpiration(vo.getToken()));
     }
 
     private List<String> getRoles(List<Role> roles) {

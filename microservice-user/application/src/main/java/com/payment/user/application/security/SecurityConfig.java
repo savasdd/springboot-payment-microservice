@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests()
                 .antMatchers("/api/payment/users/auth/login").permitAll()
+                .antMatchers("/api/payment/users/auth/valid-token").permitAll()
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .anyRequest()
                 .authenticated()
