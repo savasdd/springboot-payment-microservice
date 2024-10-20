@@ -1,7 +1,6 @@
 server:
   port: 8761
   local: 127.0.0.1
-  kafka_local: 127.0.0.1:9093
 
 spring:
   application:

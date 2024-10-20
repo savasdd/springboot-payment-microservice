@@ -2,11 +2,13 @@ version: '3.3'
 
 services:
   user:
+    build:
+      context: .
     image: discovery
     container_name: discovery-api
     networks:
       nw_containers:
-        ipv4_address: 10.5.0.1
+        ipv4_address: 10.5.0.10
     restart: always
     expose:
       - "8761"
