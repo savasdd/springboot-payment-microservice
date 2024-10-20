@@ -1,7 +1,6 @@
 server:
   port: 8085
   local: 127.0.0.1
-  kafka_local: 127.0.0.1:9093
 
 spring:
   application:

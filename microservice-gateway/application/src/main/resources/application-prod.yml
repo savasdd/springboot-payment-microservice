@@ -1,6 +1,6 @@
 server:
   port: 8085
-  kafka_prod: 10.5.0.4:9092
+  prod: 10.5.0.10
 
 spring:
   application:
@@ -11,7 +11,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://${server.local}:8761/eureka
+      defaultZone: http://${server.prod}:8761/eureka
 
 springdoc:
   swagger-ui:
@@ -22,3 +22,7 @@ schedulers:
     enable: true
     initialDelayMillis: 3000
     fixedRate: 600000
+
+api:
+  url:
+    users: http://localhost:8880/api/payment/users/auth/

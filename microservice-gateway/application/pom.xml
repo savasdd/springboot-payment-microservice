@@ -10,7 +10,8 @@
     </parent>
 
     <groupId>com.payment.gateway.application</groupId>
-    <artifactId>application</artifactId>
+    <artifactId>gateway</artifactId>
+    <version>0.0.1</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -88,6 +89,7 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
+                    <skip>true</skip>
                     <from>
                         <image>openjdk:17-jdk-alpine</image>
                         <auth>
@@ -105,7 +107,7 @@
                     <container>
                         <environment></environment>
                         <ports>
-                            <port>8088</port>
+                            <port>8085</port>
                         </ports>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                     </container>
