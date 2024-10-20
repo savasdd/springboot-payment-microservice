@@ -7,4 +7,4 @@ services:
        - "82:80"
        - "2443:443"
      env_file:
-       - config.env
+       - .env
