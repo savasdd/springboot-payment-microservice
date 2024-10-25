@@ -15,9 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.*;
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -36,8 +36,9 @@ public class FirebaseConfig {
         try {
             FirebaseData firebaseData = repository.findBySenderIdAndRecordStatus(ConstantUtil.FCM_SENDER_ID, RecordStatus.ACTIVE).orElse(null);
 
-            File file = new File(new ClassPathResource(configFile).getURI());
+            File file = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(configFile)).getFile());
             objectMapper.writeValue(file, firebaseData.getData());
+            log.info("Successfully loaded config file:{}", file.length());
 
             FirebaseOptions options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(new FileInputStream(file))).build();
 

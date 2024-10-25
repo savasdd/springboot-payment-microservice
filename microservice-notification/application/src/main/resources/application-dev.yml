@@ -1,7 +1,7 @@
 server:
   port: 8882
-  local: 127.0.0.1
-  kafka_local: 127.0.0.1:9093
+  local:
+    ip: 127.0.0.1
 
 spring:
   application:
@@ -20,7 +20,7 @@ spring:
       repositories:
         enabled: true
   datasource:
-    url: jdbc:postgresql://${server.local}:5432/payment_notification_db
+    url: jdbc:postgresql://${server.local.ip}:5432/payment_notification_db
     username: postgres
     password: postgres
     hikari:
@@ -29,21 +29,21 @@ spring:
       idle-timeout: 60000
       max-lifetime: 2000000
       connection-timeout: 60000
-      pool-name: stockConnectionPool
+      pool-name: notifyConnectionPool
   jackson:
     serialization:
       fail-on-empty-beans: false
   kafka:
     consumer:
       group-id: order-service-group-id
-    bootstrap-servers: ${server.kafka_local}
+    bootstrap-servers: ${server.local.ip}:9093
   banner:
     location: banner.txt
 
 eureka:
   client:
     service-url:
-      defaultZone: http://${server.local}:8761/eureka
+      defaultZone: http://${server.local.ip}:8761/eureka
 
 springdoc:
   swagger-ui:
@@ -62,4 +62,4 @@ topics:
     replication: 1
 
 firebase:
-  configFile: firebase.json
+  configFile: classpath:/firebase.json
