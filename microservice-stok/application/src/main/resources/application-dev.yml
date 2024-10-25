@@ -1,7 +1,8 @@
 server:
   port: 8881
-  local: 127.0.0.1
-  kafka_local: 127.0.0.1:9093
+  local:
+    ip: 127.0.0.1
+    kafka: 127.0.0.1:9093
 
 spring:
   application:
@@ -22,7 +23,7 @@ spring:
       repositories:
         enabled: true
   datasource:
-    url: jdbc:postgresql://${server.local}:5432/payment_stock_db
+    url: jdbc:postgresql://${server.local.ip}:5432/payment_stock_db
     username: postgres
     password: postgres
     hikari:
@@ -38,7 +39,7 @@ spring:
   kafka:
     consumer:
       group-id: order-service-group-id
-    bootstrap-servers: ${server.kafka_local}
+    bootstrap-servers: ${server.local.kafka}
   banner:
     location: banner.txt
   servlet:
@@ -50,10 +51,10 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://${server.local}:8761/eureka
+      defaultZone: http://${server.local.ip}:8761/eureka
 
 couchbase:
-  host: couchbase://${server.local}
+  host: couchbase://${server.local.ip}
   username: Couchbase
   password: Couchbase
   bucket: PaymentBucket
