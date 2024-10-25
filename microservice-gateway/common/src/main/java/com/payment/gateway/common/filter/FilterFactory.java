@@ -47,7 +47,7 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
             BaseResponse response = restUtil.exchangePost(getUrl(), tokenVo);
 
             if (!validatedPath(path) && !Objects.isNull(response) && response.getData().equals(true)) {
-                log.info("Authorized: {}", path);
+                log.info("Gateway Request: {}", path);
                 return chain.filter(exchange);
             }
 
