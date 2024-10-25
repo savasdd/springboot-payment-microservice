@@ -2,6 +2,7 @@ server:
   port: 8085
   prod:
     eureka: 10.5.0.10
+    user-api: 10.5.0.12:8880
 
 spring:
   application:
@@ -26,4 +27,4 @@ schedulers:
 
 api:
   url:
-    users: http://localhost:8880/api/payment/users/auth/
+    users: http://${server.prod.user-api}/api/payment/users/auth/

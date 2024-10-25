@@ -29,8 +29,14 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse serverResponse = exchange.getResponse();
             serverResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
+            String path = request.getPath().toString();
             String authorization = getAuthHeader(request);
-            String token = !Objects.isNull(authorization) ? authorization.substring(7, authorization.length()) : null;
+            String token = !Objects.isNull(authorization) ? authorization.substring(7) : null;
+
+            if (validatedPath(path)) {
+                log.info("Authorized Token: {}", path);
+                return chain.filter(exchange);
+            }
 
             if (Objects.isNull(authorization) || !authorization.startsWith("Bearer ") || Objects.isNull(token)) {
                 return serverResponse.setComplete();
@@ -40,12 +46,12 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
             tokenVo.setToken(token);
             BaseResponse response = restUtil.exchangePost(getUrl(), tokenVo);
 
-            if (!Objects.isNull(response) && response.getData().equals(true)) {
-                log.info("Authorized: {}", response.getData());
+            if (!validatedPath(path) && !Objects.isNull(response) && response.getData().equals(true)) {
+                log.info("Authorized: {}", path);
                 return chain.filter(exchange);
             }
 
-            log.info("Unauthorized: {}", response.getData());
+            log.info("Unauthorized: {}", path);
             return serverResponse.setComplete();
         };
 
@@ -59,4 +65,7 @@ public abstract class FilterFactory extends AbstractGatewayFilterFactory {
         return request.getHeaders().containsKey("Authorization") ? request.getHeaders().getOrEmpty("Authorization").get(0) : null;
     }
 
+    private boolean validatedPath(String path) {
+        return !Objects.isNull(path) && path.endsWith("login");
+    }
 }
