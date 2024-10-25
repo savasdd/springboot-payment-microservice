@@ -1,6 +1,7 @@
 server:
   port: 8085
-  prod: 10.5.0.10
+  prod:
+    eureka: 10.5.0.10
 
 spring:
   application:
@@ -11,7 +12,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://${server.prod}:8761/eureka
+      defaultZone: http://${server.prod.eureka}:8761/eureka
 
 springdoc:
   swagger-ui:
