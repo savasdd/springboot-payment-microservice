@@ -18,6 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Objects;
 
 @Slf4j
 @Getter
@@ -37,8 +38,9 @@ public class CdnConfig {
         try {
             CdnData data = repository.getActiveCDN().orElse(null);
 
-            File file = new File(new ClassPathResource(configFile).getURI());
+            File file = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(configFile)).getFile());
             objectMapper.writeValue(file, data.getData());
+            log.info("Successfully loaded config file:{}", file.length());
 
             StorageOptions options = StorageOptions.newBuilder().setProjectId(data.getData().getProject_id()).setCredentials(GoogleCredentials.fromStream(new FileInputStream(file))).build();
             Storage storage = options.getService();
@@ -47,6 +49,7 @@ public class CdnConfig {
             log.info("CDN initialized");
             return bucket;
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Error while initializing Firebase {}", e.getMessage());
             return null;
         }
