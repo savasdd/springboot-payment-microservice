@@ -29,7 +29,7 @@ spring:
       idle-timeout: 60000
       max-lifetime: 2000000
       connection-timeout: 60000
-      pool-name: stockConnectionPool
+      pool-name: paymentConnectionPool
   jackson:
     serialization:
       fail-on-empty-beans: false
