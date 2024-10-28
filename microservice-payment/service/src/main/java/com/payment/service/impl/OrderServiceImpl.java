@@ -7,10 +7,7 @@ import com.payment.common.enums.OrderStatus;
 import com.payment.common.utils.BeanUtil;
 import com.payment.common.utils.ConstantUtil;
 import com.payment.common.utils.RestUtil;
-import com.payment.entity.dto.OrderCanselDto;
-import com.payment.entity.dto.OrderDto;
-import com.payment.entity.dto.ProductItemDto;
-import com.payment.entity.dto.StockDto;
+import com.payment.entity.dto.*;
 import com.payment.entity.model.Order;
 import com.payment.entity.model.ProductItem;
 import com.payment.repository.OrderRepository;
@@ -65,9 +62,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Transactional
     @Override
-    public BaseResponse createOrder(OrderDto dto) {
+    public BaseResponse createOrder(OrderV0 dto) {
         List<ProductItem> itemNewList = new ArrayList<>();
         List<ProductItem> itemList = new ArrayList<>();
+        Order model;
 
         dto.getProductItems().forEach(item -> {
             StockDto stock = restUtil.exchangeGet(getUrlParam() + "findOne/" + item.getStockId(), StockDto.class);
@@ -82,23 +80,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         });
 
         if (!itemNewList.isEmpty()) {
-            Order order = orderRepository.save(beanUtil.mapDto(dto, Order.class));
-            order.setOrderNo(generateOrderNo());
-            dto.setId(order.getId());
-            dto.setOrderNo(order.getOrderNo());
+            model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
+            model.setOrderNo(generateOrderNo());
             itemNewList.forEach(item -> {
-                item.setOrder(order);
-                item.setOrderNo(order.getOrderNo());
+                item.setOrder(model);
+                item.setOrderNo(model.getOrderNo());
             });
             itemRepository.saveAll(itemNewList);
 
-            log.info("create order success {}", order);
-            publishOutbox(outboxSerializer.createEvent(order));
-            sendNotification(order.getUserId(), ConstantUtil.ORDER_SUCCESS + " - " + order.getOrderNo());
+            log.info("create order success {}", model);
+            publishOutbox(outboxSerializer.createEvent(model));
+            sendNotification(model.getUserId(), ConstantUtil.ORDER_SUCCESS + " - " + model.getOrderNo());
+            return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
         }
 
 
-        return !itemList.isEmpty() ? BaseResponse.success("Stokta Bulunamadı: " + getStockName(itemList)) : BaseResponse.success(dto);
+        return !itemList.isEmpty() ? BaseResponse.success("Stock Not Found: " + getStockName(itemList)) : BaseResponse.error("Order Exception");
     }
 
     @Override
@@ -108,7 +105,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     public BaseResponse getOrderNo(String orderNo) {
-        return BaseResponse.success(orderRepository.findByOrderNo(orderNo));
+        return BaseResponse.success(findOrderNo(orderNo));
     }
 
     @Override
@@ -209,7 +206,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     public BaseResponse getAllOrder(Pageable pageable) {
         List<Order> orders = orderRepository.findAll(pageable).getContent();
-        log.info("orders: {}", orders);
+        log.info("orders: {}", orders.size());
         return BaseResponse.success(orders, orders.size());
     }
 
@@ -242,7 +239,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private String getUrlParam() {
         return parameterRepository.findByKey(propsConfig.getStock()).orElseThrow(() -> new EntityNotFoundException("Not Found")).getValue();
     }
-
 
 
 }

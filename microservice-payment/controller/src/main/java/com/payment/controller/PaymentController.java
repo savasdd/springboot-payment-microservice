@@ -3,6 +3,7 @@ package com.payment.controller;
 import com.payment.common.base.BaseResponse;
 import com.payment.entity.dto.OrderCanselDto;
 import com.payment.entity.dto.OrderDto;
+import com.payment.entity.dto.OrderV0;
 import com.payment.entity.dto.ProductItemDto;
 import com.payment.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,7 @@ public class PaymentController {
 
     @Operation(summary = "order no: 1", tags = "ordering payment")
     @PostMapping(value = "/create")
-    public ResponseEntity<BaseResponse> createOrder(@RequestBody OrderDto order) {
+    public ResponseEntity<BaseResponse> createOrder(@RequestBody OrderV0 order) {
         return new ResponseEntity<>(orderService.createOrder(order), HttpStatus.CREATED);
     }
 
@@ -72,7 +73,7 @@ public class PaymentController {
         return ResponseEntity.ok(orderService.getOrder(orderId));
     }
 
-    @GetMapping(value = "/findOne/{orderNo}")
+    @GetMapping(value = "/findOrder/{orderNo}")
     public ResponseEntity<BaseResponse> getOrderNo(@PathVariable String orderNo) {
         return ResponseEntity.ok(orderService.getOrderNo(orderNo));
     }
