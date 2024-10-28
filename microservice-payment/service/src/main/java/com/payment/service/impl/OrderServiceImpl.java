@@ -21,6 +21,7 @@ import com.payment.service.publisher.OutboxSerializer;
 import com.payment.service.publisher.Publisher;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -205,9 +206,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     public BaseResponse getAllOrder(Pageable pageable) {
-        List<Order> orders = orderRepository.findAll(pageable).getContent();
-        log.info("orders: {}", orders.size());
-        return BaseResponse.success(orders, orders.size());
+        Page<Order> orders = orderRepository.findAll(pageable);
+        log.info("orders: {}", orders.getContent().size());
+        return BaseResponse.success(orders, orders.getContent().size());
     }
 
     @Transactional
