@@ -4,7 +4,6 @@ server:
     eureka: 10.5.0.10
     kafka: 10.5.0.4
     couchbase: 10.5.0.6
-    stock-api: 10.5.0.13
     db: 10.5.0.2
 
 spring:
@@ -74,7 +73,7 @@ schedulers:
 
 api:
   url:
-    stock: http://${server.prod.stock-api}/api/payment/users/auth/
+    stock: stockServiceProd
 
 topics:
   created:
