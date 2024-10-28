@@ -1,5 +1,5 @@
-FROM azul/zulu-openjdk-alpine:17
-RUN rm -rf report
-EXPOSE 8883
+
+FROM openjdk:17-oracle
 ADD application/target/payment-report-0.0.1.jar app.jar
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
+EXPOSE 8883
+ENTRYPOINT ["java","-jar","app.jar"]
