@@ -208,7 +208,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public BaseResponse getAllOrder(Pageable pageable) {
         Page<Order> orders = orderRepository.findAll(pageable);
         log.info("orders: {}", orders.getContent().size());
-        return BaseResponse.success(orders, orders.getContent().size());
+        return BaseResponse.success(orders, orders.getNumberOfElements());
     }
 
     @Transactional
