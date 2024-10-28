@@ -1,12 +1,14 @@
 version: '3.3'
 
 services:
-  user:
+  report:
+    build:
+      context: .
     image: report
     container_name: report-api
     networks:
       nw_containers:
-        ipv4_address: 10.5.0.12
+        ipv4_address: 10.5.0.16
     restart: always
     expose:
       - "8883"

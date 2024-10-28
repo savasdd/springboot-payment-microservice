@@ -1,6 +1,7 @@
 server:
   port: 8883
-  local: 127.0.0.1
+  local:
+    ip: 127.0.0.1
 
 spring:
   application:
@@ -9,10 +10,10 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://${server.local}:8761/eureka
+      defaultZone: http://${server.local.ip}:8761/eureka
 
 elastic:
-  host: 127.0.0.1:9200
+  host: ${server.local.ip}:9200
   username: elastic
   password: elastic123
   cluster: elasticsearch
