@@ -24,10 +24,10 @@ import java.util.Map;
 public class ReportContentService {
 
     public <T> ResponseEntity<Resource> download(String fileType, String fileName, List<T> dataSource, Map<String, Object> parameters) throws Exception {
-        byte[] bytes = export(fileType, fileName.toUpperCase(), dataSource, parameters);
+        byte[] bytes = export(fileType, fileName, dataSource, parameters);
         if (null != bytes) {
             ByteArrayResource resource = new ByteArrayResource(bytes);
-            fileName = fileName.toUpperCase() + "_" + new SimpleDateFormat("yyyy-MM-dd:HH:mm").format(new Date()) + ReportType.getExtension(fileType);
+            fileName = fileName+ "_" + new SimpleDateFormat("yyyy-MM-dd:HH:mm").format(new Date()) + ReportType.getExtension(fileType);
 
             log.info("Generate Report : {}", fileName);
             return ResponseEntity.ok().header(com.google.common.net.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").contentLength(resource.contentLength()).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
