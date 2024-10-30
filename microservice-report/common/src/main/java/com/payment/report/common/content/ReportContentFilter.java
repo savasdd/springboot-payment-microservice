@@ -47,8 +47,7 @@ public class ReportContentFilter {
             JRSaver.saveObject(jasperReport, fileName.replace(".jrxml", ".jasper"));
 
         } catch (JRException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(ReportContentFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportContentFilter.class.getName()).log(Level.SEVERE, "Compile Exception", ex);
         }
     }
 
@@ -57,8 +56,7 @@ public class ReportContentFilter {
             InputStream jasperStream = getClass().getResourceAsStream("/".concat(fileName));
             jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
         } catch (JRException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(ReportContentFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportContentFilter.class.getName()).log(Level.SEVERE, "Load Exception", ex);
         }
     }
 
@@ -67,7 +65,7 @@ public class ReportContentFilter {
             JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(dataSource);
             jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanCollectionDataSource);
         } catch (JRException ex) {
-            Logger.getLogger(ReportContentFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportContentFilter.class.getName()).log(Level.SEVERE, "Fill Exception", ex);
         }
     }
 

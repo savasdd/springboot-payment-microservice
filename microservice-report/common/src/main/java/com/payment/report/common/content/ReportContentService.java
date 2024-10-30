@@ -27,7 +27,7 @@ public class ReportContentService {
         byte[] bytes = export(fileType, fileName, dataSource, parameters);
         if (null != bytes) {
             ByteArrayResource resource = new ByteArrayResource(bytes);
-            fileName = fileName+ "_" + new SimpleDateFormat("yyyy-MM-dd:HH:mm").format(new Date()) + ReportType.getExtension(fileType);
+            fileName = fileName + "_" + new SimpleDateFormat("yyyy-MM-dd:HH:mm").format(new Date()) + ReportType.getExtension(fileType);
 
             log.info("Generate Report : {}", fileName);
             return ResponseEntity.ok().header(com.google.common.net.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").contentLength(resource.contentLength()).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
@@ -57,8 +57,7 @@ public class ReportContentService {
 
             bytes = new ReportContentExporter().exportJasperReportBytes(filter.getJasperPrint(), ReportType.fromValue(fileType), fileName);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("Export Report Failed: {}", e.getMessage());
+            log.error("Export Report Failed", e);
         }
 
         return bytes;
