@@ -4,6 +4,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="true"/>
 	<parameter name="createdBy" class="java.lang.String"/>
 	<parameter name="comanyName" class="java.lang.String"/>
 	<parameter name="address" class="java.lang.String"/>

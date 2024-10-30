@@ -1,18 +1,11 @@
 package com.payment.report.common.content;
 
+import com.payment.report.common.config.JasperConfig;
 import com.payment.report.common.enums.ReportType;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRCsvExporter;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.engine.export.JRRtfExporter;
-import net.sf.jasperreports.engine.export.JRXmlExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimpleWriterExporterOutput;
-import net.sf.jasperreports.export.SimpleXmlExporterOutput;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -20,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,16 +24,44 @@ import java.util.Map;
 public class ReportContentService {
 
     public <T> ResponseEntity<Resource> download(String fileType, String fileName, List<T> dataSource, Map<String, Object> parameters) throws Exception {
-        byte[] bytes = byteJasperReport(fileType, fileName, dataSource, parameters);
+        byte[] bytes = export(fileType, fileName.toUpperCase(), dataSource, parameters);
         if (null != bytes) {
             ByteArrayResource resource = new ByteArrayResource(bytes);
-            fileName = fileName + "_" + new SimpleDateFormat("yyyy-MM-dd:HH:mm").format(new Date()) + ReportType.getExtension(fileType);
+            fileName = fileName.toUpperCase() + "_" + new SimpleDateFormat("yyyy-MM-dd:HH:mm").format(new Date()) + ReportType.getExtension(fileType);
 
             log.info("Generate Report : {}", fileName);
             return ResponseEntity.ok().header(com.google.common.net.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").contentLength(resource.contentLength()).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
         } else {
             throw new Exception("File Download Failed");
         }
+    }
+
+    private <T> byte[] export(String fileType, String fileName, List<T> dataSource, Map<String, Object> parameters) {
+        byte[] bytes = null;
+
+        try {
+            log.info("Params:{}", parameters);
+            AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+            ctx.register(JasperConfig.class);
+            ctx.refresh();
+
+            ReportContentFilter filter = ctx.getBean(ReportContentFilter.class);
+            //filter.setReportFileName(raporAdi + ".jasper");
+            //filter.loadReport();
+
+            filter.setFileName(fileName + ".jrxml");
+            filter.compileReport();
+
+            filter.setParameters(parameters);
+            filter.fillReport(dataSource);
+
+            bytes = new ReportContentExporter().exportJasperReportBytes(filter.getJasperPrint(), ReportType.fromValue(fileType), fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Export Report Failed: {}", e.getMessage());
+        }
+
+        return bytes;
     }
 
     private <T> byte[] byteJasperReport(String fileType, String fileName, List<T> dataSource, Map<String, Object> parameters) throws Exception {
@@ -55,53 +75,7 @@ public class ReportContentService {
         JasperReport jasperReport = JasperCompileManager.compileReport(path);
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanCollectionDataSource);
         ReportType reportType = ReportType.fromValue(fileType);
-        return exportJasperReportBytes(jasperPrint, reportType);
-    }
-
-    private byte[] exportJasperReportBytes(JasperPrint jasperPrint, ReportType reportType) throws JRException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        switch (reportType) {
-            case CSV:
-                // Export to CSV
-                JRCsvExporter csvExporter = new JRCsvExporter();
-                csvExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                csvExporter.setExporterOutput(new SimpleWriterExporterOutput(outputStream));
-                csvExporter.exportReport();
-                break;
-            case XLSX:
-                // Export to XLSX
-                JRXlsxExporter xlsxExporter = new JRXlsxExporter();
-                xlsxExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                xlsxExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
-                xlsxExporter.exportReport();
-                break;
-            case XML:
-                // Export to XML
-                JRXmlExporter xmlExporter = new JRXmlExporter();
-                xmlExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                xmlExporter.setExporterOutput(new SimpleXmlExporterOutput(outputStream));
-                xmlExporter.exportReport();
-                break;
-            case DOC:
-                // Export to DOCX (RTF format)
-                JRRtfExporter docxExporter = new JRRtfExporter();
-                docxExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                docxExporter.setExporterOutput(new SimpleWriterExporterOutput(outputStream));
-                docxExporter.exportReport();
-                break;
-            case PDF:
-                // Export to PDF (RTF format)
-                JRPdfExporter pdfExporter = new JRPdfExporter();
-                pdfExporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-                pdfExporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
-                pdfExporter.exportReport();
-                break;
-            default:
-                // Export to PDF by default
-                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-                break;
-        }
-        return outputStream.toByteArray();
+        return new ReportContentExporter().exportJasperReportBytes(jasperPrint, reportType, fileName);
     }
 
 

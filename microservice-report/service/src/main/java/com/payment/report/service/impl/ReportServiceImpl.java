@@ -24,7 +24,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ResponseEntity<Resource> downloadUserReport(String fileType, String fileName) throws Exception {
-        List<UserDto> users = List.of(UserDto.builder().firstName("Savaş").lastName("Dede").email("svsdd@gmail.com").phone("5447884457").build(),
+        List<UserDto> users = List.of(
+                UserDto.builder().firstName("Savaş").lastName("Dede").email("svsdd@gmail.com").phone("5447884457").build(),
                 UserDto.builder().firstName("Selen").lastName("Dede").email("slndd@gmail.com").phone("5447884458").build(),
                 UserDto.builder().firstName("Özlem").lastName("Özmen").email("ozlm@gmail.com").phone("5447884459").build());
 

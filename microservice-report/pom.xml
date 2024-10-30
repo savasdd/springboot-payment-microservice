@@ -134,6 +134,18 @@
         </dependency>
 
         <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.21.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jeuclid</groupId>
+            <artifactId>dejavu-fonts</artifactId>
+            <version>2.29</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${openapi.version}</version>
