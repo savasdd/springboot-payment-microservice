@@ -1,0 +1,13 @@
+export * from './categoryController.service';
+import { CategoryControllerService } from './categoryController.service';
+export * from './foodController.service';
+import { FoodControllerService } from './foodController.service';
+export * from './foodFileController.service';
+import { FoodFileControllerService } from './foodFileController.service';
+export * from './foodOrdersController.service';
+import { FoodOrdersControllerService } from './foodOrdersController.service';
+export * from './paymentController.service';
+import { PaymentControllerService } from './paymentController.service';
+export * from './userFileController.service';
+import { UserFileControllerService } from './userFileController.service';
+export const APIS = [CategoryControllerService, FoodControllerService, FoodFileControllerService, FoodOrdersControllerService, PaymentControllerService, UserFileControllerService];

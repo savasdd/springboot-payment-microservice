@@ -1,0 +1,68 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card border" style="margin-bottom: 0;">
+          <div class="card-header card-header-info card-header-icon">
+            <h4 class="card-title">Payment List</h4>
+          </div>
+          <div class="card-body" style="min-height: calc(90vh - 193px);">
+            <div class="row">
+              <dx-data-grid #paymentDataGrid
+                            [allowColumnReordering]="true"
+                            [showBorders]="true"
+                            [dataSource]="dataSource">
+                <dxo-paging [enabled]="false"></dxo-paging>
+                <dxo-editing
+                  mode="form"
+                  [allowUpdating]="true"
+                  [allowAdding]="true"
+                  [allowDeleting]="true"
+                  [useIcons]="true">
+                </dxo-editing>
+
+                <dxo-toolbar>
+                  <dxi-item name="addRowButton"></dxi-item>
+                  <dxi-item location="after">
+                    <dx-button icon="refresh" (onClick)="refreshDataGrid($event)">
+                    </dx-button>
+                  </dxi-item>
+                </dxo-toolbar>
+
+                <dxi-column dataField="stockId" [allowSorting]="false" caption="Stock">
+                  <dxo-lookup [dataSource]="stockDataSource" displayExpr="name" valueExpr="id">
+                  </dxo-lookup>
+                  <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dxi-column>
+                <dxi-column dataField="amountAvailable" [width]="150">
+                  <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dxi-column>
+                <dxi-column dataField="amountReserved" [width]="150"></dxi-column>
+                <dxi-column dataField="amount" [width]="120"></dxi-column>
+                <dxi-column dataField="status" caption="State" [width]="125">
+                  <dxo-lookup [dataSource]="dataTypeSource" displayExpr="name" valueExpr="name">
+                    <dxi-validation-rule type="required"></dxi-validation-rule>
+                  </dxo-lookup>
+                </dxi-column>
+                <dxi-column dataField="transactionDate" dataType="datetime"></dxi-column>
+
+
+                <dxo-paging [pageSize]="10"></dxo-paging>
+                <dxo-pager
+                  [showPageSizeSelector]="true"
+                  [allowedPageSizes]="[5,10, 20, 50, 100]"
+                  [showInfo]="true">
+                </dxo-pager>
+
+                <dxo-filter-row
+                  [visible]="true">
+                </dxo-filter-row>
+              </dx-data-grid>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

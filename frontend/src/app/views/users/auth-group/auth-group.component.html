@@ -1,0 +1,93 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card border" style="margin-bottom: 0px;">
+          <div class="card-header card-header-info card-header-icon">
+            <h4 class="card-title">Group List</h4>
+          </div>
+          <div class="card-body" style="min-height: calc(90vh - 193px);">
+            <div class="row">
+              <dx-data-grid #dataSourceGrid
+                            [dataSource]="dataSource"
+                            keyExpr="ID"
+                            [allowColumnReordering]="true"
+                            (onEditorPreparing)="onEditorPreparing($event)"
+                            [showBorders]="true">
+
+                <dxo-paging [enabled]="true"></dxo-paging>
+                <dxo-editing
+                  mode="form"
+                  [allowUpdating]="true"
+                  [allowDeleting]="false"
+                  [allowAdding]="true"
+                  [useIcons]="true">
+
+                  <dxo-popup
+                    title="Group Info"
+                    [showTitle]="true"
+                    width="30%"
+                    height="55%">
+                  </dxo-popup>
+                  <dxo-form>
+                    <dxi-item itemType="group" [colCount]="1" [colSpan]="2">
+                      <dxi-item dataField=id></dxi-item>
+                      <dxi-item dataField="name"></dxi-item>
+                    </dxi-item>
+
+                    <dxi-item itemType="tabbed" *ngIf="updateMod" [colSpan]="2" [colCount]="2">
+                      <dxi-tab id="id1" title="Role">
+                        <dxi-item itemType="group" [colCount]="1" [colSpan]="2">
+                          <div *dxTemplate="let item of 'detail'">
+                            <app-group-rol *ngIf="data" [data]="data"></app-group-rol>
+                          </div>
+                        </dxi-item>
+                      </dxi-tab>
+                    </dxi-item>
+
+                  </dxo-form>
+                </dxo-editing>
+
+                <dxo-toolbar>
+                  <dxi-item name="addRowButton"></dxi-item>
+                  <dxi-item location="after">
+                    <fa-icon class="basket-icon" [icon]="faRefresh" title="Refresh" style="cursor: pointer"
+                             (click)="refreshDataGrid($event)"></fa-icon>
+                  </dxi-item>
+                </dxo-toolbar>
+
+                <dxi-column dataField="name">
+                  <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dxi-column>
+                <dxi-column dataField="id" [allowEditing]="false"></dxi-column>
+
+                <dxo-paging [pageSize]="10"></dxo-paging>
+                <dxo-pager
+                  [showPageSizeSelector]="true"
+                  [allowedPageSizes]="[5,10, 20, 50, 100]"
+                  [showInfo]="true">
+                </dxo-pager>
+
+                <dxo-header-filter
+                  [visible]=false>
+                </dxo-header-filter>
+                <dxo-filter-row
+                  [visible]="true">
+                </dxo-filter-row>
+
+                <dxo-remote-operations
+                  [sorting]="true"
+                  [paging]="true"
+                  [filtering]="true">
+                </dxo-remote-operations>
+              </dx-data-grid>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
