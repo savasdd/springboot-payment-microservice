@@ -1,0 +1,168 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "coreui-free-angular-admin-template": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/food",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "preserveSymlinks": true,
+            "allowedCommonJsDependencies": [
+              "chart.js",
+              "apexcharts",
+              "highlight.js",
+              "crypto-js/enc-utf8",
+              "crypto-js/hmac-sha256",
+              "crypto-js/enc-base64",
+              "flat",
+              "quill",
+              "ace-builds/src-noconflict/ext-language_tools",
+              "ace-builds/src-noconflict/mode-json",
+              "ace-builds/src-noconflict/mode-sql",
+              "ace-builds/src-noconflict/mode-text",
+              "ace-builds/src-noconflict/theme-ambiance",
+              "ace-builds/src-noconflict/theme-dreamweaver",
+              "ace-builds/src-noconflict/ace",
+              "ace-builds/src-noconflict/mode-csharp",
+              "ace-builds/src-noconflict/mode-vbscript",
+              "jszip",
+              "devexpress-diagram",
+              "devexpress-gantt",
+              "devextreme-quill",
+              "leaflet-ajax",
+              "leaflet-iconmaterial",
+              "leaflet-realtime",
+              "leaflet.markercluster",
+              "file-saver/dist/FileSaver",
+              "jquery"
+            ],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/scss/styles.scss",
+              "node_modules/devextreme/dist/css/dx.common.css",
+              "node_modules/devextreme/dist/css/dx.material.blue.light.css",
+              "node_modules/@devexpress/analytics-core/dist/css/dx-analytics.common.css",
+              "node_modules/@devexpress/analytics-core/dist/css/dx-querybuilder.css",
+              "node_modules/devexpress-dashboard/dist/css/dx-dashboard.material.blue.light.compact.css",
+              "node_modules/devexpress-diagram/dist/dx-diagram.min.css",
+              "node_modules/ace-builds/css/ace.css",
+              "node_modules/ace-builds/css/theme/dreamweaver.css",
+              "node_modules/ace-builds/css/theme/ambiance.css",
+              "node_modules/devextreme/dist/css/dx.common.css",
+              "node_modules/devextreme/dist/css/dx.material.blue.light.css",
+              "node_modules/@devexpress/analytics-core/dist/css/dx-analytics.common.css",
+              "node_modules/@devexpress/analytics-core/dist/css/dx-analytics.material.blue.light.css",
+              "node_modules/bootstrap/scss/bootstrap.scss",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
+              "node_modules/leaflet-mouse-position/src/L.Control.MousePosition.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "node_modules/leaflet-easybutton/src/easy-button.css",
+              "node_modules/leaflet-draw/dist/leaflet.draw.css",
+              "node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css",
+              "node_modules/leaflet-iconmaterial/dist/leaflet.icon-material.css",
+              "node_modules/@material/fab/dist/mdc.fab.css",
+              "src/assets/css/leaflet.timeline.css",
+              "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "1500kb",
+                  "maximumError": "6mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "coreui-free-angular-admin-template:build:production"
+            },
+            "development": {
+              "browserTarget": "coreui-free-angular-admin-template:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "coreui-free-angular-admin-template:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/scss/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+}

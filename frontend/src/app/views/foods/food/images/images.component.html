@@ -1,0 +1,89 @@
+<div id="container">
+  <dx-data-grid #dataGrid
+                [dataSource]="dataSource"
+                [allowColumnReordering]="true"
+                [showBorders]="true"
+                (onRowInserting)="logEvent('RowInserting')">
+
+    <dxo-paging [enabled]="true"></dxo-paging>
+    <dxo-editing
+      mode="form"
+      [allowUpdating]="false"
+      [allowDeleting]="false"
+      [allowAdding]="true"
+      [useIcons]="true">
+    </dxo-editing>
+
+    <dxo-toolbar>
+      <dxi-item name="addRowButton">
+        <dx-button icon="plus" (onClick)="newImages()">
+        </dx-button>
+      </dxi-item>
+    </dxo-toolbar>
+
+    <dxi-column dataField="filename" caption="File"></dxi-column>
+    <dxi-column dataField="size"></dxi-column>
+    <dxi-column dataField="operationId" caption="Delete" dataType="text"
+                width="15%" cellTemplate="operationTemplate"></dxi-column>
+    <div style="text-align: center;" *dxTemplate="let data of 'operationTemplate'">
+      <dx-button icon="trash" [visible]="true" (click)="deleteFoodImage(data.data)"></dx-button>
+    </div>
+
+
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[5,10, 20, 50, 100]"
+      [showInfo]="true">
+    </dxo-pager>
+
+  </dx-data-grid>
+
+
+  <div>
+    <dx-popup
+      width="40%"
+      height="50%"
+      [showTitle]="true"
+      title="Food Image"
+      [dragEnabled]="false"
+      [hideOnOutsideClick]="false"
+      [showCloseButton]="true"
+      [(visible)]="popupVisible">
+
+      <div *dxTemplate="let data of 'content'">
+        <form id="form" #form method="post" enctype="multipart/form-data">
+          <div class="dx-fieldset">
+            <div class="dx-field">
+              <div class="dx-field-label">Food:</div>
+              <dx-text-box
+                class="dx-field-value"
+                name="FirstName"
+                [inputAttr]="{ 'aria-label': 'First Name' }"
+                [value]="foodData.foodName"
+              ></dx-text-box>
+            </div>
+          </div>
+          <div id="fileuploader-container">
+            <dx-file-uploader
+              selectButtonText="Select photo"
+              labelText=""
+              accept="image/*"
+              (onValueChanged)="onValueChanged($event)"
+              uploadMode="useForm">
+            </dx-file-uploader>
+          </div>
+          <dx-button
+            id="button"
+            class="btn btn-outline-primary"
+            text="Save"
+            type="success"
+            (onClick)="updateClick()">
+          </dx-button>
+        </form>
+      </div>
+
+    </dx-popup>
+  </div>
+
+</div>
