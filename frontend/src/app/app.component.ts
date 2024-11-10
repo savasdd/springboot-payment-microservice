@@ -10,7 +10,7 @@ import {Title} from '@angular/platform-browser';
   template: '<router-outlet></router-outlet>',
 })
 export class AppComponent implements OnInit {
-  title = 'FOOD';
+  title = 'PAYMENT';
 
   constructor(
     private router: Router,
@@ -18,7 +18,6 @@ export class AppComponent implements OnInit {
     private iconSetService: IconSetService
   ) {
     titleService.setTitle(this.title);
-    // iconSet singleton
     iconSetService.icons = {...iconSubset};
   }
 

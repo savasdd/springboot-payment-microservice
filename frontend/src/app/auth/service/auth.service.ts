@@ -14,7 +14,7 @@ export class AuthService {
   constructor(
     public service: GenericService,
     private tokenService: TokenService) {
-    this.authService = this.service.instance('auth');
+    this.authService = this.service.instance('payment/users/auth');
   }
 
   login(username: any, password: any) {
@@ -24,9 +24,9 @@ export class AuthService {
     };
 
 
-    return this.authService.customPostPermit('getToken', dto).then((response: any): any => {
+    return this.authService.customPostPermit('login', dto).then((response: any): any => {
       if (response) {
-        this.tokenService.saveToken(response.access_token);
+        this.tokenService.saveToken(response.token);
         this.tokenService.saveRefreshToken(response.refresh_token);
         this.tokenService.saveUser(dto.username);
         this.tokenService.saveRol(response.roles);

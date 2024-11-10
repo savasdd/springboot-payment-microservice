@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/api/payment/users/auth")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 public class AuthController {
     private final AuthService authService;
 

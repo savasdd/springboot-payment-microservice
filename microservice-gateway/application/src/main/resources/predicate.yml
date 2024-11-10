@@ -1,6 +1,12 @@
 spring:
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*" # Allows requests from any origin
+            allowedMethods: "GET,POST,PUT,DELETE" # Allows all HTTP methods (GET, POST, etc.)
+            allowedHeaders: "*"
       httpclient:
         connect-timeout: 10000
         response-timeout: 7s
@@ -53,3 +59,5 @@ spring:
             - Path=/api/payment/reports/**
           filters:
             - JwtFilter
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin, RETAIN_UNIQUE
