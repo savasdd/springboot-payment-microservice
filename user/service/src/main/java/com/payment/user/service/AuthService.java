@@ -3,7 +3,7 @@ package com.payment.user.service;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.dto.LoginDto;
 import com.payment.user.entity.dto.TokenDto;
-import com.payment.user.entity.dto.TokenVo;
+import com.payment.user.entity.vo.TokenVo;
 
 public interface AuthService {
 

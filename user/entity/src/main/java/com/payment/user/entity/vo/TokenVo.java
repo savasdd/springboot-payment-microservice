@@ -1,10 +1,8 @@
-package com.payment.user.entity.dto;
+package com.payment.user.entity.vo;
 
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

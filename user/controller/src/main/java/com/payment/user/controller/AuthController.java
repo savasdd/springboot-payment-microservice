@@ -3,7 +3,7 @@ package com.payment.user.controller;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.dto.LoginDto;
 import com.payment.user.entity.dto.TokenDto;
-import com.payment.user.entity.dto.TokenVo;
+import com.payment.user.entity.vo.TokenVo;
 import com.payment.user.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
