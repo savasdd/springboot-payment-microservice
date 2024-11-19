@@ -1,0 +1,22 @@
+version: '3.3'
+
+services:
+  gateway:
+    build:
+      context: .
+    image: gateway
+    container_name: gateway-api
+    networks:
+      nw_containers:
+        ipv4_address: 10.5.0.11
+    restart: always
+    expose:
+      - "8085"
+    ports:
+      - "8085:8085"
+    command: -p 8085
+
+networks:
+  nw_containers:
+      name: custom_bridge
+      external: true
