@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginDto implements Serializable {
-    @Schema(example = "svsdd")
+    @Schema(example = "svsdd22@gmail.com")
     private String username;
     @Schema(example = "123")
     private String password;

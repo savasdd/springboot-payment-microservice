@@ -45,11 +45,19 @@ public class UserServiceImpl implements UserService {
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
     @Override
-    public BaseResponse findAll(Pageable pageable) {
+    public BaseResponse findAll() {
+        List<UserDto> list = beanUtil.mapAll(repository.findAll(), UserDto.class);
+        log.info("get all user {}", list.size());
+        return BaseResponse.success(list, list.size());
+    }
+
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
+    @Override
+    public BaseResponse findAllPageable(Pageable pageable) {
         Page<UserDto> list = beanUtil.mapAll(repository.findAll(pageable), UserDto.class);
 
-        log.info("get all user {}", list.getTotalElements());
-        return BaseResponse.success(list.getContent(),(int)list.getTotalElements());
+        log.info("get all user pageble {}", list.getTotalElements());
+        return BaseResponse.success(list.getContent(), (int) list.getTotalElements());
     }
 
     @Override

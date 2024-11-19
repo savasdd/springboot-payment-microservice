@@ -17,8 +17,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping(value = "/all")
-    public ResponseEntity<BaseResponse> findAll(Pageable pageable) {
-        return ResponseEntity.ok(userService.findAll(pageable));
+    public ResponseEntity<BaseResponse> findAll() {
+        return ResponseEntity.ok(userService.findAll());
+    }
+
+    @GetMapping(value = "/all-pageable")
+    public ResponseEntity<BaseResponse> findAllPageable(Pageable pageable) {
+        return ResponseEntity.ok(userService.findAllPageable(pageable));
     }
 
     @GetMapping(value = "/findOne/{id}")
