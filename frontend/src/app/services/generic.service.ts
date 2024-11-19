@@ -40,7 +40,7 @@ export class GenericService {
   }
 
   update(key: any, data: any) {
-    return firstValueFrom(this.http.put(this.baseUrl + 'update/' + key, data).pipe(catchError(this.handleError)));
+    return firstValueFrom(this.http.put(this.baseUrl + 'update', data).pipe(catchError(this.handleError)));
   }
 
   delete(key: any) {

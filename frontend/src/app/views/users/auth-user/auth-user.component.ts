@@ -59,8 +59,8 @@ export class AuthUserComponent implements OnInit {
         });
       },
       insert: (values) => {
-        values.recordStatus='ACTIVE';
-        values.city={'id':1}
+        values.city=null;
+        values.roles=[];
         return this.userService.save(values).then((response) => {
             return;
           }
@@ -68,7 +68,9 @@ export class AuthUserComponent implements OnInit {
       },
       update: (key, values: any) => {
         values.id = key;
-        return this.userService.update(key, values).then((response) => {
+        values.city=null;
+        values.roles=[];
+        return this.userService.update(null,values).then((response) => {
           return;
         }
         );
