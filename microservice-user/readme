@@ -1,8 +1,0 @@
-
-DOCKER
-docker rmi userapi -f
-docker build . -t userapi
-docker logs --since=1h 'container_id' -f
-
-BUILD
-mvn clean verify -P prod
