@@ -90,8 +90,8 @@ public class UserServiceImpl implements UserService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
-    public BaseResponse update(Long id, UserVo vo) {
-        User user = beanUtil.transform(vo, repository.findById(id).orElseThrow(() -> new EntityNotFoundException("User Not Found")));
+    public BaseResponse update(UserVo vo) {
+        User user = beanUtil.transform(vo, repository.findById(vo.getId()).orElseThrow(() -> new EntityNotFoundException("User Not Found")));
         user.setCity(!Objects.isNull(vo.getCity()) ? cityRepository.findById(vo.getCity().getId()).orElse(null) : null);
         user.setRoles(roleRepository.findAllByIdIn(getRoleIds(vo.getRoles())));
         user.setPassword(passwordEncoder.encode(user.getPassword()));

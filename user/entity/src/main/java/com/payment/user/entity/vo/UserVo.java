@@ -14,8 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class UserVo extends BaseDto implements Serializable {
+public class UserVo implements Serializable {
 
+    private Long id;
     @Schema(example = "svsdd")
     private String username;
     @Schema(example = "123")

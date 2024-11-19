@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 
 @Getter
@@ -22,7 +23,7 @@ public abstract class BaseDto implements Serializable {
 
     private Long id;
     private RecordStatus recordStatus;
-    @JsonIgnore
-    private String updatedBy;
+    private Date creDate;
+    private String creBy;
 
 }

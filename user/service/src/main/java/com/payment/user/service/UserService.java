@@ -18,7 +18,7 @@ public interface UserService {
 
     BaseResponse save(UserVo user);
 
-    BaseResponse update(Long id, UserVo user);
+    BaseResponse update(UserVo user);
 
     BaseResponse delete(Long id);
 }

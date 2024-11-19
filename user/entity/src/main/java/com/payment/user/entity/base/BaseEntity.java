@@ -26,10 +26,10 @@ public abstract class BaseEntity implements Serializable {
     private Long id;
 
     @Column(name = "CR_DATE", updatable = false)
-    private Date createdDate;
+    private Date creDate;
 
     @Column(name = "UP_DATE")
-    private Date updatedDate;
+    private Date modDate;
 
     @Column(name = "status", nullable = false)
     private RecordStatus recordStatus;
@@ -41,22 +41,24 @@ public abstract class BaseEntity implements Serializable {
     @JsonIgnore
     @CreatedBy
     @Column(name = "CR_BY")
-    private String createdBy;
+    private String creBy;
 
     @JsonIgnore
     @LastModifiedDate
     @Column(name = "UP_BY")
-    private String updatedBy;
+    private String modBy;
 
     @PreUpdate
     public void setPreUpdate() {
-        this.updatedDate = new Date();
+        this.modDate = new Date();
     }
 
     @PrePersist
     public void setPrePersist() {
-        this.createdDate = new Date();
+        this.creDate = new Date();
         this.recordStatus = RecordStatus.ACTIVE;
+        this.modDate = null;
+        this.creBy = "Admin";
     }
 
 }

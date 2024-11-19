@@ -29,7 +29,7 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private String firstName;
     @Column(name = "lastName")
     private String lastName;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
     @Column(name = "address")
     private String address;
