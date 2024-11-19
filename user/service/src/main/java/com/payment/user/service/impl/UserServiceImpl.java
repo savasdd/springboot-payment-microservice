@@ -5,6 +5,7 @@ import com.payment.user.common.config.kafka.KafkaTopicsConfig;
 import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.common.utils.CacheUtil;
 import com.payment.user.common.utils.ConstantUtil;
+import com.payment.user.entity.base.ValidationDto;
 import com.payment.user.entity.content.KafkaContent;
 import com.payment.user.entity.dto.UserDto;
 import com.payment.user.entity.model.Role;
@@ -77,6 +78,11 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse save(UserVo vo) {
+        ValidationDto valid = validation(vo);
+        if (valid.isError()) {
+            throw new RuntimeException(valid.getMessage());
+        }
+
         User user = beanUtil.mapDto(vo, User.class);
         user.setCity(!Objects.isNull(vo.getCity()) ? cityRepository.findById(vo.getCity().getId()).orElse(null) : null);
         user.setRoles(roleRepository.findAllByIdIn(getRoleIds(vo.getRoles())));
@@ -91,6 +97,11 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
     public BaseResponse update(UserVo vo) {
+        ValidationDto valid = validation(vo);
+        if (valid.isError()) {
+            throw new RuntimeException(valid.getMessage());
+        }
+
         User user = beanUtil.transform(vo, repository.findById(vo.getId()).orElseThrow(() -> new EntityNotFoundException("User Not Found")));
         user.setCity(!Objects.isNull(vo.getCity()) ? cityRepository.findById(vo.getCity().getId()).orElse(null) : null);
         user.setRoles(roleRepository.findAllByIdIn(getRoleIds(vo.getRoles())));
@@ -123,6 +134,18 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             log.error("exception while publishing notification    event: {}", e.getLocalizedMessage());
         }
+    }
+
+    private ValidationDto validation(UserVo vo) {
+        if (Objects.isNull(vo.getUsername()))
+            return ValidationDto.validation(true, "Username Name is required");
+        if (Objects.isNull(vo.getFirstName()))
+            return ValidationDto.validation(true, "Firstname Name is required");
+        if (Objects.isNull(vo.getLastName()))
+            return ValidationDto.validation(true, "Lastname Name is required");
+
+        return ValidationDto.validation(false, "Success");
+
     }
 
     private List<Long> getRoleIds(List<RoleVo> roles) {
