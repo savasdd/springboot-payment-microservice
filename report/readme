@@ -1,0 +1,9 @@
+
+DOCKER
+docker rmi report -f
+docker build . -t report
+docker logs --since=1h 'container_id' -f
+
+
+BUILD
+mvn clean verify -P prod

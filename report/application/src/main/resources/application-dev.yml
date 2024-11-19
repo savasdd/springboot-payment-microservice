@@ -1,0 +1,30 @@
+server:
+  port: 8883
+  local:
+    ip: 127.0.0.1
+
+spring:
+  application:
+    name: report-api
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${server.local.ip}:8761/eureka
+
+elastic:
+  host: ${server.local.ip}:9200
+  username: elastic
+  password: elastic123
+  cluster: elasticsearch
+  index-stock: index_stock
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+
+schedulers:
+  outbox:
+    enable: true
+    initialDelayMillis: 3000
+    fixedRate: 600000

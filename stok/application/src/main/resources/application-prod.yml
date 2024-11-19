@@ -1,0 +1,87 @@
+server:
+  port: 8881
+  prod:
+    kafka: 10.5.0.4:9092
+    couchbase: 10.5.0.6
+    eureka: 10.5.0.10
+    db: 10.5.0.2
+
+spring:
+  application:
+    name: stock-api
+  jpa:
+    show-sql: false
+    hibernate.ddl-auto: update
+    defer-datasource-initialization: true
+    properties:
+      hibernate.enable_lazy_load_no_trans: true
+      hibernate.format_sql: true
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  datasource:
+    url: jdbc:postgresql://${server.prod.db}:5432/payment_stock_db
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 60000
+      max-lifetime: 2000000
+      connection-timeout: 60000
+      pool-name: stockConnectionPool
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  kafka:
+    consumer:
+      group-id: order-service-group-id
+    bootstrap-servers: ${server.prod.kafka}
+  banner:
+    location: banner.txt
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 3MB
+      max-request-size: 3MB
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${server.prod.eureka}:8761/eureka
+
+couchbase:
+  host: couchbase://${server.prod.couchbase}
+  username: Couchbase
+  password: Couchbase
+  bucket: PaymentBucket
+
+elastic:
+  host: 127.0.0.1:9200
+  username: elastic
+  password: elastic123
+  cluster: elasticsearch
+  index-stock: index_stock
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+
+schedulers:
+  outbox:
+    enable: true
+    initialDelayMillis: 3000
+    fixedRate: 600000
+
+topics:
+  notification:
+    name: notification-queue
+    partitions: 3
+    replication: 1
+
+cdn:
+  configFile: classpath:/CDN.json
+  bucketName: springbootfirebase-cd166.appspot.com

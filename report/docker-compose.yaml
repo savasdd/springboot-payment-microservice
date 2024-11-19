@@ -1,0 +1,24 @@
+version: '3.3'
+
+services:
+  report:
+    build:
+      context: .
+    image: report
+    container_name: report-api
+    environment:
+      JAVA_OPTS: '-Xmx2g -Duser.timezone=GMT+3 -Dfile.encoding=TR'
+    networks:
+      nw_containers:
+        ipv4_address: 10.5.0.16
+    restart: always
+    expose:
+      - "8883"
+    ports:
+      - "8883:8883"
+    command: -p 8883
+
+networks:
+  nw_containers:
+      name: custom_bridge
+      external: true
