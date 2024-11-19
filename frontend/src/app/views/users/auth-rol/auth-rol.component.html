@@ -10,7 +10,7 @@
             <div class="row">
               <dx-data-grid #dataSourceGrid
                             [dataSource]="dataSource"
-                            keyExpr="ID"
+                            keyExpr="id"
                             [allowColumnReordering]="true"
                             [showBorders]="true"
                             (onEditingStart)="logEvent('EditingStart')">
@@ -18,8 +18,8 @@
                 <dxo-paging [enabled]="true"></dxo-paging>
                 <dxo-editing
                   mode="row"
-                  [allowUpdating]="false"
-                  [allowDeleting]="false"
+                  [allowUpdating]="true"
+                  [allowDeleting]="true"
                   [allowAdding]="true"
                   [useIcons]="true">
                 </dxo-editing>
@@ -32,11 +32,10 @@
                   </dxi-item>
                 </dxo-toolbar>
 
-                <dxi-column dataField="name" cellTemplate="cellTemplate">
+                <dxi-column dataField="name" caption="Rol Adı">
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
-                <dxi-column dataField="id" [allowEditing]="false" cellTemplate="cellTemplate"></dxi-column>
-                <dxi-column dataField="description" cellTemplate="cellTemplate"></dxi-column>
+                <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
 
                 <div *dxTemplate="let data of 'cellTemplate'">
                   <div>
