@@ -23,7 +23,7 @@ export class AuthUserComponent implements OnInit {
   ];
 
   constructor(private service: GenericService) {
-    this.userService = this.service.instance('auths/users');
+    this.userService = this.service.instance('payment/users');
     this.loadGrid();
   }
 
@@ -46,17 +46,31 @@ export class AuthUserComponent implements OnInit {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        return this.userService.findAll(UtilService.setPage(loadOptions)).then((response: any) => {
+        return this.userService.findAllPageable(UtilService.setPage(loadOptions),0,200,'id,desc').then((response: any) => {
           return {
             data: response.data,
-            totalCount: response.totalCount
+            totalCount: response.count
           };
         });
       },
+      byKey: (key) => {
+        return this.userService.findOne(key).then((response: any) => {
+          return response;
+        });
+      },
       insert: (values) => {
+        values.recordStatus='ACTIVE';
+        values.city={'id':1}
         return this.userService.save(values).then((response) => {
             return;
           }
+        );
+      },
+      update: (key, values: any) => {
+        values.id = key;
+        return this.userService.update(key, values).then((response) => {
+          return;
+        }
         );
       },
       remove: (key) => {

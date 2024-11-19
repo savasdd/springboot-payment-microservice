@@ -4,13 +4,13 @@
       <div class="col-md-12">
         <div class="card border" style="margin-bottom: 0px;">
           <div class="card-header card-header-info card-header-icon">
-            <h4 class="card-title">User List</h4>
+            <h4 class="card-title">Kullanıcılar</h4>
           </div>
           <div class="card-body" style="min-height: calc(90vh - 193px);">
             <div class="row">
               <dx-data-grid #dataSourceGrid
                             [dataSource]="dataSource"
-                            keyExpr="ID"
+                            keyExpr="id"
                             [allowColumnReordering]="true"
                             (onEditorPreparing)="onEditorPreparing($event)"
                             [showBorders]="true">
@@ -35,7 +35,7 @@
                       <dxi-item dataField="username"></dxi-item>
                       <dxi-item dataField="email"></dxi-item>
                       <dxi-item dataField="password"></dxi-item>
-                      <dxi-item dataField="enabled"></dxi-item>
+                      <dxi-item dataField="address"></dxi-item>
                     </dxi-item>
 
                     <!--                    <dxi-item itemType="tabbed" *ngIf="updateMod" [colSpan]="2" [colCount]="2">-->
@@ -75,9 +75,8 @@
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
                 <dxi-column dataField="email"></dxi-column>
-                <dxi-column dataField="enabled"></dxi-column>
+                <dxi-column dataField="address"></dxi-column>
                 <dxi-column dataField="password" [visible]="false">
-                  <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
                 <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
 

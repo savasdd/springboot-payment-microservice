@@ -27,7 +27,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -74,10 +76,10 @@ public class UserServiceImpl implements UserService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
-    public BaseResponse save(UserVo dto) {
-        User user = beanUtil.mapDto(dto, User.class);
-        user.setCity(cityRepository.findById(dto.getCity().getId()).orElse(null));
-        user.setRoles(roleRepository.findAllByIdIn(getRoleIds(dto.getRoles())));
+    public BaseResponse save(UserVo vo) {
+        User user = beanUtil.mapDto(vo, User.class);
+        user.setCity(!Objects.isNull(vo.getCity()) ? cityRepository.findById(vo.getCity().getId()).orElse(null) : null);
+        user.setRoles(roleRepository.findAllByIdIn(getRoleIds(vo.getRoles())));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User model = repository.save(user);
 
@@ -88,10 +90,10 @@ public class UserServiceImpl implements UserService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
-    public BaseResponse update(Long id, UserVo dto) {
-        User user = beanUtil.transform(dto, repository.findById(id).orElse(null));
-        user.setCity(cityRepository.findById(dto.getCity().getId()).orElse(null));
-        user.setRoles(roleRepository.findAllByIdIn(getRoleIds(dto.getRoles())));
+    public BaseResponse update(Long id, UserVo vo) {
+        User user = beanUtil.transform(vo, repository.findById(id).orElseThrow(() -> new EntityNotFoundException("User Not Found")));
+        user.setCity(!Objects.isNull(vo.getCity()) ? cityRepository.findById(vo.getCity().getId()).orElse(null) : null);
+        user.setRoles(roleRepository.findAllByIdIn(getRoleIds(vo.getRoles())));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         User model = repository.save(user);

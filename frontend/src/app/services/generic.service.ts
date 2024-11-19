@@ -1,10 +1,10 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpContext, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
-import {catchError, firstValueFrom, Observable, throwError} from 'rxjs';
-import {environment} from "../../environments/environment";
-import {TokenService} from "../auth/service/token.service";
-import {MessageService} from "./message.service";
-import {FoodFileDto} from "./food-service-api";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpContext, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
+import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
+import { environment } from "../../environments/environment";
+import { TokenService } from "../auth/service/token.service";
+import { MessageService } from "./message.service";
+import { FoodFileDto } from "./food-service-api";
 
 
 @Injectable({
@@ -28,9 +28,12 @@ export class GenericService {
 
 
   findAll(loadOptions: any) {
-    return firstValueFrom(this.http.post<any>(this.baseUrl + 'all', loadOptions).pipe(catchError(this.handleError)));
+    return firstValueFrom(this.http.get<any>(this.baseUrl + 'all', loadOptions).pipe(catchError(this.handleError)));
   }
 
+  findAllPageable(loadOptions: any, page: number, size: number, sort: string) {
+    return firstValueFrom(this.http.get<any>(this.baseUrl + 'all-pageable?page=' + page + '&size=' + size + '&sort=' + sort, loadOptions).pipe(catchError(this.handleError)));
+  }
 
   save(data: any) {
     return firstValueFrom(this.http.post(this.baseUrl + 'save', data).pipe(catchError(this.handleError)));
