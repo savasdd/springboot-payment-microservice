@@ -3,6 +3,7 @@ package com.payment.user.service.impl;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.entity.model.City;
+import com.payment.user.entity.model.User;
 import com.payment.user.repository.CityRepository;
 import com.payment.user.service.CityService;
 import lombok.AllArgsConstructor;
@@ -51,7 +52,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public BaseResponse updateCity(City city) {
-        City model = beanUtil.mapDto(city.getId(), City.class);
+        City model = beanUtil.transform(city, cityRepository.findById(city.getId()).orElseThrow(() -> new EntityNotFoundException("City Not Found")));
         cityRepository.save(model);
 
         log.info("update city: {}", model);
