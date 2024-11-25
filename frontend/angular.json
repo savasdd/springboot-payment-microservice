@@ -54,10 +54,6 @@
               "devexpress-diagram",
               "devexpress-gantt",
               "devextreme-quill",
-              "leaflet-ajax",
-              "leaflet-iconmaterial",
-              "leaflet-realtime",
-              "leaflet.markercluster",
               "file-saver/dist/FileSaver",
               "jquery"
             ],
@@ -82,18 +78,7 @@
               "node_modules/@devexpress/analytics-core/dist/css/dx-analytics.material.blue.light.css",
               "node_modules/bootstrap/scss/bootstrap.scss",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
-              "node_modules/leaflet-mouse-position/src/L.Control.MousePosition.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-              "node_modules/leaflet-easybutton/src/easy-button.css",
-              "node_modules/leaflet-draw/dist/leaflet.draw.css",
-              "node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css",
-              "node_modules/leaflet-iconmaterial/dist/leaflet.icon-material.css",
-              "node_modules/@material/fab/dist/mdc.fab.css",
-              "src/assets/css/leaflet.timeline.css",
-              "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css"
+              "node_modules/@material/fab/dist/mdc.fab.css"
             ],
             "scripts": []
           },

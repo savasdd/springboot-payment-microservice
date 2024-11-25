@@ -34,18 +34,6 @@ import {
   UtilitiesModule,
 } from '@coreui/angular';
 
-import 'proj4leaflet';
-import 'leaflet-fullscreen';
-import 'leaflet-mouse-position';
-import 'leaflet-realtime';
-import 'leaflet-plugins/layer/tile/Yandex';
-import 'leaflet-easybutton';
-import 'leaflet.markercluster';
-import 'leaflet-draw';
-import 'leaflet-ajax';
-import 'leaflet-iconmaterial';
-import 'leaflet-measure-path';
-
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { LoaderService } from "./auth/service/loader.service";
 import { ErrorInterceptor } from "./auth/interceptors/error";
