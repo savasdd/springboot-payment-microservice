@@ -49,16 +49,20 @@ export const navItems: INavData[] = [
     ]
   },
   {
-    name: 'User',
+    name: 'Yetkilendirme',
     url: '/users',
     iconComponent: { name: 'cil-user' },
     children: [
       {
-        name: 'User',
+        name: 'Kullanıcılar',
         url: 'users/user'
       },
       {
-        name: 'Rol',
+        name: 'Şehirler',
+        url: 'users/city'
+      },
+      {
+        name: 'Roller',
         url: 'users/rol'
       },
 

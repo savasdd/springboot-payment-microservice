@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   ButtonGroupModule,
   ButtonModule,
@@ -13,19 +13,20 @@ import {
   SharedModule,
   UtilitiesModule
 } from "@coreui/angular";
-import {IconModule} from "@coreui/icons-angular";
-import {ReactiveFormsModule} from "@angular/forms";
-import {DocsComponentsModule} from "@docs-components/docs-components.module";
-import {RouterModule, Routes} from "@angular/router";
-import {DevExtremeModule} from "devextreme-angular";
-import {UserProfileComponent} from "./user-profile/user-profile.component";
-import {AuthUserComponent} from './auth-user/auth-user.component';
-import {AuthRolComponent} from './auth-rol/auth-rol.component';
-import {AuthGroupComponent} from './auth-group/auth-group.component';
+import { IconModule } from "@coreui/icons-angular";
+import { ReactiveFormsModule } from "@angular/forms";
+import { DocsComponentsModule } from "@docs-components/docs-components.module";
+import { RouterModule, Routes } from "@angular/router";
+import { DevExtremeModule } from "devextreme-angular";
+import { UserProfileComponent } from "./user-profile/user-profile.component";
+import { AuthUserComponent } from './auth-user/auth-user.component';
+import { AuthRolComponent } from './auth-rol/auth-rol.component';
+import { AuthGroupComponent } from './auth-group/auth-group.component';
 import { UserGroupComponent } from './auth-user/user-group/user-group.component';
 import { GroupRolComponent } from './auth-group/group-rol/group-rol.component';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { UserDepartmentComponent } from './auth-user/user-department/user-department.component';
+import { UserCityComponent } from './user-city/user-city.component';
 
 const routes: Routes = [
   {
@@ -40,13 +41,19 @@ const routes: Routes = [
       {
         path: 'user', component: AuthUserComponent,
         data: {
-          title: 'Users'
+          title: ''
         }
       },
       {
         path: 'rol', component: AuthRolComponent,
         data: {
-          title: 'Rols'
+          title: ''
+        }
+      },
+      {
+        path: 'city', component: UserCityComponent,
+        data: {
+          title: ''
         }
       },
       {
@@ -67,28 +74,29 @@ const routes: Routes = [
     AuthGroupComponent,
     UserGroupComponent,
     GroupRolComponent,
-    UserDepartmentComponent
+    UserDepartmentComponent,
+    UserCityComponent
   ],
-    imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        ButtonModule,
-        ButtonGroupModule,
-        GridModule,
-        IconModule,
-        CardModule,
-        UtilitiesModule,
-        DropdownModule,
-        SharedModule,
-        FormModule,
-        ReactiveFormsModule,
-        DocsComponentsModule,
-        NavbarModule,
-        CollapseModule,
-        NavModule,
-        DevExtremeModule,
-        FontAwesomeModule,
-    ]
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ButtonModule,
+    ButtonGroupModule,
+    GridModule,
+    IconModule,
+    CardModule,
+    UtilitiesModule,
+    DropdownModule,
+    SharedModule,
+    FormModule,
+    ReactiveFormsModule,
+    DocsComponentsModule,
+    NavbarModule,
+    CollapseModule,
+    NavModule,
+    DevExtremeModule,
+    FontAwesomeModule,
+  ]
 })
 export class UsersModule {
 }
