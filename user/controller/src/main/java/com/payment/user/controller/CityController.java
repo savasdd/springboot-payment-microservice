@@ -19,8 +19,13 @@ public class CityController {
     private final CityService cityService;
 
     @GetMapping(value = "/all")
-    public ResponseEntity<BaseResponse> findAll(Pageable pageable) {
-        return ResponseEntity.ok(cityService.findAll(pageable));
+    public ResponseEntity<BaseResponse> findAll() {
+        return ResponseEntity.ok(cityService.findAll());
+    }
+
+    @GetMapping(value = "/all-pageable")
+    public ResponseEntity<BaseResponse> findAllPageable(Pageable pageable) {
+        return ResponseEntity.ok(cityService.findAllPageable(pageable));
     }
 
     @GetMapping(value = "/findOne/{id}")
@@ -33,9 +38,9 @@ public class CityController {
         return new ResponseEntity<>(cityService.saveCity(city), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/update/{id}")
-    public ResponseEntity<BaseResponse> update(@Validated @PathVariable Long id, @RequestBody City city) {
-        return new ResponseEntity<>(cityService.updateCity(id, city), HttpStatus.OK);
+    @PutMapping(value = "/update")
+    public ResponseEntity<BaseResponse> update(@Validated @RequestBody City city) {
+        return new ResponseEntity<>(cityService.updateCity(city), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}")

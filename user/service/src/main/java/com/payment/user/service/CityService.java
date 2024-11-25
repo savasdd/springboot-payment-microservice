@@ -7,11 +7,13 @@ import org.springframework.data.domain.Pageable;
 public interface CityService {
     BaseResponse getCityById(Long id);
 
-    BaseResponse findAll(Pageable pageable);
+    BaseResponse findAll();
+
+    BaseResponse findAllPageable(Pageable pageable);
 
     BaseResponse saveCity(City city);
 
-    BaseResponse updateCity(Long id, City city);
+    BaseResponse updateCity(City city);
 
     BaseResponse deleteCity(Long id);
 }

@@ -8,6 +8,7 @@ import com.payment.user.service.CityService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +28,17 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public BaseResponse findAll(Pageable pageable) {
-        List<City> cityList = cityRepository.findAll(pageable).getContent();
+    public BaseResponse findAll() {
+        List<City> cityList = cityRepository.findAll();
         log.info("getAll city list size: {}", cityList.size());
         return BaseResponse.success(cityList, cityList.size());
+    }
+
+    @Override
+    public BaseResponse findAllPageable(Pageable pageable) {
+        Page<City> cityList = cityRepository.findAll(pageable);
+        log.info("getAll city list size: {}", cityList.getTotalElements());
+        return BaseResponse.success(cityList, (int) cityList.getTotalElements());
     }
 
     @Override
@@ -42,9 +50,8 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public BaseResponse updateCity(Long id, City city) {
-        City model = beanUtil.mapDto(city, City.class);
-        model.setId(id);
+    public BaseResponse updateCity(City city) {
+        City model = beanUtil.mapDto(city.getId(), City.class);
         cityRepository.save(model);
 
         log.info("update city: {}", model);
