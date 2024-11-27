@@ -140,9 +140,6 @@ export class UtilService {
     if (!loadOptions.take) {
       loadOptions.take = 2147483647;
     }
-    if (!loadOptions.requireTotalCount) {
-      loadOptions.requireTotalCount = true;
-    }
     return loadOptions;
   }
 

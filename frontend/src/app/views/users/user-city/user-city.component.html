@@ -1,77 +1,68 @@
 <div class="main-content">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card border" style="margin-bottom: 0px;">
-            <div class="card-header card-header-info card-header-icon">
-              <h4 class="card-title">Şehir List</h4>
-            </div>
-            <div class="card-body" style="min-height: calc(90vh - 193px);">
-              <div class="row">
-                <dx-data-grid #dataSourceGrid
-                              [dataSource]="dataSource"
-                              keyExpr="id"
-                              [allowColumnReordering]="true"
-                              [showBorders]="true"
-                              (onEditingStart)="logEvent('EditingStart')">
-  
-                  <dxo-paging [enabled]="true"></dxo-paging>
-                  <dxo-editing
-                    mode="row"
-                    [allowUpdating]="true"
-                    [allowDeleting]="true"
-                    [allowAdding]="true"
-                    [useIcons]="true">
-                  </dxo-editing>
-  
-                  <dxo-toolbar>
-                    <dxi-item name="addRowButton"></dxi-item>
-                    <dxi-item location="after">
-                      <dx-button icon="refresh" (onClick)="refreshDataGrid($event)">
-                      </dx-button>
-                    </dxi-item>
-                  </dxo-toolbar>
-  
-                  <dxi-column dataField="name" caption="Şehir Adı">
-                    <dxi-validation-rule type="required"></dxi-validation-rule>
-                  </dxi-column>
-                  <dxi-column dataField="code" caption="Şehir Kodu">
-                    <dxi-validation-rule type="required"></dxi-validation-rule>
-                  </dxi-column>
-                  <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
-  
-                  <div *dxTemplate="let data of 'cellTemplate'">
-                    <div>
-                      {{data.value}}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card border" style="margin-bottom: 0px;">
+                    <div class="card-header card-header-info card-header-icon">
+                        <h4 class="card-title">Şehirler</h4>
                     </div>
-                  </div>
-  
-                  <dxo-paging [pageSize]="10"></dxo-paging>
-                  <dxo-pager
-                    [showPageSizeSelector]="true"
-                    [allowedPageSizes]="[5,10, 20, 50, 100]"
-                    [showInfo]="true">
-                  </dxo-pager>
-  
-                  <dxo-header-filter
-                    [visible]=false>
-                  </dxo-header-filter>
-                  <dxo-filter-row
-                    [visible]="false">
-                  </dxo-filter-row>
-  
-                  <dxo-remote-operations
-                    [sorting]="true"
-                    [paging]="true"
-                    [filtering]="true">
-                  </dxo-remote-operations>
-                </dx-data-grid>
-  
-              </div>
+                    <div class="card-body" style="min-height: calc(90vh - 193px);">
+                        <div class="row">
+                            <dx-data-grid #dataSourceGrid [dataSource]="dataSource" keyExpr="id"
+                                [allowColumnReordering]="true" [showBorders]="true"
+                                (onEditingStart)="logEvent('EditingStart')">
+
+                                <dxo-editing mode="row" [allowUpdating]="true" [allowDeleting]="true"
+                                    [allowAdding]="true" [useIcons]="true">
+                                </dxo-editing>
+
+                                <dxo-toolbar>
+                                    <dxi-item name="addRowButton"></dxi-item>
+                                    <dxi-item location="after">
+                                        <dx-button icon="refresh" (onClick)="refreshDataGrid($event)">
+                                        </dx-button>
+                                    </dxi-item>
+                                </dxo-toolbar>
+
+                                <dxi-column dataField="name" caption="Şehir Adı">
+                                    <dxi-validation-rule type="required"></dxi-validation-rule>
+                                </dxi-column>
+                                <dxi-column dataField="code" caption="Şehir Kodu">
+                                    <dxi-validation-rule type="required"></dxi-validation-rule>
+                                </dxi-column>
+                                <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
+
+                                <div *dxTemplate="let data of 'cellTemplate'">
+                                    <div>
+                                        {{data.value}}
+                                    </div>
+                                </div>
+
+                                <!-- <dxo-paging [enabled]="true" [pageSize]="5" [pageIndex]="1"></dxo-paging>
+                                <dxo-pager [showPageSizeSelector]="true" 
+                                    [allowedPageSizes]="[10, 20, 50]"
+                                    [showNavigationButtons]="true">
+                                </dxo-pager> -->
+
+                                <dxo-paging [pageSize]="4"></dxo-paging>
+                                <dxo-pager [visible]="true" [showPageSizeSelector]="true"></dxo-pager>
+
+                                <dxo-header-filter [visible]=false>
+                                </dxo-header-filter>
+                                <dxo-filter-row [visible]="false">
+                                </dxo-filter-row>
+
+                                <!-- <dxo-remote-operations [sorting]="true" [paging]="true" [filtering]="true">
+                                </dxo-remote-operations> -->
+
+                                <dxo-remote-operations [groupPaging]="true">
+                                </dxo-remote-operations>
+                            </dx-data-grid>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  
+</div>

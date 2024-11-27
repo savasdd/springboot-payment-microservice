@@ -1,5 +1,6 @@
 package com.payment.user.service.impl;
 
+import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.entity.model.City;
@@ -40,6 +41,13 @@ public class CityServiceImpl implements CityService {
         Page<City> cityList = cityRepository.findAll(pageable);
         log.info("getAll city list size: {}", cityList.getTotalElements());
         return BaseResponse.success(cityList, (int) cityList.getTotalElements());
+    }
+
+    @Override
+    public com.load.base.BaseResponse findAllLoad(DataLoad dataLoad) {
+        com.load.base.BaseResponse response = cityRepository.load(dataLoad);
+
+        return response;
     }
 
     @Override

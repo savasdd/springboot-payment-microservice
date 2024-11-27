@@ -6,3 +6,26 @@ docker logs --since=1h 'container_id' -f
 
 BUILD
 mvn clean verify -P prod
+
+https://js.devexpress.com/Angular/Demos/WidgetsGallery/Demo/DataGrid/CustomDataSource/Light/
+
+REQUEST
+{
+    "skip": 0,
+    "take": 2,
+    "requireTotalCount": true,
+    "searchOperation": "contains",
+    "filter": [
+        [
+            "id",
+            "<>",
+            null
+        ]
+    ],
+   "sort":[
+    {
+      "selector":"creDate",
+      "desc": true
+    }
+   ]
+}

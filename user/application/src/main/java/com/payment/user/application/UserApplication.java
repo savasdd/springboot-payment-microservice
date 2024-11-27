@@ -1,5 +1,6 @@
 package com.payment.user.application;
 
+import com.load.impl.DataLoadRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -11,7 +12,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 @EnableEurekaClient
 @SpringBootApplication(scanBasePackages = "com.payment.user")
 @EntityScan(basePackages = "com.payment.user")
-@EnableJpaRepositories("com.payment.user")
+@EnableJpaRepositories(basePackages = {"com.payment.user","com.load.impl"},repositoryBaseClass = DataLoadRepository.class)
 public class UserApplication {
 
     public static void main(String[] args) {

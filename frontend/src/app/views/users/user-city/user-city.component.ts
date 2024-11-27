@@ -11,9 +11,13 @@ import { UtilService } from "../../../services/util.service";
 })
 export class UserCityComponent {
   dataSource: any = {};
-  @ViewChild('dataSourceGrid', { static: true }) dataSourceGrid: any = DxDataGridComponent;
+  @ViewChild('dataSourceGrid', { static: false }) dataSourceGrid: any = DxDataGridComponent;
   events: Array<string> = [];
   cityService: GenericService;
+
+  showPageSizeSelector = true;
+  showInfo = true;
+  showNavButtons = true;
 
   constructor(private service: GenericService) {
     this.cityService = this.service.instance('payment/users/city');
@@ -22,6 +26,10 @@ export class UserCityComponent {
 
   ngOnInit(): void {
   }
+
+  getTotalPageCount () {
+    this.dataSourceGrid.instance.pageCount();
+}
 
   logEvent(eventName: any) {
     this.events.unshift(eventName);
@@ -35,10 +43,15 @@ export class UserCityComponent {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        return this.cityService.findAllPageable(UtilService.setPage(loadOptions), 0, 200, 'id,desc').then((response: any) => {
+        loadOptions.sort = loadOptions.sort == null ? 'creDate,desc' : loadOptions.sort;
+        loadOptions.skip = loadOptions.skip == 0 ? 4 : loadOptions.skip;
+        //UtilService.setPage(loadOptions),
+        return this.cityService.findAllPageable(loadOptions, 0, 200, 'id,desc').then((response: any) => {
           return {
             data: response.data.content,
-            totalCount: response.data.numberOfElements
+            totalCount: response.data.totalElements,
+            summary: response.data.summary,
+            groupCount: response.data.totalPages,
           };
         });
       },
