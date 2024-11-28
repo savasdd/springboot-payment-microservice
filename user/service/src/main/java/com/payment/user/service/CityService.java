@@ -1,6 +1,5 @@
 package com.payment.user.service;
 
-import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.model.City;
@@ -13,7 +12,7 @@ public interface CityService {
 
     BaseResponse findAllPageable(Pageable pageable);
 
-    BaseLoadResponse findAllLoad(DataLoad dataLoad);
+    BaseResponse findAllLoad(DataLoad dataLoad);
 
     BaseResponse saveCity(City city);
 

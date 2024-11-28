@@ -4,6 +4,7 @@ import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.utils.BeanUtil;
+import com.payment.user.entity.dto.CityDto;
 import com.payment.user.entity.model.City;
 import com.payment.user.entity.model.User;
 import com.payment.user.repository.CityRepository;
@@ -34,21 +35,21 @@ public class CityServiceImpl implements CityService {
     public BaseResponse findAll() {
         List<City> cityList = cityRepository.findAll();
         log.info("getAll city list size: {}", cityList.size());
-        return BaseResponse.success(cityList, cityList.size());
+        return BaseResponse.success(cityList, (long) cityList.size());
     }
 
     @Override
     public BaseResponse findAllPageable(Pageable pageable) {
         Page<City> cityList = cityRepository.findAll(pageable);
         log.info("getAll city list size: {}", cityList.getTotalElements());
-        return BaseResponse.success(cityList, (int) cityList.getTotalElements());
+        return BaseResponse.success(cityList, cityList.getTotalElements());
     }
 
     @Override
-    public BaseLoadResponse findAllLoad(DataLoad dataLoad) {
+    public BaseResponse findAllLoad(DataLoad dataLoad) {
         BaseLoadResponse response = cityRepository.load(dataLoad);
         log.info("Load city list size: {}", response.getTotalCount());
-        return response;
+        return BaseResponse.success(beanUtil.mapAll(response.getData(), City.class, CityDto.class), response.getTotalCount());
     }
 
     @Override

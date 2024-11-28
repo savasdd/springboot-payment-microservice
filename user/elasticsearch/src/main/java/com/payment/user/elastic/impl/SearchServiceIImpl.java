@@ -39,7 +39,7 @@ public class SearchServiceIImpl implements SearchService {
                     });
                 }
             });
-            return BaseResponse.builder().data(contentDto).count((int) searchResponse.took()).build();
+            return BaseResponse .success(contentDto,searchResponse.took());
 
         } catch (Exception ex) {
             log.error(ex.getMessage());

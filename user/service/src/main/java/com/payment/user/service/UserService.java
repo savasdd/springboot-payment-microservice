@@ -24,5 +24,5 @@ public interface UserService {
 
     BaseResponse delete(Long id);
 
-    BaseLoadResponse findAllLoad(DataLoad dataLoad);
+    BaseResponse findAllLoad(DataLoad dataLoad);
 }

@@ -38,7 +38,7 @@ public class RoleServiceImpl implements RoleService {
     public BaseResponse findAll() {
         List<Role> list = repository.findAll();
         log.info("getAll role list size: {}", list.size());
-        return BaseResponse.success(beanUtil.mapAll(list, RoleDto.class), list.size());
+        return BaseResponse.success(beanUtil.mapAll(list, RoleDto.class), (long) list.size());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> list = repository.findAll(pageable);
         log.info("getAll role list size: {}", list.getTotalElements());
 
-        return BaseResponse.success(beanUtil.mapAll(list, RoleDto.class), (int) list.getTotalElements());
+        return BaseResponse.success(beanUtil.mapAll(list, RoleDto.class), list.getTotalElements());
     }
 
     @Override
@@ -83,10 +83,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public BaseLoadResponse findAllLoad(DataLoad dataLoad) {
+    public BaseResponse findAllLoad(DataLoad dataLoad) {
         BaseLoadResponse response = repository.load(dataLoad);
         log.info("Load role list size: {}", response.getTotalCount());
-        return response;
+        return BaseResponse.success(beanUtil.mapAll(response.getData(), Role.class, RoleDto.class), response.getTotalCount());
     }
 
     private ValidationDto validation(RoleVo vo) {

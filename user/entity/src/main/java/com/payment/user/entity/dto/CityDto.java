@@ -13,4 +13,5 @@ import java.io.Serializable;
 public class CityDto extends BaseDto implements Serializable {
 
     private String name;
+    private String code;
 }

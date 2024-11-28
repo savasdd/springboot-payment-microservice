@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/pageable-load")
-    public ResponseEntity<BaseLoadResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
+    public ResponseEntity<BaseResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
         return ResponseEntity.ok(userService.findAllLoad(dataLoad));
     }
 

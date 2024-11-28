@@ -1,6 +1,5 @@
 package com.payment.user.controller;
 
-import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.model.City;
@@ -31,7 +30,7 @@ public class CityController {
     }
 
     @PostMapping(value = "/pageable-load")
-    public ResponseEntity<BaseLoadResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
+    public ResponseEntity<BaseResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
         return ResponseEntity.ok(cityService.findAllLoad(dataLoad));
     }
 

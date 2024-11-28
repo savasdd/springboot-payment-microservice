@@ -7,6 +7,7 @@ import com.payment.user.common.config.kafka.KafkaTopicsConfig;
 import com.payment.user.common.utils.BeanUtil;
 import com.payment.user.common.utils.CacheUtil;
 import com.payment.user.common.utils.ConstantUtil;
+import com.payment.user.common.utils.JsonUtil;
 import com.payment.user.entity.base.ValidationDto;
 import com.payment.user.entity.content.KafkaContent;
 import com.payment.user.entity.dto.UserDto;
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse findAll() {
         List<UserDto> list = beanUtil.mapAll(repository.findAll(), UserDto.class);
         log.info("get all user {}", list.size());
-        return BaseResponse.success(list, list.size());
+        return BaseResponse.success(list, (long) list.size());
     }
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
         Page<UserDto> list = beanUtil.mapAll(repository.findAll(pageable), UserDto.class);
 
         log.info("get all user pageble {}", list.getTotalElements());
-        return BaseResponse.success(list.getContent(), (int) list.getTotalElements());
+        return BaseResponse.success(list.getContent(), list.getTotalElements());
     }
 
     @Override
@@ -127,10 +128,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseLoadResponse findAllLoad(DataLoad dataLoad) {
+    public BaseResponse findAllLoad(DataLoad dataLoad) {
         BaseLoadResponse response = repository.load(dataLoad);
+        List<UserDto> listDto = beanUtil.mapAll(response.getData(), User.class, UserDto.class);
+
         log.info("Load user list size: {}", response.getTotalCount());
-        return response;
+        return BaseResponse.success(listDto, response.getTotalCount());
     }
 
     private void publishNotification(Long userId, String message) {

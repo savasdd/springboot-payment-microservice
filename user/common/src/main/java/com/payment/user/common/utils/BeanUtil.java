@@ -29,6 +29,11 @@ public class BeanUtil {
         return list.stream().map(val -> mapDto(val, dto)).toList();
     }
 
+    public <D, M, T> List<D> mapAll(final Object items, final Class<M> model, final Class<D> dto) {
+        List<M> modelList = JsonUtil.fromJsonList(items, model);
+        return modelList.stream().map(val -> mapDto(val, dto)).toList();
+    }
+
     public <D, T> Page<D> mapAll(final Page<T> list, final Class<D> dto) {
         List<D> dtoList = list.stream().map(val -> mapDto(val, dto)).toList();
         return new PageImpl<>(dtoList, list.getPageable(), list.getTotalElements());

@@ -30,7 +30,7 @@ public class RoleController {
     }
 
     @PostMapping(value = "/pageable-load")
-    public ResponseEntity<BaseLoadResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
+    public ResponseEntity<BaseResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
         return ResponseEntity.ok(roleService.findAllLoad(dataLoad));
     }
 
