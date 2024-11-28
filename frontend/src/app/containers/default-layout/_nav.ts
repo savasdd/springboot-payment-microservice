@@ -7,7 +7,7 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-speedometer' }
   },
   {
-    name: 'Foods',
+    name: 'Siparişlerim',
     url: '/foods',
     iconComponent: { name: 'cil-list' },
     children: [
@@ -38,7 +38,7 @@ export const navItems: INavData[] = [
     ]
   },
   {
-    name: 'Department',
+    name: 'Stok',
     url: '/data',
     iconComponent: { name: 'cilBookmark' },
     children: [
@@ -69,7 +69,7 @@ export const navItems: INavData[] = [
     ]
   },
   {
-    name: 'Logout',
+    name: 'Çıkış',
     url: '/login',
     iconComponent: { name: 'cilLockLocked' },
     // children: [
