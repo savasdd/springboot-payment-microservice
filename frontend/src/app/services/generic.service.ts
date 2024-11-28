@@ -36,7 +36,6 @@ export class GenericService {
   }
 
   pageableLoad(loadOptions: any) {
-    console.log(loadOptions)
     return firstValueFrom(this.http.post<any>(this.baseUrl + 'pageable-load' , loadOptions).pipe(catchError(this.handleError)));
   }
 

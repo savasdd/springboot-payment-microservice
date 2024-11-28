@@ -44,23 +44,15 @@
                 </div>
 
                 <dxo-paging [pageSize]="10"></dxo-paging>
-                <dxo-pager
-                  [showPageSizeSelector]="true"
-                  [allowedPageSizes]="[5,10, 20, 50, 100]"
-                  [showInfo]="true">
-                </dxo-pager>
+                <dxo-pager [visible]="true" [showPageSizeSelector]="true"
+                    [allowedPageSizes]="[10, 20, 50]"></dxo-pager>
 
-                <dxo-header-filter
-                  [visible]=false>
+                <dxo-header-filter [visible]=false>
                 </dxo-header-filter>
-                <dxo-filter-row
-                  [visible]="true">
+                <dxo-filter-row [visible]="true">
                 </dxo-filter-row>
 
-                <dxo-remote-operations
-                  [sorting]="true"
-                  [paging]="true"
-                  [filtering]="true">
+                <dxo-remote-operations [groupPaging]="true">
                 </dxo-remote-operations>
               </dx-data-grid>
 

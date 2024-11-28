@@ -43,7 +43,6 @@ export class UserCityComponent {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        //loadOptions.sort = loadOptions.sort == null ? 'creDate,desc' : loadOptions.sort;
         return this.cityService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
           return {
             data: response.data,

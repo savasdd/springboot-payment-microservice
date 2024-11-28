@@ -46,10 +46,12 @@ export class AuthUserComponent implements OnInit {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        return this.userService.findAllPageable(UtilService.setPage(loadOptions),0,200,'id,desc').then((response: any) => {
+        return this.userService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
           return {
             data: response.data,
-            totalCount: response.count
+            totalCount: response.totalCount,
+            summary: response.summary,
+            groupCount: response.groupCount,
           };
         });
       },

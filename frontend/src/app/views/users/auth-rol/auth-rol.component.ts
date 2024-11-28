@@ -35,10 +35,12 @@ export class AuthRolComponent implements OnInit {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        return this.roleService.findAllPageable(UtilService.setPage(loadOptions), 0, 200, 'id,desc').then((response: any) => {
+        return this.roleService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
           return {
-            data: response.data.content,
-            totalCount: response.data.numberOfElements
+            data: response.data,
+            totalCount: response.totalCount,
+            summary: response.summary,
+            groupCount: response.groupCount,
           };
         });
       },
