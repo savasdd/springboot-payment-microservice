@@ -1,5 +1,7 @@
 package com.payment.user.service;
 
+import com.load.base.BaseLoadResponse;
+import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.dto.UserDto;
 import com.payment.user.entity.vo.UserVo;
@@ -21,4 +23,6 @@ public interface UserService {
     BaseResponse update(UserVo user);
 
     BaseResponse delete(Long id);
+
+    BaseLoadResponse findAllLoad(DataLoad dataLoad);
 }

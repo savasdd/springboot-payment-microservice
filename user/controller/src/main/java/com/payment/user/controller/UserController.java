@@ -1,5 +1,7 @@
 package com.payment.user.controller;
 
+import com.load.base.BaseLoadResponse;
+import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.vo.UserVo;
 import com.payment.user.service.UserService;
@@ -21,9 +23,14 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll());
     }
 
-    @GetMapping(value = "/all-pageable")
+    @GetMapping(value = "/pageable")
     public ResponseEntity<BaseResponse> findAllPageable(Pageable pageable) {
         return ResponseEntity.ok(userService.findAllPageable(pageable));
+    }
+
+    @PostMapping(value = "/pageable-load")
+    public ResponseEntity<BaseLoadResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
+        return ResponseEntity.ok(userService.findAllLoad(dataLoad));
     }
 
     @GetMapping(value = "/findOne/{id}")

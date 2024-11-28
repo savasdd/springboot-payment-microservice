@@ -63,6 +63,7 @@ elastic:
 springdoc:
   swagger-ui:
     tags-sorter: alpha
+    display-request-duration: true
 
 schedulers:
   outbox:

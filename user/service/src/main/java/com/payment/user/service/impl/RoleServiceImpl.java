@@ -1,5 +1,7 @@
 package com.payment.user.service.impl;
 
+import com.load.base.BaseLoadResponse;
+import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.exception.GeneralException;
 import com.payment.user.common.utils.BeanUtil;
@@ -78,6 +80,13 @@ public class RoleServiceImpl implements RoleService {
         repository.deleteById(id);
         log.info("delete role: {}", id);
         return BaseResponse.success("delete role success");
+    }
+
+    @Override
+    public BaseLoadResponse findAllLoad(DataLoad dataLoad) {
+        BaseLoadResponse response = repository.load(dataLoad);
+        log.info("Load role list size: {}", response.getTotalCount());
+        return response;
     }
 
     private ValidationDto validation(RoleVo vo) {

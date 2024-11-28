@@ -1,5 +1,7 @@
 package com.payment.user.service.impl;
 
+import com.load.base.BaseLoadResponse;
+import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.config.kafka.KafkaTopicsConfig;
 import com.payment.user.common.utils.BeanUtil;
@@ -122,6 +124,13 @@ public class UserServiceImpl implements UserService {
         log.info("delete user: {}", id);
         publishNotification(id, ConstantUtil.USER_DELETE);
         return BaseResponse.success("delete success");
+    }
+
+    @Override
+    public BaseLoadResponse findAllLoad(DataLoad dataLoad) {
+        BaseLoadResponse response = repository.load(dataLoad);
+        log.info("Load user list size: {}", response.getTotalCount());
+        return response;
     }
 
     private void publishNotification(Long userId, String message) {
