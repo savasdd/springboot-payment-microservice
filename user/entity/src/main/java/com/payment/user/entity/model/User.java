@@ -1,5 +1,6 @@
 package com.payment.user.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.user.entity.base.BaseEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User extends BaseEntity implements UserDetails, Serializable {
 
     @Column(name = "username")
@@ -36,7 +38,7 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     @Column(name = "token")
     private String token;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "city", referencedColumnName = "id")
     private City city;
 
