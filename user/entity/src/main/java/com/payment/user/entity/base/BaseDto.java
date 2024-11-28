@@ -1,6 +1,5 @@
 package com.payment.user.entity.base;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.payment.user.common.enums.RecordStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
