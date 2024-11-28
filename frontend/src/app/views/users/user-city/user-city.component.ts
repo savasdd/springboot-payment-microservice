@@ -43,15 +43,13 @@ export class UserCityComponent {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        loadOptions.sort = loadOptions.sort == null ? 'creDate,desc' : loadOptions.sort;
-        loadOptions.skip = loadOptions.skip == 0 ? 4 : loadOptions.skip;
-        //UtilService.setPage(loadOptions),
-        return this.cityService.findAllPageable(loadOptions, 0, 200, 'id,desc').then((response: any) => {
+        //loadOptions.sort = loadOptions.sort == null ? 'creDate,desc' : loadOptions.sort;
+        return this.cityService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
           return {
-            data: response.data.content,
-            totalCount: response.data.totalElements,
-            summary: response.data.summary,
-            groupCount: response.data.totalPages,
+            data: response.data,
+            totalCount: response.totalCount,
+            summary: response.summary,
+            groupCount: response.groupCount,
           };
         });
       },

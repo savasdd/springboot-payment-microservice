@@ -32,8 +32,12 @@ export class GenericService {
   }
 
   findAllPageable(loadOptions: any, page: number, size: number, sort: string) {
-    console.log(loadOptions)
     return firstValueFrom(this.http.get<any>(this.baseUrl + 'all-pageable?page=' + 0 + '&size=' + loadOptions.skip + '&sort=' + loadOptions.sort, loadOptions).pipe(catchError(this.handleError)));
+  }
+
+  pageableLoad(loadOptions: any) {
+    console.log(loadOptions)
+    return firstValueFrom(this.http.post<any>(this.baseUrl + 'pageable-load' , loadOptions).pipe(catchError(this.handleError)));
   }
 
   save(data: any) {

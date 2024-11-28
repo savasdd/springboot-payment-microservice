@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 declare const $: any;
 
@@ -140,6 +140,7 @@ export class UtilService {
     if (!loadOptions.take) {
       loadOptions.take = 2147483647;
     }
+    loadOptions.sort = loadOptions.sort == null ? [{ 'selector': 'creDate', 'desc': true }] : loadOptions.sort;
     return loadOptions;
   }
 
