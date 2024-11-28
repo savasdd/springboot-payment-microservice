@@ -1,5 +1,6 @@
 package com.payment.user.controller;
 
+import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.entity.model.City;
@@ -24,13 +25,13 @@ public class CityController {
         return ResponseEntity.ok(cityService.findAll());
     }
 
-    @GetMapping(value = "/all-pageable")
+    @GetMapping(value = "/pageable")
     public ResponseEntity<BaseResponse> findAllPageable(Pageable pageable) {
         return ResponseEntity.ok(cityService.findAllPageable(pageable));
     }
 
-    @PostMapping(value = "/all-load")
-    public ResponseEntity<com.load.base.BaseResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
+    @PostMapping(value = "/pageable-load")
+    public ResponseEntity<BaseLoadResponse> findAllLoad(@RequestBody DataLoad dataLoad) {
         return ResponseEntity.ok(cityService.findAllLoad(dataLoad));
     }
 

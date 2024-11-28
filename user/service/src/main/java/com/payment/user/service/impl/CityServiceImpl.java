@@ -1,5 +1,6 @@
 package com.payment.user.service.impl;
 
+import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
 import com.payment.user.common.base.BaseResponse;
 import com.payment.user.common.utils.BeanUtil;
@@ -44,9 +45,9 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public com.load.base.BaseResponse findAllLoad(DataLoad dataLoad) {
-        com.load.base.BaseResponse response = cityRepository.load(dataLoad);
-
+    public BaseLoadResponse findAllLoad(DataLoad dataLoad) {
+        BaseLoadResponse response = cityRepository.load(dataLoad);
+        log.info("Load city list size: {}", response.getTotalCount());
         return response;
     }
 

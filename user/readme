@@ -9,11 +9,12 @@ mvn clean verify -P prod
 
 https://js.devexpress.com/Angular/Demos/WidgetsGallery/Demo/DataGrid/CustomDataSource/Light/
 
-REQUEST
+=>REQUEST
 {
     "skip": 0,
-    "take": 2,
+    "take": 10,
     "requireTotalCount": true,
+    "requireGroupCount": true,
     "searchOperation": "contains",
     "filter": [
         [
@@ -26,6 +27,16 @@ REQUEST
     {
       "selector":"creDate",
       "desc": true
+    },
+    {
+      "selector":"name",
+      "desc": true
     }
-   ]
+   ],
+   "defaultSort": "creDate",
+   "stringToLower": true,
+   "distinct": true,
+   "countQuery": true,
+   "summaryQuery": true,
+   "group": []
 }
