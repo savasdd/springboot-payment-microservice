@@ -12,19 +12,25 @@ import {UtilService} from "../../../services/util.service";
 })
 export class AuthUserComponent implements OnInit {
   dataSource: any = {};
+  cityDataSource: any = {};
   @ViewChild('dataSourceGrid', {static: true}) dataSourceGrid: any = DxDataGridComponent;
   updateMod: boolean = false;
   data: any;
   userService: GenericService;
+  cityService: GenericService;
   tabList: any[] = [
-    {id: 1, name: 'Group', key: 'information'},
-    {id: 2, name: "Department", key: 'action'},
-    {id: 3, name: "Location", key: 'location'},
+    {id: 1, name: "Department", key: 'action'},
   ];
 
   constructor(private service: GenericService) {
+    this.loadGrid = this.loadGrid.bind(this);
+    this.loadCity = this.loadCity.bind(this);
     this.userService = this.service.instance('payment/users');
+    this.cityService = this.service.instance('payment/users/city');
+
     this.loadGrid();
+    this.loadCity();
+    console.log(this.cityDataSource)
   }
 
   ngOnInit(): void {
@@ -40,6 +46,12 @@ export class AuthUserComponent implements OnInit {
 
   refreshDataGrid(e: any) {
     this.dataSourceGrid.instance.refresh();
+  }
+
+  loadCity() {
+    this.cityService.findAll(UtilService.setPage({ skip: null, take: null })).then((response: any) => {
+      this.cityDataSource = response.data;
+    });
   }
 
   loadGrid() {
@@ -61,7 +73,6 @@ export class AuthUserComponent implements OnInit {
         });
       },
       insert: (values) => {
-        values.city=null;
         values.roles=[];
         return this.userService.save(values).then((response) => {
             return;
@@ -70,7 +81,6 @@ export class AuthUserComponent implements OnInit {
       },
       update: (key, values: any) => {
         values.id = key;
-        values.city=null;
         values.roles=[];
         return this.userService.update(null,values).then((response) => {
           return;

@@ -35,6 +35,7 @@
                       <dxi-item dataField="username"></dxi-item>
                       <dxi-item dataField="email"></dxi-item>
                       <dxi-item dataField="password"></dxi-item>
+                      <dxi-item dataField="id"></dxi-item>
                       <dxi-item dataField="address"></dxi-item>
                     </dxi-item>
 
@@ -77,10 +78,16 @@
                 <dxi-column dataField="email" caption="Email"></dxi-column>
                 <dxi-column dataField="address" caption="Adres"></dxi-column>
                 <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
-                <dxi-column dataField="password" [visible]="false">
+                <dxi-column dataField="password" [visible]="false"></dxi-column>
+                <dxi-column dataField="id" caption="Sehir">
+                  <dxo-lookup
+                    [dataSource]="cityDataSource"
+                    valueExpr="id"
+                    displayExpr="name">
+                  </dxo-lookup>
                 </dxi-column>
-                <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
 
+                <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
                 <div *dxTemplate="let temp of 'detail'">
 
                   <dx-tab-panel
@@ -100,13 +107,7 @@
                       <div class="tabpanel-item">
 
                         <div *ngIf="dto.id===1">
-                          <app-user-group *ngIf="data" [data]="data"></app-user-group>
-                        </div>
-                        <div *ngIf="dto.id===2">
                           <app-user-department *ngIf="data" [data]="data"></app-user-department>
-                        </div>
-                        <div *ngIf="dto.id===3">
-                          <app-user-location *ngIf="data" [data]="data"></app-user-location>
                         </div>
                       </div>
                     </div>
