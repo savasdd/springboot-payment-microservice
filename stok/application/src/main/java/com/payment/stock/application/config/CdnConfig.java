@@ -15,6 +15,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +39,7 @@ public class CdnConfig {
         try {
             CdnData data = repository.getActiveCDN().orElse(null);
 
-            File file = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource(configFile)).getFile());
+            File file = !Objects.isNull(this.getClass().getClassLoader().getResource(configFile)) ? new File(this.getClass().getClassLoader().getResource(configFile).getFile()) : ResourceUtils.getFile(configFile);
             objectMapper.writeValue(file, data.getData());
             log.info("Successfully loaded config file:{}", file.length());
 

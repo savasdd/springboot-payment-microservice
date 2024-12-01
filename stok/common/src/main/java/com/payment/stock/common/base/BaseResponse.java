@@ -14,20 +14,21 @@ import java.io.Serializable;
 public class BaseResponse implements Serializable {
 
     private Object data;
-    private Integer count;
-    private Integer status;
+    private long totalCount = 0L;
+    private long groupCount = 0L;
+    private Object summary;
+    private int status;
 
     public static BaseResponse success(Object data) {
         return BaseResponse.builder().data(data).status(HttpStatus.OK.value()).build();
     }
 
-    public static BaseResponse success(Object data, Integer count) {
-        return BaseResponse.builder().data(data).status(HttpStatus.OK.value()).count(count).build();
+    public static BaseResponse success(Object data, Long count) {
+        return BaseResponse.builder().data(data).status(HttpStatus.OK.value()).totalCount(count).build();
     }
 
     public static BaseResponse error(String message) {
         return BaseResponse.builder().data(message).status(HttpStatus.BAD_REQUEST.value()).build();
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.payment.stock.controller;
 
+import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.model.Stock;
@@ -19,8 +20,18 @@ public class StockController {
     private final StockService stockService;
 
     @GetMapping(value = "/all")
-    public ResponseEntity<BaseResponse> findAll(Pageable pageable) {
-        return ResponseEntity.ok(stockService.findAll(pageable));
+    public ResponseEntity<BaseResponse> findAll() {
+        return ResponseEntity.ok(stockService.findAll());
+    }
+
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<BaseResponse> findPageable(Pageable pageable) {
+        return ResponseEntity.ok(stockService.findPageable(pageable));
+    }
+
+    @PostMapping(value = "/pageable-load")
+    public ResponseEntity<BaseResponse> findAll(@RequestBody DataLoad load) {
+        return ResponseEntity.ok(stockService.findAllLoad(load));
     }
 
     @GetMapping(value = "/findOne/{id}")
@@ -33,9 +44,9 @@ public class StockController {
         return new ResponseEntity<>(stockService.save(stock), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/update/{id}")
-    public ResponseEntity<BaseResponse> update(@PathVariable Long id, @RequestBody StockDto stock) {
-        return new ResponseEntity<>(stockService.update(id, stock), HttpStatus.OK);
+    @PutMapping(value = "/update")
+    public ResponseEntity<BaseResponse> update(@RequestBody StockDto stock) {
+        return new ResponseEntity<>(stockService.update(stock), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}")

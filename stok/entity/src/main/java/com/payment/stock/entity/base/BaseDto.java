@@ -12,12 +12,9 @@ import java.util.Date;
 public abstract class BaseDto implements Serializable {
 
     private Long id;
-    private Date createdDate;
-    private Date updatedDate;
+    private Date creDate;
     private RecordStatus recordStatus;
     @JsonIgnore
-    private String createdBy;
-    @JsonIgnore
-    private String updatedBy;
+    private String creBy;
 
 }

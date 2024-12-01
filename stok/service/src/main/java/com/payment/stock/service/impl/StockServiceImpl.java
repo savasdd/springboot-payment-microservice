@@ -1,5 +1,7 @@
 package com.payment.stock.service.impl;
 
+import com.load.base.BaseLoadResponse;
+import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.KafkaTopicsConfig;
 import com.payment.stock.common.enums.RecordStatus;
@@ -22,6 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -43,16 +46,35 @@ public class StockServiceImpl implements StockService {
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
 
-    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.count == 0")
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.totalCount == 0")
     @Override
-    public BaseResponse findAll(Pageable pageable) {
-        List<Stock> stockDtoList = stockRepository.findAllStockByStatus(RecordStatus.ACTIVE, LANG, pageable).getContent();
+    public BaseResponse findAll() {
+        List<Stock> stockDtoList = stockRepository.findAllStockByStatusList(RecordStatus.ACTIVE, LANG);
 
         log.info("find all stock: {}", stockDtoList.size());
-        return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockDto.class), stockDtoList.size());
+        return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockDto.class), (long) stockDtoList.size());
     }
 
-    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.count == 0")
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.totalCount == 0")
+    @Override
+    public BaseResponse findPageable(Pageable pageable) {
+        Page<Stock> stockDtoList = stockRepository.findAllStockByStatus(RecordStatus.ACTIVE, LANG, pageable);
+
+        log.info("Pageable all stock: {}", stockDtoList.getTotalElements());
+        return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockDto.class), stockDtoList.getTotalElements());
+    }
+
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.totalCount == 0")
+    @Override
+    public BaseResponse findAllLoad(DataLoad load) {
+        BaseLoadResponse response = stockRepository.load(load);
+        List<StockDto> stockDtoList = beanUtil.mapAll(response.getData(), Stock.class, StockDto.class);
+
+        log.info("Load all stock: {}", response.getTotalCount());
+        return BaseResponse.success(stockDtoList, response.getTotalCount());
+    }
+
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.totalCount == 0")
     @Override
     public BaseResponse findById(Long id) {
         Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -75,9 +97,8 @@ public class StockServiceImpl implements StockService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
-    public BaseResponse update(Long id, StockDto dto) {
-        dto.setId(id);
-        Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public BaseResponse update(StockDto dto) {
+        Stock stock = stockRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
         BeanUtils.copyProperties(dto, stock);
 
         stock.getDetails().forEach(d -> d.setRecordStatus(RecordStatus.DELETED));

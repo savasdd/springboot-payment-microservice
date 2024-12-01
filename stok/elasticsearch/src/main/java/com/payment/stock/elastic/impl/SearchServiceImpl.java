@@ -41,7 +41,7 @@ public class SearchServiceImpl implements SearchService {
             });
 
             log.info("elasticsearch search result: {}", contents);
-            return BaseResponse.builder().data(contents).count(contents.size()).build();
+            return BaseResponse.success(contents, (long) contents.size());
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new RuntimeException(ex);

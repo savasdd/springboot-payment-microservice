@@ -69,6 +69,7 @@ elastic:
 springdoc:
   swagger-ui:
     tags-sorter: alpha
+    display-request-duration: true
 
 schedulers:
   outbox:
@@ -83,5 +84,5 @@ topics:
     replication: 1
 
 cdn:
-  configFile: classpath:/CDN.json
+  configFile: classpath:CDN.json
   bucketName: springbootfirebase-cd166.appspot.com
