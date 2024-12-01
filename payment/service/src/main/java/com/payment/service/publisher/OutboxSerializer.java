@@ -34,7 +34,7 @@ public class OutboxSerializer {
         return generateOutboxOrder(order.getId(), new ProductAddedEvent(order.getId(), productItem.getId()), ProductAddedEvent.EVENT);
     }
 
-    public OutboxOrder productRemovedEvent(Order order, String productItemId) {
+    public OutboxOrder productRemovedEvent(Order order, Long productItemId) {
         return generateOutboxOrder(order.getId(), new ProductRemovedEvent(order.getId(), productItemId), ProductRemovedEvent.EVENT);
     }
 
@@ -42,7 +42,7 @@ public class OutboxSerializer {
         return generateOutboxOrder(order.getId(), new SubmittedEvent(order.getId()), SubmittedEvent.EVENT);
     }
 
-    private OutboxOrder generateOutboxOrder(String aggregateId, Object data, String eventType) {
+    private OutboxOrder generateOutboxOrder(Long aggregateId, Object data, String eventType) {
         return OutboxOrder.builder().aggregateId(aggregateId).eventType(eventType).data(serializerUtil.serializeToBytes(data)).build();
     }
 }

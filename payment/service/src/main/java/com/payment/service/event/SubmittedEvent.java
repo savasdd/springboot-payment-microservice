@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class SubmittedEvent extends BaseEvent {
     public static final String EVENT = "ORDER_SUBMITTED";
-    private String orderId;
+    private Long orderId;
 
-    public SubmittedEvent(String orderId) {
+    public SubmittedEvent(Long orderId) {
         super(orderId);
         this.orderId = orderId;
     }

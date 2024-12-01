@@ -1,5 +1,6 @@
 package com.payment.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.entity.base.BaseEntity;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "PRODUCT_ITEM")
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductItem extends BaseEntity implements Serializable {
 
     @Column(name = "stockId", nullable = false)

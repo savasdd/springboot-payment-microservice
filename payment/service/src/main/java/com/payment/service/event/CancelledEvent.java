@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class CancelledEvent extends BaseEvent {
     public static final String EVENT = "ORDER_CANCELLED_EVENT";
-    private String orderId;
+    private Long orderId;
     private String description;
 
-    public CancelledEvent(String orderId, String description) {
+    public CancelledEvent(Long orderId, String description) {
         super(orderId);
         this.orderId = orderId;
         this.description = description;

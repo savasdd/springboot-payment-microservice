@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class KafkaContent implements Serializable {
 
     private String eventType;
-    private String aggregateId;
+    private Long aggregateId;
     private byte[] data;
 
 }

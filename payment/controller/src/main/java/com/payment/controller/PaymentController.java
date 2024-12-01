@@ -1,5 +1,6 @@
 package com.payment.controller;
 
+import com.load.impl.DataLoad;
 import com.payment.common.base.BaseResponse;
 import com.payment.entity.dto.OrderCanselDto;
 import com.payment.entity.dto.OrderDto;
@@ -35,7 +36,7 @@ public class PaymentController {
 
     @Operation(summary = "order no: 3", tags = "ordering payment")
     @DeleteMapping(value = "/delete-product/{orderNo}/{productId}")
-    public ResponseEntity<BaseResponse> deleteProduct(@PathVariable String orderNo, @PathVariable String productId) {
+    public ResponseEntity<BaseResponse> deleteProduct(@PathVariable String orderNo, @PathVariable Long productId) {
         return ResponseEntity.ok(orderService.deleteProduct(orderNo, productId));
     }
 
@@ -63,13 +64,23 @@ public class PaymentController {
         return ResponseEntity.ok(orderService.complete(orderNo));
     }
 
-    @GetMapping(value = "/findAll")
-    public ResponseEntity<BaseResponse> getAllOrder(Pageable pageable) {
-        return ResponseEntity.ok(orderService.getAllOrder(pageable));
+    @GetMapping(value = "/all")
+    public ResponseEntity<BaseResponse> getAllOrder() {
+        return ResponseEntity.ok(orderService.getAllOrder());
+    }
+
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<BaseResponse> getPageable(Pageable pageable) {
+        return ResponseEntity.ok(orderService.getPageable(pageable));
+    }
+
+    @PostMapping(value = "/pageable-load")
+    public ResponseEntity<BaseResponse> getAllLoad(@RequestBody DataLoad load) {
+        return ResponseEntity.ok(orderService.getAllLoad(load));
     }
 
     @GetMapping(value = "/findOne/{orderId}")
-    public ResponseEntity<BaseResponse> getOrder(@PathVariable String orderId) {
+    public ResponseEntity<BaseResponse> getOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.getOrder(orderId));
     }
 

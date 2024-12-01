@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class NotificationEvent extends BaseEvent {
     public static final String EVENT = "NOTIFICATION";
-    private String id;
+    private Long id;
     private String userId;
     private String message;
 
-    public NotificationEvent(String id, String userId, String message) {
+    public NotificationEvent(Long id, String userId, String message) {
         super(id);
         this.id = id;
         this.userId = userId;

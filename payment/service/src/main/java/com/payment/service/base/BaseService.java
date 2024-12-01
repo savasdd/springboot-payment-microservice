@@ -52,7 +52,7 @@ public class BaseService implements Serializable {
             OutboxOrder outboxOrder = outboxRepository.save(event);
             log.info("publishing outbox event: {}", outboxOrder);
             outboxRepository.deleteById(outboxOrder.getId());
-            publisher.publish(topicsConfig.getTopicName(outboxOrder.getEventType()), outboxOrder.getAggregateId(), outboxOrder);
+            publisher.publish(topicsConfig.getTopicName(outboxOrder.getEventType()), String.valueOf(outboxOrder.getAggregateId()), outboxOrder);
 
             log.info("outbox event published and deleted: {}", outboxOrder.getId());
         } catch (Exception e) {
@@ -62,14 +62,23 @@ public class BaseService implements Serializable {
 
     public void sendNotification(Long userId, String message) {
         try {
-            KafkaContent event = notifySerializer.notification(UUID.randomUUID().toString(), String.valueOf(userId), message);
+            KafkaContent event = notifySerializer.notification(generateNotifyNo(), String.valueOf(userId), message);
             log.info("publishing notification event: {}", event);
-            publisher.publish(topicsConfig.getTopicName(event.getEventType()), event.getAggregateId(), event);
+            publisher.publish(topicsConfig.getTopicName(event.getEventType()), String.valueOf(event.getAggregateId()), event);
 
             log.info("notification event published: {}", event.getAggregateId());
         } catch (Exception e) {
             log.error("exception while publishing notification    event: {}", e.getLocalizedMessage());
         }
     }
+
+    private Long generateNotifyNo() {
+        int min = 100;
+        int max = 900;
+
+        Set<Integer> set = new Random().ints(min, max - min + 1).distinct().limit(6).boxed().collect(Collectors.toSet());
+        return Long.valueOf(set.stream().findFirst().get() + String.valueOf(new Date().getTime()));
+    }
+
 
 }

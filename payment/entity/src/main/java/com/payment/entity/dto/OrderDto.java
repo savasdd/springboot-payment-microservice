@@ -1,5 +1,7 @@
 package com.payment.entity.dto;
 
+import com.payment.common.enums.OrderStatus;
+import com.payment.entity.base.BaseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -11,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderDto implements Serializable {
+public class OrderDto extends BaseDto implements Serializable {
 
-    private String id;
     private String orderNo;
     @Schema(example = "3")
     private Long userId;
-    private List<ProductItemDto> productItems;
+    private String paymentId;
+    private OrderStatus orderStatus;
 }

@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class ProductAddedEvent extends BaseEvent {
     public static final String EVENT = "PRODUCT_ITEM_ADDED";
-    private String orderId;
-    private String productItemId;
+    private Long orderId;
+    private Long productItemId;
 
-    public ProductAddedEvent(String orderId, String productItemId) {
+    public ProductAddedEvent(Long orderId, Long productItemId) {
         super(orderId);
         this.orderId = orderId;
         this.productItemId = productItemId;

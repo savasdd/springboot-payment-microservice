@@ -1,5 +1,7 @@
 package com.payment.service.impl;
 
+import com.load.base.BaseLoadResponse;
+import com.load.impl.DataLoad;
 import com.payment.common.base.BaseResponse;
 import com.payment.common.config.KafkaTopicsConfig;
 import com.payment.common.config.UrlPropsConfig;
@@ -23,6 +25,7 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -100,7 +103,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public BaseResponse getOrder(String orderId) {
+    public BaseResponse getOrder(Long orderId) {
         return BaseResponse.success(orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Entity not found")));
     }
 
@@ -124,7 +127,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public BaseResponse deleteProduct(String orderNo, String productId) {
+    public BaseResponse deleteProduct(String orderNo, Long productId) {
         if (itemRepository.existsById(productId)) {
             Order order = findOrderNo(orderNo);
             itemRepository.deleteById(productId);
@@ -205,10 +208,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public BaseResponse getAllOrder(Pageable pageable) {
+    public BaseResponse getAllOrder() {
+        List<Order> orders = orderRepository.findAll();
+        log.info("all orders: {}", orders.size());
+        return BaseResponse.success(orders, (long) orders.size());
+    }
+
+    @Override
+    public BaseResponse getPageable(Pageable pageable) {
         Page<Order> orders = orderRepository.findAll(pageable);
-        log.info("orders: {}", orders.getContent().size());
-        return BaseResponse.success(orders, orders.getNumberOfElements());
+        log.info("pageable orders: {}", orders.getTotalElements());
+        return BaseResponse.success(beanUtil.mapAll(orders,OrderDto.class), orders.getTotalElements());
+    }
+
+    @Override
+    public BaseResponse getAllLoad(DataLoad load) {
+        BaseLoadResponse response = orderRepository.load(load);
+        List<OrderDto> orderDtoList = beanUtil.mapAll(response.getData(), Order.class, OrderDto.class);
+        log.info("Load orders: {}", response.getTotalCount());
+        return BaseResponse.success(orderDtoList, response.getTotalCount());
     }
 
     @Transactional

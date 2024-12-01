@@ -10,5 +10,5 @@ import java.io.Serializable;
 @Setter
 @Builder
 public class BaseEvent implements Serializable {
-    private String aggregateId;
+    private Long aggregateId;
 }

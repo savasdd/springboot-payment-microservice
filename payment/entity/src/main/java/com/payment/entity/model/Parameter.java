@@ -1,5 +1,6 @@
 package com.payment.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.entity.base.BaseEntity;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "PARAMETER")
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Parameter extends BaseEntity implements Serializable {
 
     @Column(name = "key")

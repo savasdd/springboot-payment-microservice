@@ -1,5 +1,6 @@
 package com.payment.service;
 
+import com.load.impl.DataLoad;
 import com.payment.common.base.BaseResponse;
 import com.payment.entity.dto.OrderCanselDto;
 import com.payment.entity.dto.OrderDto;
@@ -10,13 +11,13 @@ import org.springframework.data.domain.Pageable;
 public interface OrderService {
     BaseResponse createOrder(OrderV0 order);
 
-    BaseResponse getOrder(String orderId);
+    BaseResponse getOrder(Long orderId);
 
     BaseResponse getOrderNo(String orderNo);
 
     BaseResponse addProduct(String orderNo, ProductItemDto productItem);
 
-    BaseResponse deleteProduct(String orderNo, String productId);
+    BaseResponse deleteProduct(String orderNo, Long productId);
 
     BaseResponse payment(String orderNo);
 
@@ -26,8 +27,11 @@ public interface OrderService {
 
     BaseResponse complete(String orderNo);
 
-    BaseResponse getAllOrder(Pageable pageable);
+    BaseResponse getAllOrder();
 
     void deleteOutboxRecord();
 
+    BaseResponse getPageable(Pageable pageable);
+
+    BaseResponse getAllLoad(DataLoad load);
 }

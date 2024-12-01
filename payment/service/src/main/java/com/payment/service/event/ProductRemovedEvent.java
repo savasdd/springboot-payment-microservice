@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class ProductRemovedEvent extends BaseEvent {
     public static final String EVENT = "PRODUCT_ITEM_REMOVED";
-    private String orderId;
-    private String productItemId;
+    private Long orderId;
+    private Long productItemId;
 
-    public ProductRemovedEvent(String orderId, String productItemId) {
+    public ProductRemovedEvent(Long orderId, Long productItemId) {
         super(orderId);
         this.orderId = orderId;
         this.productItemId = productItemId;

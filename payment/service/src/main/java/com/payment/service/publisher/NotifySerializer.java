@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 public class NotifySerializer {
     private final SerializerUtil serializerUtil;
 
-    public KafkaContent notification(String id, String userId, String message) {
+    public KafkaContent notification(Long id, String userId, String message) {
         return generateContent(id, new NotificationEvent(id, userId, message), NotificationEvent.EVENT);
     }
 
 
-    private KafkaContent generateContent(String aggregateId, Object data, String eventType) {
+    private KafkaContent generateContent(Long aggregateId, Object data, String eventType) {
         return KafkaContent.builder().aggregateId(aggregateId).eventType(eventType).data(serializerUtil.serializeToBytes(data)).build();
     }
 }

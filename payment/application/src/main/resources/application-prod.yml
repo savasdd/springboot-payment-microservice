@@ -51,6 +51,7 @@ eureka:
 springdoc:
   swagger-ui:
     tags-sorter: alpha
+    display-request-duration: true
 
 couchbase:
   host: couchbase://${server.prod.couchbase}
