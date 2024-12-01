@@ -1,5 +1,6 @@
 package com.payment.stock.controller;
 
+import com.load.impl.DataLoad;
 import com.payment.stock.cdn.CdnService;
 import com.payment.stock.common.base.BaseResponse;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,11 @@ public class CdnController {
     @GetMapping(value = "/all")
     public ResponseEntity<BaseResponse> getAll() {
         return ResponseEntity.ok(cdnService.getAll());
+    }
+
+    @PostMapping(value = "/pageable-load")
+    public ResponseEntity<BaseResponse> getAllLoad(@RequestBody DataLoad load) {
+        return ResponseEntity.ok(cdnService.getAllLoad(load));
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

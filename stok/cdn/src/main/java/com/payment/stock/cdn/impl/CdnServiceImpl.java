@@ -2,6 +2,8 @@ package com.payment.stock.cdn.impl;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
+import com.load.base.BaseLoadResponse;
+import com.load.impl.DataLoad;
 import com.payment.stock.cdn.CdnService;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
@@ -62,7 +64,7 @@ public class CdnServiceImpl implements CdnService {
         Blob blob = bucket.getStorage().get(image.getBucketName(), image.getName());
 
         log.info("get file successfully from CDN: {}", image.getName());
-        return !Objects.isNull(blob)? ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(image.getName()))).body(blob.getContent(Blob.BlobSourceOption.generationMatch())): ResponseEntity.noContent().build();
+        return !Objects.isNull(blob) ? ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(image.getName()))).body(blob.getContent(Blob.BlobSourceOption.generationMatch())) : ResponseEntity.noContent().build();
     }
 
     @Override
@@ -82,6 +84,12 @@ public class CdnServiceImpl implements CdnService {
 
         log.info("delete file successfully from CDN: {}", image.getName());
         return BaseResponse.success("Delete file successfully from CDN: " + blob);
+    }
+
+    @Override
+    public BaseResponse getAllLoad(DataLoad load) {
+        BaseLoadResponse response = imageRepository.load(load);
+        return BaseResponse.success(beanUtil.mapAll(response.getData(), Image.class, ImageDto.class), response.getTotalCount());
     }
 
     private void saveImage(Stock stock, String bucketName, ImageDto dto) {
