@@ -41,7 +41,7 @@
                 <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
 
                 <div *dxTemplate="let item of 'detail'">
-                  <app-stock-product *ngIf="item.data" [data]="item.data"></app-stock-product>
+                  <app-stock-image *ngIf="item.data" [data]="item.data"></app-stock-image>
                 </div>
 
                 <div *dxTemplate="let cellInfo of 'singleDropDownBoxEditor'">

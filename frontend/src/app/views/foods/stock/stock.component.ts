@@ -15,7 +15,6 @@ import UnitEnum = Stock.UnitEnum;
 })
 export class StockComponent implements OnInit {
   dataSource: any = {};
-  foodDataSource: any = {};
   @ViewChild('stockDataGrid', { static: true }) stockDataGrid: any = DxDataGridComponent;
   dropDownOptions: any;
   stockService: GenericService;

@@ -26,6 +26,7 @@ import { OrderComponent } from './order/order.component';
 import { ImagesComponent } from './food/images/images.component';
 import { BasketComponent } from './order/basket/basket.component';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { StockImageComponent } from './stock/stock-image/stock-image.component';
 
 const routes: Routes = [
   {
@@ -80,6 +81,7 @@ const routes: Routes = [
     OrderComponent,
     ImagesComponent,
     BasketComponent,
+    StockImageComponent,
   ],
   imports: [
     CommonModule,
