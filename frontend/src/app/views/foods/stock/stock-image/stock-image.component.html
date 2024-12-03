@@ -1,0 +1,36 @@
+<div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card border" style="margin-bottom: 0;">
+            <div class="card-body" style="min-height: calc(50vh - 193px);">
+              <div class="row">
+                <dx-data-grid #stockDataGrid [dataSource]="dataSource" [showBorders]="true">
+                  <dxo-editing mode="form" [allowUpdating]="false" [allowAdding]="false" [allowDeleting]="false"
+                    [useIcons]="true">
+                  </dxo-editing>  
+  
+                  <dxi-column dataField="name" caption="İsim" [width]="400">
+                  </dxi-column>
+                  <dxi-column dataField="size" caption="Boyut" [width]="200">
+                  </dxi-column>
+                  <dxi-column dataField="image" caption="Resim">
+                </dxi-column>
+                 
+                  <dxo-header-filter [visible]=false>
+                  </dxo-header-filter>
+                  <dxo-filter-row [visible]="false">
+                  </dxo-filter-row>
+  
+                  <dxo-remote-operations [groupPaging]="true">
+                  </dxo-remote-operations>
+  
+                </dx-data-grid>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
