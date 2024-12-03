@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "STOCK")
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Stock extends BaseEntity implements Serializable {
 
     @Column(name = "userId", nullable = false)
@@ -28,6 +29,7 @@ public class Stock extends BaseEntity implements Serializable {
     @Column(name = "unitType", nullable = false)
     private UnitType unitType;
 
+    @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", orphanRemoval = true)
     @JsonIgnoreProperties("stock")
     private List<StockDetail> details;

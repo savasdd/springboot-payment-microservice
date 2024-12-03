@@ -1,6 +1,7 @@
 package com.payment.stock.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.common.enums.RecordStatus;
 import lombok.Data;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @MappedSuperclass
 @SuperBuilder(toBuilder = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class BaseEntity implements Serializable {
 
     @Serial

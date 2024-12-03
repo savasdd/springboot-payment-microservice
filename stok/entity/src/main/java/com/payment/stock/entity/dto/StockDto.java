@@ -1,5 +1,6 @@
 package com.payment.stock.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.base.BaseDto;
 import com.payment.stock.entity.model.StockDetail;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockDto extends BaseDto implements Serializable {
 
     @Schema(example = "22")
