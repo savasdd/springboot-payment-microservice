@@ -17,4 +17,5 @@ public class ImageDto implements Serializable {
     @JsonIgnore
     private String link;
     private Long size;
+    private StockInfoDto stock;
 }

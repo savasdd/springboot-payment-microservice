@@ -10,6 +10,7 @@ import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.exception.GeneralException;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.entity.dto.ImageDto;
+import com.payment.stock.entity.dto.ImageInfoDto;
 import com.payment.stock.entity.model.Image;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.repository.ImageRepository;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.FileTypeMap;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;

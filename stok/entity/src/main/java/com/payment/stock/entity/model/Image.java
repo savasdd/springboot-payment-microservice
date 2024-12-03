@@ -28,8 +28,7 @@ public class Image extends BaseEntity implements Serializable {
     @Column(name = "bucketName")
     private String bucketName;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "stockId", referencedColumnName = "ID")
     private Stock stock;
 
