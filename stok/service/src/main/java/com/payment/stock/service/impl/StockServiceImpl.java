@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -64,7 +65,6 @@ public class StockServiceImpl implements StockService {
         return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockDto.class), stockDtoList.getTotalElements());
     }
 
-    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, unless = "#result == null || #result.totalCount == 0")
     @Override
     public BaseResponse findAllLoad(DataLoad load) {
         BaseLoadResponse response = stockRepository.load(load);
@@ -99,7 +99,8 @@ public class StockServiceImpl implements StockService {
     @Override
     public BaseResponse update(StockDto dto) {
         Stock stock = stockRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
-        BeanUtils.copyProperties(dto, stock);
+        //BeanUtils.copyProperties(stock, dto);
+        updateField(dto, stock);
 
         stock.getDetails().forEach(d -> d.setRecordStatus(RecordStatus.DELETED));
         dto.getDetails().forEach(f -> {
@@ -108,7 +109,8 @@ public class StockServiceImpl implements StockService {
             detail.setStock(stock);
         });
 
-        stockRepository.saveAndFlush(stock);
+        stock.setRecordStatus(RecordStatus.ACTIVE);
+        stockRepository.save(stock);
         log.info("update: {}", stock);
         publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
         return BaseResponse.success(stock);
@@ -150,5 +152,13 @@ public class StockServiceImpl implements StockService {
         } catch (Exception e) {
             log.error("exception while publishing notification    event: {}", e.getLocalizedMessage());
         }
+    }
+
+    private void updateField(StockDto dto, Stock stock) {
+        stock.setUserId(Objects.isNull(dto.getUserId()) ? stock.getUserId() : dto.getUserId());
+        stock.setStockName(Objects.isNull(dto.getStockName()) ? stock.getStockName() : dto.getStockName());
+        stock.setAvailableQuantity(Objects.isNull(dto.getAvailableQuantity()) ? stock.getAvailableQuantity() : dto.getAvailableQuantity());
+        stock.setUnitType(Objects.isNull(dto.getUnitType()) ? stock.getUnitType() : dto.getUnitType());
+        stock.setRecordStatus(Objects.isNull(dto.getRecordStatus()) ? stock.getRecordStatus() : dto.getRecordStatus());
     }
 }

@@ -30,7 +30,7 @@ public class StockController {
     }
 
     @PostMapping(value = "/pageable-load")
-    public ResponseEntity<BaseResponse> findAll(@RequestBody DataLoad load) {
+    public ResponseEntity<BaseResponse> findAllLoad(@RequestBody DataLoad load) {
         return ResponseEntity.ok(stockService.findAllLoad(load));
     }
 

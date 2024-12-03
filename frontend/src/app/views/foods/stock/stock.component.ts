@@ -69,12 +69,14 @@ export class StockComponent implements OnInit {
       },
 
       insert: (values) => {
+        values.details=[];
         return this.stockService.save(values).then((response) => {
           return;
         });
       },
       update: (key, values: any) => {
         values.id = key;
+        values.details=[];
         return this.stockService.update(key, values).then((response) => {
           return;
         });

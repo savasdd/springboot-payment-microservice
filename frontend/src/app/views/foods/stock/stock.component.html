@@ -35,7 +35,9 @@
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
                 <dxi-column dataField="userId" caption="Kullanıcı"></dxi-column>
-                <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
+                <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"
+                  [allowEditing]="false"></dxi-column>
+                <dxi-column dataField="recordStatus" caption="Durum" [allowEditing]="false"></dxi-column>
                 <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
 
                 <div *dxTemplate="let item of 'detail'">
@@ -67,8 +69,7 @@
                 </div>
 
                 <dxo-paging [pageSize]="10"></dxo-paging>
-                <dxo-pager [visible]="true" [showPageSizeSelector]="true"
-                    [allowedPageSizes]="[10, 20, 50]"></dxo-pager>
+                <dxo-pager [visible]="true" [showPageSizeSelector]="true" [allowedPageSizes]="[10, 20, 50]"></dxo-pager>
 
                 <dxo-header-filter [visible]=false>
                 </dxo-header-filter>

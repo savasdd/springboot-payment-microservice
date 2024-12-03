@@ -134,13 +134,28 @@ export class UtilService {
   }
 
   static setPage(loadOptions: any) {
+    const filters: Array<{}> = [];
+
     if (!loadOptions.skip) {
       loadOptions.skip = 0;
     }
     if (!loadOptions.take) {
       loadOptions.take = 2147483647;
     }
+
+
+    if (loadOptions.filter != undefined && loadOptions.filter.length > 0) {
+      loadOptions.filter.map((m) => {
+        filters.push(m)
+      });
+      filters.push('and');
+      filters.push(['recordStatus', '<>', 'DELETED']);
+    } else {
+      filters.push(['recordStatus', '<>', 'DELETED']);
+    }
+
     loadOptions.sort = loadOptions.sort == null ? [{ 'selector': 'creDate', 'desc': true }] : loadOptions.sort;
+    loadOptions.filter = filters;
     return loadOptions;
   }
 
