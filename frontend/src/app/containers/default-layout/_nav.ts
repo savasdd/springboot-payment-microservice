@@ -28,10 +28,6 @@ export const navItems: INavData[] = [
         url: 'foods/restaurants'
       },
       {
-        name: 'Stock',
-        url: 'foods/stocks'
-      },
-      {
         name: 'Payment',
         url: 'foods/payments'
       },
@@ -43,8 +39,8 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cilBookmark' },
     children: [
       {
-        name: 'Department',
-        url: 'data/department'
+        name: 'Stok',
+        url: 'foods/stocks'
       },
     ]
   },

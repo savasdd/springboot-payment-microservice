@@ -21,9 +21,7 @@ import { DevExtremeModule } from "devextreme-angular";
 import { UserProfileComponent } from "./user-profile/user-profile.component";
 import { AuthUserComponent } from './auth-user/auth-user.component';
 import { AuthRolComponent } from './auth-rol/auth-rol.component';
-import { AuthGroupComponent } from './auth-group/auth-group.component';
 import { UserGroupComponent } from './auth-user/user-group/user-group.component';
-import { GroupRolComponent } from './auth-group/group-rol/group-rol.component';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { UserDepartmentComponent } from './auth-user/user-department/user-department.component';
 import { UserCityComponent } from './user-city/user-city.component';
@@ -56,12 +54,6 @@ const routes: Routes = [
           title: ''
         }
       },
-      {
-        path: 'group', component: AuthGroupComponent,
-        data: {
-          title: 'Groups'
-        }
-      },
     ]
   }
 ];
@@ -71,9 +63,7 @@ const routes: Routes = [
     UserProfileComponent,
     AuthUserComponent,
     AuthRolComponent,
-    AuthGroupComponent,
     UserGroupComponent,
-    GroupRolComponent,
     UserDepartmentComponent,
     UserCityComponent
   ],

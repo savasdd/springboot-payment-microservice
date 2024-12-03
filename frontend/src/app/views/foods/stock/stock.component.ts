@@ -19,13 +19,6 @@ export class StockComponent implements OnInit {
   @ViewChild('stockDataGrid', { static: true }) stockDataGrid: any = DxDataGridComponent;
   dropDownOptions: any;
   stockService: GenericService;
-  dataTypeSource: any = [
-    { name: StatusEnum.New },
-    { name: StatusEnum.Accept },
-    { name: StatusEnum.Reject },
-    { name: StatusEnum.Confirmed },
-    { name: StatusEnum.Rollback },
-  ];
   dataUnitSource: any = [
     { name: UnitEnum.Adet },
     { name: UnitEnum.Kilogram },
@@ -37,7 +30,7 @@ export class StockComponent implements OnInit {
   ];
 
   constructor(public service: GenericService) {
-    this.stockService = this.service.instance('stocks');
+    this.stockService = this.service.instance('payment/stocks');
     this.loadGrid();
   }
 
@@ -59,10 +52,12 @@ export class StockComponent implements OnInit {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        return this.stockService.findAll(UtilService.setPage(loadOptions)).then((response: any) => {
+        return this.stockService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
           return {
-            data: response.items,
-            totalCount: response.totalCount
+            data: response.data,
+            totalCount: response.totalCount,
+            summary: response.summary,
+            groupCount: response.groupCount,
           };
         });
       },
@@ -70,38 +65,24 @@ export class StockComponent implements OnInit {
       byKey: (key) => {
         return this.stockService.findOne(key).then((response) => {
           return response;
-        }, err => {
-          throw (err.error.errorMessage ? err.error.errorMessage : err.error.warningMessage);
         });
       },
 
       insert: (values) => {
         return this.stockService.save(values).then((response) => {
           return;
-        },
-          err => {
-            throw (err.error.errorMessage ? err.error.errorMessage : err.error.warningMessage);
-          }
-        );
+        });
       },
       update: (key, values: any) => {
         values.id = key;
         return this.stockService.update(key, values).then((response) => {
           return;
-        },
-          err => {
-            throw (err.error.errorMessage ? err.error.errorMessage : err.error.warningMessage);
-          }
-        );
+        });
       },
       remove: (key) => {
         return this.stockService.delete(key).then((response) => {
           return;
-        },
-          err => {
-            throw (err.error.errorMessage ? err.error.errorMessage : err.error.warningMessage);
-          }
-        );
+        });
       }
     });
   }
