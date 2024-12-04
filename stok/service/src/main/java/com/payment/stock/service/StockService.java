@@ -4,6 +4,7 @@ import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.entity.dto.StockDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface StockService {
     BaseResponse findPageable(Pageable pageable);
 
     BaseResponse findAllLoad(DataLoad load);
+
+    BaseResponse uploadExcel(Long userId, MultipartFile file);
 }

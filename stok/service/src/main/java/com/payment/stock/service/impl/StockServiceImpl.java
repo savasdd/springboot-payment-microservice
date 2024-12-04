@@ -1,5 +1,6 @@
 package com.payment.stock.service.impl;
 
+import com.google.common.collect.Lists;
 import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
@@ -16,6 +17,7 @@ import com.payment.stock.entity.model.StockDetail;
 import com.payment.stock.repository.StockDetailRepository;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.StockService;
+import com.payment.stock.service.excel.ExcelUtility;
 import com.payment.stock.service.publisher.NotifySerializer;
 import com.payment.stock.service.publisher.Publisher;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -72,6 +75,27 @@ public class StockServiceImpl implements StockService {
 
         log.info("Load all stock: {}", response.getTotalCount());
         return BaseResponse.success(stockDtoList, response.getTotalCount());
+    }
+
+    @Override
+    public BaseResponse uploadExcel(Long userId, MultipartFile file) {
+        if (!ExcelUtility.hasExcelFormat(file))
+            return BaseResponse.error("Excel format not supported");
+
+        try {
+            List<StockDto> dtoList = ExcelUtility.excelToDto(userId, file.getInputStream());
+            getAsPartition(dtoList).forEach(dto -> stockRepository.saveAll(beanUtil.mapAll(dto, Stock.class)));
+
+            log.info("Upload excel success {}", dtoList.size());
+            return BaseResponse.success("Success");
+        } catch (Exception e) {
+            log.error("Excel upload error", e);
+            return BaseResponse.error(e.getMessage());
+        }
+    }
+
+    private static List<List<StockDto>> getAsPartition(List<StockDto> dtoList) {
+        return Lists.partition(dtoList, 50);
     }
 
     @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, key = "#id", unless = "#result == null || #result.totalCount == 0")

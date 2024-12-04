@@ -9,8 +9,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/api/payment/stocks")
@@ -57,6 +59,11 @@ public class StockController {
     @GetMapping(value = "/update-quantity/{id}")
     public ResponseEntity<BaseResponse> updateStockQuantity(@PathVariable Long id, @RequestParam Integer quantity) {
         return new ResponseEntity<>(stockService.updateStockQuantity(id, quantity), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaseResponse> uploadExcel(@RequestParam("userId") Long userId, @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(stockService.uploadExcel(userId, file));
     }
 
 }

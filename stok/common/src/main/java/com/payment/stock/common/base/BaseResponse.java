@@ -27,6 +27,10 @@ public class BaseResponse implements Serializable {
         return BaseResponse.builder().data(data).status(HttpStatus.OK.value()).totalCount(count).build();
     }
 
+    public static BaseResponse success(String message) {
+        return BaseResponse.builder().data(message).status(HttpStatus.OK.value()).build();
+    }
+
     public static BaseResponse error(String message) {
         return BaseResponse.builder().data(message).status(HttpStatus.BAD_REQUEST.value()).build();
     }
