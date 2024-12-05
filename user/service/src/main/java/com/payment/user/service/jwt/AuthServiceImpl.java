@@ -17,7 +17,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -31,17 +33,19 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenDto authenticate(LoginDto loginDto) {
         TokenDto response = null;
-        User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow(()->new EntityNotFoundException("User not found"));
+        User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if (Objects.isNull(user.getToken()) || jwtService.validateExpiration(user.getToken())) {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword(), user.getAuthorities()));
 
-            String token = jwtService.generateToken(user);
+            String token = jwtService.generateToken(getClaims(user), user);
             user.setToken(token);
             userRepository.save(user);
             response = TokenDto.builder().token(token).expiresIn(jwtService.getExpirationTime()).roles(getRoles(user.getRoles())).build();
-        } else
+        } else {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword(), user.getAuthorities())).isAuthenticated();
             response = TokenDto.builder().token(user.getToken()).expiresIn(jwtService.getExpirationTime()).roles(getRoles(user.getRoles())).build();
+        }
 
 
         log.info("Authenticated user: {} {} - {}", user.getFirstName(), user.getLastName(), user.getUsername());
@@ -55,5 +59,13 @@ public class AuthServiceImpl implements AuthService {
 
     private List<String> getRoles(List<Role> roles) {
         return roles.stream().map(Role::getName).toList();
+    }
+
+    private Map<String, Object> getClaims(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getId());
+        claims.put("firstName", user.getFirstName());
+        claims.put("lastName", user.getLastName());
+        return claims;
     }
 }
