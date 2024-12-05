@@ -3,7 +3,6 @@ import {TokenService} from "./token.service";
 import {TokenResponse, UserDto} from "../../services/gateway-service-api";
 import {GenericService} from "../../services/generic.service";
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +27,6 @@ export class AuthService {
       if (response) {
         this.tokenService.saveToken(response.token);
         this.tokenService.saveRefreshToken(response.refresh_token);
-        this.tokenService.saveUser(dto.username);
         this.tokenService.saveRol(response.roles);
       }
     });
