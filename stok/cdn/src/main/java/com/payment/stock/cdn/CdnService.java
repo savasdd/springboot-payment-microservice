@@ -9,7 +9,9 @@ public interface CdnService {
 
     BaseResponse fileUpload(Long stockId, MultipartFile file);
 
-    ResponseEntity<byte[]> getImage(Long stockId);
+    ResponseEntity<byte[]> getImageByte(Long stockId);
+
+    BaseResponse getImage(Long stockId);
 
     BaseResponse getAll();
 

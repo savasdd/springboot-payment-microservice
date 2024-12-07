@@ -31,9 +31,14 @@ public class CdnController {
         return ResponseEntity.ok(cdnService.fileUpload(stockId, file));
     }
 
+    @GetMapping(value = "/image-byte")
+    public ResponseEntity<byte[]> getImageByte(@RequestParam("stockId") Long stockId) {
+        return cdnService.getImageByte(stockId);
+    }
+
     @GetMapping(value = "/image")
-    public ResponseEntity<byte[]> getImage(@RequestParam("stockId") Long stockId) {
-        return cdnService.getImage(stockId);
+    public ResponseEntity<BaseResponse> getImage(@RequestParam("stockId") Long stockId) {
+        return ResponseEntity.ok(cdnService.getImage(stockId));
     }
 
     @DeleteMapping

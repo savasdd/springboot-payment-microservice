@@ -25,10 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.activation.FileTypeMap;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -61,12 +59,27 @@ public class CdnServiceImpl implements CdnService {
     }
 
     @Override
-    public ResponseEntity<byte[]> getImage(Long stockId) {
+    public ResponseEntity<byte[]> getImageByte(Long stockId) {
         Image image = imageRepository.findByStock_IdAndRecordStatus(stockId, RecordStatus.ACTIVE).orElseThrow(() -> new RuntimeException("Image not found"));
         Blob blob = bucket.getStorage().get(image.getBucketName(), image.getName());
 
         log.info("get file successfully from CDN: {}", image.getName());
         return !Objects.isNull(blob) ? ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(image.getName()))).body(blob.getContent(Blob.BlobSourceOption.generationMatch())) : ResponseEntity.noContent().build();
+    }
+
+    //TODO Cacahe eklenecek
+    @Override
+    public BaseResponse getImage(Long stockId) {
+        Optional<Image> image = imageRepository.findByStock_IdAndRecordStatus(stockId, RecordStatus.ACTIVE);
+        if (image.isPresent()) {
+            Blob blob = bucket.getStorage().get(image.get().getBucketName(), image.get().getName());
+            byte[] encoded = Base64.getEncoder().encode(blob.getContent(Blob.BlobSourceOption.generationMatch()));
+
+            log.info("get file successfully from CDN: {}", image.get().getName());
+            return BaseResponse.success(ImageInfoDto.builder().stockId(stockId).name(image.get().getName()).image(new String(encoded, StandardCharsets.UTF_8)).build());
+        }
+
+        return BaseResponse.success(ImageInfoDto.builder().stockId(stockId).name("").build());
     }
 
     @Override
