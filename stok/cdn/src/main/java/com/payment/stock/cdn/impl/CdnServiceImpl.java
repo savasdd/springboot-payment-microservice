@@ -9,6 +9,7 @@ import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.exception.GeneralException;
 import com.payment.stock.common.utils.BeanUtil;
+import com.payment.stock.common.utils.CacheUtil;
 import com.payment.stock.entity.dto.ImageDto;
 import com.payment.stock.entity.dto.ImageInfoDto;
 import com.payment.stock.entity.model.Image;
@@ -18,6 +19,7 @@ import com.payment.stock.repository.StockRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -67,7 +69,7 @@ public class CdnServiceImpl implements CdnService {
         return !Objects.isNull(blob) ? ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(image.getName()))).body(blob.getContent(Blob.BlobSourceOption.generationMatch())) : ResponseEntity.noContent().build();
     }
 
-    //TODO Cacahe eklenecek
+    @Cacheable(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.GET_IMAGE, key = "#stockId", unless = "#result == null")
     @Override
     public BaseResponse getImage(Long stockId) {
         Optional<Image> image = imageRepository.findByStock_IdAndRecordStatus(stockId, RecordStatus.ACTIVE);

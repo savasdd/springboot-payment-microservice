@@ -38,7 +38,7 @@
                 <dxi-column dataField="availableQuantity" format="#0.##" [width]="200" caption="Miktar">
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
-                <dxi-column dataField="userId" caption="Kullanıcı"></dxi-column>
+                <dxi-column dataField="userId" caption="Kullanıcı" [allowEditing]="false"></dxi-column>
                 <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"
                   [allowEditing]="false"></dxi-column>
                 <dxi-column dataField="recordStatus" caption="Durum" [allowEditing]="false"></dxi-column>
@@ -89,9 +89,10 @@
                 [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="popupVisible">
 
                 <div *dxTemplate="let data of 'content'">
-                  <app-file *ngIf="popupVisible" path="payment/stocks/excel" [params]="params" (fileEmitter)="fileEmitter($event)"></app-file>
+                  <app-file *ngIf="popupVisible" path="payment/stocks/excel" [params]="params"
+                    (fileEmitter)="fileEmitter($event)"></app-file>
                 </div>
-              </dx-popup> 
+              </dx-popup>
 
             </div>
           </div>
