@@ -20,6 +20,10 @@
                     <dx-button icon="refresh" (onClick)="refreshDataGrid($event)">
                     </dx-button>
                   </dxi-item>
+                  <dxi-item location="after">
+                    <dx-button icon="upload" title="Exel Yükle" (onClick)="openPopapExcel()">
+                    </dx-button>
+                  </dxi-item>
                 </dxo-toolbar>
 
 
@@ -80,6 +84,32 @@
                 </dxo-remote-operations>
 
               </dx-data-grid>
+
+
+              <dx-popup [width]="700" [height]="300" [showTitle]="true" title="Exel Yükle" [dragEnabled]="false"
+                [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="popupVisible">
+
+                <div *dxTemplate="let data of 'content'">
+                  <dx-form id="form" [formData]="fileModel" labelMode="floating" [colCount]="2" enctype='multipart/form-data'>
+
+                    <dxi-item dataField="fileData" caption="File">
+                      <dx-file-uploader 
+                      [multiple]="false" 
+                      name="File"
+                      accept="*"
+                      uploadMode="instantly"
+                      (onValueChanged)="onValueChanged($event)">
+                      </dx-file-uploader>
+                    </dxi-item>
+
+                    <dxi-item [colSpan]="2">
+                      <button id="button" type="button" class="btn btn-outline-primary" (click)="uploadFile()">Kaydet
+                      </button>
+                    </dxi-item>
+
+                  </dx-form>
+                </div>
+              </dx-popup>
 
             </div>
           </div>

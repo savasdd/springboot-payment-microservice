@@ -24,7 +24,7 @@ import { UserFileDto } from '../model/userFileDto';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
-
+import { environment } from "../../../../environments/environment";
 
 
 @Injectable({
@@ -32,7 +32,8 @@ import { Configuration }                                     from '../configurat
 })
 export class UserFileControllerService {
 
-    protected basePath = 'http://172.16.6.152:8081';
+    protected basePath1 = environment.apiUrl;
+    protected basePath = "http://localhost:8881/api/";
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -179,7 +180,7 @@ export class UserFileControllerService {
             }
         }
 
-        let localVarPath = `/api/foods/users/file/upload`;
+        let localVarPath = `payment/stocks/excel`;
         return this.httpClient.request<UserFileDto>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

@@ -3,7 +3,6 @@ package com.payment.stock.controller;
 import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.entity.dto.StockDto;
-import com.payment.stock.entity.model.Stock;
 import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +60,9 @@ public class StockController {
         return new ResponseEntity<>(stockService.updateStockQuantity(id, quantity), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/excel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BaseResponse> uploadExcel(@RequestParam("userId") Long userId, @RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(stockService.uploadExcel(userId, file));
+    @PostMapping(value = "/excel", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<BaseResponse> uploadExcel(@RequestPart(value = "userId") String userId, @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(stockService.uploadExcel(Long.valueOf(userId), file));
     }
 
 }

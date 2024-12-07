@@ -84,7 +84,7 @@ public class StockServiceImpl implements StockService {
 
         try {
             List<StockDto> dtoList = ExcelUtility.excelToDto(userId, file.getInputStream());
-            getAsPartition(dtoList).forEach(dto -> stockRepository.saveAll(beanUtil.mapAll(dto, Stock.class)));
+            //getAsPartition(dtoList).forEach(dto -> stockRepository.saveAll(beanUtil.mapAll(dto, Stock.class)));
 
             log.info("Upload excel success {}", dtoList.size());
             return BaseResponse.success("Success");
