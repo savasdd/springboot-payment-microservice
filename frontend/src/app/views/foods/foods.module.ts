@@ -21,12 +21,12 @@ import { RouterModule, Routes } from "@angular/router";
 import { FoodComponent } from './food/food.component';
 import { PaymentComponent } from './payment/payment.component';
 import { DevExtremeModule } from "devextreme-angular";
-import { CategoryComponent } from './category/category.component';
 import { OrderComponent } from './order/order.component';
 import { ImagesComponent } from './food/images/images.component';
 import { BasketComponent } from './order/basket/basket.component';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { StockImageComponent } from './stock/stock-image/stock-image.component';
+import { FileComponent } from './file/file.component';
 
 const routes: Routes = [
   {
@@ -51,12 +51,6 @@ const routes: Routes = [
         }
       },
       {
-        path: 'categorys', component: CategoryComponent,
-        data: {
-          title: 'Category'
-        }
-      },
-      {
         path: 'orders', component: OrderComponent,
         data: {
           title: 'Order'
@@ -77,11 +71,11 @@ const routes: Routes = [
     StockComponent,
     FoodComponent,
     PaymentComponent,
-    CategoryComponent,
     OrderComponent,
     ImagesComponent,
     BasketComponent,
     StockImageComponent,
+    FileComponent,
   ],
   imports: [
     CommonModule,

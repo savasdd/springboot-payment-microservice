@@ -1,0 +1,12 @@
+<dx-form id="form" [formData]="fileModel" labelMode="floating" [colCount]="2" enctype='multipart/form-data'>
+    <dxi-item dataField="fileData" caption="File">
+        <dx-file-uploader [multiple]="false" name="File" accept="*" uploadMode="instantly"
+            (onValueChanged)="onValueChanged($event)">
+        </dx-file-uploader>
+    </dxi-item>
+
+    <dxi-item [colSpan]="2">
+        <button id="button" type="button" class="btn btn-outline-primary" (click)="uploadFile()">Kaydet
+        </button>
+    </dxi-item>
+</dx-form>
