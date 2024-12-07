@@ -20,16 +20,15 @@ export class StockImageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.data)
     this.loadGrid(this.data.id);
   }
 
   loadGrid(id: any) {
     this.dataSource = new CustomStore({
-      key: 'stock.id',
+      key: 'stockId',
       load: (loadOptions) => {
         loadOptions.filter = this.getFilters(id);
-        return this.imageService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
+        return this.imageService.customGet("image?stockId=" + id).then((response: any) => {
           return {
             data: response.data,
             totalCount: response.totalCount,

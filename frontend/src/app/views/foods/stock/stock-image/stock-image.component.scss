@@ -1,0 +1,15 @@
+
+.images {
+    height: 10rem;
+    width: 10rem;
+    display: block;
+    padding: 3px;
+    margin-left: 2rem;
+    transition: transform .2s;
+    border: 2px solid #d6d6d6;
+  }
+  
+  .images:hover {
+    transform: scale(1.5);
+  }
+  

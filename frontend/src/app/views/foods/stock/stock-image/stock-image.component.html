@@ -3,7 +3,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card border" style="margin-bottom: 0;">
-            <div class="card-body" style="min-height: calc(50vh - 193px);">
+            <div class="card-body" style="min-height: calc(20vh - 193px);">
               <div class="row">
                 <dx-data-grid #stockDataGrid [dataSource]="dataSource" [showBorders]="true">
                   <dxo-editing mode="form" [allowUpdating]="false" [allowAdding]="false" [allowDeleting]="false"
@@ -12,17 +12,14 @@
   
                   <dxi-column dataField="name" caption="İsim" [width]="400">
                   </dxi-column>
-                  <dxi-column dataField="size" caption="Boyut" [width]="200">
-                  </dxi-column>
-                  <dxi-column dataField="image" caption="Resim">
+                  <dxi-column dataField="image" caption="Resim" cellTemplate="cellTemplate">
+
+                    <div *dxTemplate="let data of 'cellTemplate'">
+                      <img *ngIf="data.value" class="images" [src]="'data:image/png;base64,'+data.value" alt="" />
+                    </div>
                 </dxi-column>
-                 
-                  <dxo-header-filter [visible]=false>
-                  </dxo-header-filter>
-                  <dxo-filter-row [visible]="false">
-                  </dxo-filter-row>
   
-                  <dxo-remote-operations [groupPaging]="true">
+                  <dxo-remote-operations [groupPaging]="false">
                   </dxo-remote-operations>
   
                 </dx-data-grid>
