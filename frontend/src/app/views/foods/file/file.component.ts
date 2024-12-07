@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { GenericService } from 'src/app/services/generic.service';
 import { DxFormComponent } from "devextreme-angular";
 import notify from "devextreme/ui/notify";
@@ -14,6 +14,7 @@ export class FileComponent implements OnInit {
 
   fileModel: FileModel = new FileModel();
   @ViewChild(DxFormComponent, { static: false }) form: any = DxFormComponent;
+  @Output() fileEmitter: EventEmitter<any> = new EventEmitter();
   fileService: GenericService;
 
   constructor(public service: GenericService) {
@@ -49,6 +50,7 @@ export class FileComponent implements OnInit {
 
       this.fileService.customPost("", formData).then((response: any) => {
         notify({ message: response.data});
+        this.fileEmitter.emit(response);
       });
 
     }
@@ -57,7 +59,6 @@ export class FileComponent implements OnInit {
 
 
 export class FileModel {
-  userId?: string = '88';
   fileData: any;
   fileBlob: any;
   file: any;

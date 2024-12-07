@@ -96,4 +96,11 @@ export class StockComponent implements OnInit {
     this.params.push({ key: 'userId', value: this.tokenService.getUserId() });
   }
 
+  fileEmitter(event: any) {
+    if (event.status == 200) {
+      this.popupVisible = false;
+      this.refreshDataGrid(null);
+    }
+  }
+
 }

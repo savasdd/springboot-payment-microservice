@@ -21,7 +21,7 @@
                     </dx-button>
                   </dxi-item>
                   <dxi-item location="after">
-                    <dx-button icon="upload" title="Exel Yükle" (onClick)="openPopapExcel()">
+                    <dx-button icon="upload" text="Exel" (onClick)="openPopapExcel()">
                     </dx-button>
                   </dxi-item>
                 </dxo-toolbar>
@@ -89,7 +89,7 @@
                 [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="popupVisible">
 
                 <div *dxTemplate="let data of 'content'">
-                  <app-file *ngIf="popupVisible" path="payment/stocks/excel" [params]="params"></app-file>
+                  <app-file *ngIf="popupVisible" path="payment/stocks/excel" [params]="params" (fileEmitter)="fileEmitter($event)"></app-file>
                 </div>
               </dx-popup> 
 
