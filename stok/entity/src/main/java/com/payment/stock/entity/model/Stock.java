@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -28,6 +29,13 @@ public class Stock extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "unitType", nullable = false)
     private UnitType unitType;
+
+    @Column(name = "price")
+    private BigDecimal price;
+
+    @ManyToOne
+    @JoinColumn(name = "RATE_ID", referencedColumnName = "ID")
+    private StockRate rate;
 
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", orphanRemoval = true)

@@ -25,5 +25,6 @@ public class StockDto extends BaseDto implements Serializable {
     private Integer availableQuantity;
     @Schema(example = "Adet")
     private UnitType unitType;
+    private StockRateDto rate;
     private List<StockDetailDto> details;
 }
