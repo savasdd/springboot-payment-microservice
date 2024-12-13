@@ -6,6 +6,7 @@ import com.payment.stock.entity.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,4 +25,8 @@ public class StockRate extends BaseEntity implements Serializable {
 
     @Column(name = "rate")
     private BigDecimal rate;
+
+    @Column(name = "percent")
+    private String percent;
+
 }

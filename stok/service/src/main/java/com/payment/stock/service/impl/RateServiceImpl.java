@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,11 +59,13 @@ public class RateServiceImpl implements RateService {
     @Override
     public BaseResponse save(StockRateDto dto) {
         StockRate rate = beanUtil.mapDto(dto, StockRate.class);
+        rate.setPercent(getPercent(rate.getRate()));
         StockRate model = rateRepository.save(rate);
 
         log.info("save: {}", model);
         return BaseResponse.success(model);
     }
+
 
     @Override
     public BaseResponse update(StockRateDto dto) {
@@ -88,5 +91,10 @@ public class RateServiceImpl implements RateService {
         model.setRateName(Objects.isNull(dto.getRateName()) ? model.getRateName() : dto.getRateName());
         model.setRate(Objects.isNull(dto.getRate()) ? model.getRate() : dto.getRate());
         model.setRecordStatus(Objects.isNull(dto.getRecordStatus()) ? model.getRecordStatus() : dto.getRecordStatus());
+        model.setPercent(getPercent(Objects.isNull(dto.getRate()) ? model.getRate() : dto.getRate()));
+    }
+
+    private static String getPercent(BigDecimal rate) {
+        return rate.multiply(new BigDecimal(100)).intValue() + "/100";
     }
 }

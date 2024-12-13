@@ -17,11 +17,7 @@ public class StockRateDto extends BaseDto implements Serializable {
 
     @Schema(example = "Kasım İndirimi")
     private String rateName;
-    @Schema(example = "2.25")
+    @Schema(example = "0.45")
     private BigDecimal rate;
     private String percent;
-
-    public String getPercent() {
-        return rate.multiply(new BigDecimal(100)).intValue() + "/100";
-    }
 }
