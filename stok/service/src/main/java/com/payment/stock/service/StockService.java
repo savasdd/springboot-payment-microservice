@@ -3,6 +3,7 @@ package com.payment.stock.service;
 import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.entity.dto.StockDto;
+import com.payment.stock.entity.vo.StockV0;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,9 +14,9 @@ public interface StockService {
 
     BaseResponse findById(Long id);
 
-    BaseResponse save(StockDto dto);
+    BaseResponse save(StockV0 dto);
 
-    BaseResponse update(StockDto dto);
+    BaseResponse update(StockV0 dto);
 
     BaseResponse delete(Long id);
 

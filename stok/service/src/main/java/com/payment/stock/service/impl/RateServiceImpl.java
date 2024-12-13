@@ -8,7 +8,6 @@ import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.common.utils.RestUtil;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.dto.StockRateDto;
-import com.payment.stock.entity.model.Stock;
 import com.payment.stock.entity.model.StockRate;
 import com.payment.stock.repository.StockRateRepository;
 import com.payment.stock.service.RateService;

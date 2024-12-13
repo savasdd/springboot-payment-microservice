@@ -14,7 +14,9 @@ import com.payment.stock.entity.content.KafkaContent;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.entity.model.StockDetail;
+import com.payment.stock.entity.vo.StockV0;
 import com.payment.stock.repository.StockDetailRepository;
+import com.payment.stock.repository.StockRateRepository;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.StockService;
 import com.payment.stock.service.excel.ExcelUtility;
@@ -44,6 +46,7 @@ public class StockServiceImpl implements StockService {
     private static final List<String> LANG = List.of("TR", "EN");
     private final StockRepository stockRepository;
     private final StockDetailRepository detailRepository;
+    private final StockRateRepository rateRepository;
     private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final Publisher publisher;
@@ -109,9 +112,10 @@ public class StockServiceImpl implements StockService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
-    public BaseResponse save(StockDto dto) {
+    public BaseResponse save(StockV0 dto) {
         Stock stock = beanUtil.mapDto(dto, Stock.class);
         stock.getDetails().forEach(d -> d.setStock(stock));
+        stock.setRate(rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new));
         Stock model = stockRepository.save(stock);
 
         log.info("save: {}", model);
@@ -121,7 +125,7 @@ public class StockServiceImpl implements StockService {
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
-    public BaseResponse update(StockDto dto) {
+    public BaseResponse update(StockV0 dto) {
         Stock stock = stockRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
         //BeanUtils.copyProperties(stock, dto);
         updateField(dto, stock);
@@ -178,11 +182,12 @@ public class StockServiceImpl implements StockService {
         }
     }
 
-    private void updateField(StockDto dto, Stock stock) {
+    private void updateField(StockV0 dto, Stock stock) {
         stock.setUserId(Objects.isNull(dto.getUserId()) ? stock.getUserId() : dto.getUserId());
         stock.setStockName(Objects.isNull(dto.getStockName()) ? stock.getStockName() : dto.getStockName());
         stock.setAvailableQuantity(Objects.isNull(dto.getAvailableQuantity()) ? stock.getAvailableQuantity() : dto.getAvailableQuantity());
         stock.setUnitType(Objects.isNull(dto.getUnitType()) ? stock.getUnitType() : dto.getUnitType());
         stock.setRecordStatus(Objects.isNull(dto.getRecordStatus()) ? stock.getRecordStatus() : dto.getRecordStatus());
+        stock.setRate(rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new));
     }
 }

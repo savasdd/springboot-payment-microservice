@@ -5,6 +5,7 @@ import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.base.BaseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -18,4 +19,9 @@ public class StockRateDto extends BaseDto implements Serializable {
     private String rateName;
     @Schema(example = "2.25")
     private BigDecimal rate;
+    private String percent;
+
+    public String getPercent() {
+        return rate.multiply(new BigDecimal(100)).intValue() + "/100";
+    }
 }

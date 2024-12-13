@@ -3,6 +3,7 @@ package com.payment.stock.controller;
 import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.entity.dto.StockDto;
+import com.payment.stock.entity.vo.StockV0;
 import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +42,12 @@ public class StockController {
     }
 
     @PostMapping(value = "/save")
-    public ResponseEntity<BaseResponse> save(@RequestBody StockDto stock) {
+    public ResponseEntity<BaseResponse> save(@RequestBody StockV0 stock) {
         return new ResponseEntity<>(stockService.save(stock), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update")
-    public ResponseEntity<BaseResponse> update(@RequestBody StockDto stock) {
+    public ResponseEntity<BaseResponse> update(@RequestBody StockV0 stock) {
         return new ResponseEntity<>(stockService.update(stock), HttpStatus.OK);
     }
 
