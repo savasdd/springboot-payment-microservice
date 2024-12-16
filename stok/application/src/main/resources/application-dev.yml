@@ -2,7 +2,6 @@ server:
   port: 8881
   local:
     ip: 127.0.0.1
-    kafka: 127.0.0.1:9093
 
 spring:
   application:
@@ -39,7 +38,7 @@ spring:
   kafka:
     consumer:
       group-id: order-service-group-id
-    bootstrap-servers: ${server.local.kafka}
+    bootstrap-servers: ${server.local.ip}:9093
   banner:
     location: banner.txt
   servlet:
@@ -62,7 +61,7 @@ couchbase:
   bucket: PaymentBucket
 
 elastic:
-  host: 127.0.0.1:9200
+  host: ${server.local.ip}:9200
   username: elastic
   password: elastic123
   cluster: elasticsearch

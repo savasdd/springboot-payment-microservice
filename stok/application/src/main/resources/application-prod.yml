@@ -4,6 +4,7 @@ server:
     kafka: 10.5.0.4:9092
     couchbase: 10.5.0.6
     eureka: 10.5.0.10
+    elastic: 10.5.0.7
     db: 10.5.0.2
 
 spring:
@@ -62,7 +63,7 @@ couchbase:
   bucket: PaymentBucket
 
 elastic:
-  host: 127.0.0.1:9200
+  host: ${server.prod.elastic}:9200
   username: elastic
   password: elastic123
   cluster: elasticsearch
