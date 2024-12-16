@@ -19,6 +19,8 @@ import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -35,23 +37,29 @@ public class IndexServiceImpl implements IndexService {
     private final BeanUtil beanUtil;
 
     @Override
-    public BaseResponse index(DataLoad load) {
+    public BaseResponse index() {
         try {
             deleteIndex();
-            BaseResponse response = stockService.findAllLoad(load);
-            List<StockDto> dtoList = beanUtil.mapAll(response.getData(), StockDto.class, StockDto.class).stream().filter(f -> f.getRecordStatus().equals(RecordStatus.ACTIVE)).toList();
-            List<ElasticContent> contents = beanUtil.mapAll(dtoList, ElasticContent.class);
+            Pageable pageable = PageRequest.of(0, 100);
 
-            contents.forEach(content -> {
-                StockRateDto dto = dtoList.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElseThrow().getRate();
-                content.setContentType(ElasticIndex.STOCK.getName());
-                content.setContentId(ElasticIndex.STOCK.getCode());
-                content.setRateName(dto.getRateName());
-                content.setPercent(dto.getPercent());
-                index(esConfig.getIndexStock(), content);
-            });
+            do {
+                Page<StockDto> response = stockService.getPageable(pageable);
+                List<ElasticContent> contents = beanUtil.mapAll(response.getContent(), ElasticContent.class);
 
-            return BaseResponse.success(contents, (long) contents.size());
+                contents.forEach(content -> {
+                    StockRateDto dto = response.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElseThrow().getRate();
+                    content.setContentType(ElasticIndex.STOCK.getName());
+                    content.setContentId(ElasticIndex.STOCK.getCode());
+                    content.setRateName(dto.getRateName());
+                    content.setPercent(dto.getPercent());
+                    index(esConfig.getIndexStock(), content);
+                });
+
+                pageable = response.nextPageable();
+            } while (pageable.isPaged());
+
+
+            return BaseResponse.success("Success");
         } catch (Exception e) {
             log.error("Exception occurred while indexing data", e);
         }

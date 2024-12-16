@@ -72,6 +72,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public Page<StockDto> getPageable(Pageable pageable) {
+        return beanUtil.mapAll(stockRepository.findByRecordStatus(RecordStatus.ACTIVE, pageable), StockDto.class);
+    }
+
+    @Override
     public BaseResponse findAllLoad(DataLoad load) {
         BaseLoadResponse response = stockRepository.load(load);
         List<StockDto> stockDtoList = beanUtil.mapAll(response.getData(), Stock.class, StockDto.class);
@@ -163,11 +168,6 @@ public class StockServiceImpl implements StockService {
         stockRepository.save(stock);
         log.info("updateStockQuantity: {}", stock);
         return BaseResponse.success(stock);
-    }
-
-    @Override
-    public List<StockDto> findAllList(Pageable pageable) {
-        return beanUtil.mapAll(stockRepository.findAll(pageable).getContent(), StockDto.class);
     }
 
     private void publishNotification(Long userId, String message) {

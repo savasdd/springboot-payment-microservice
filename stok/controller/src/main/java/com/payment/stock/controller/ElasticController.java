@@ -17,9 +17,9 @@ public class ElasticController {
     private final IndexService indexService;
     private final SearchService searchService;
 
-    @PostMapping(value = "/index")
-    public ResponseEntity<BaseResponse> index(@RequestBody DataLoad load) {
-        return ResponseEntity.ok(indexService.index(load));
+    @GetMapping(value = "/index")
+    public ResponseEntity<BaseResponse> index() {
+        return ResponseEntity.ok(indexService.index());
     }
 
     @PostMapping(value = "/search")
