@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -47,11 +48,11 @@ public class IndexServiceImpl implements IndexService {
                 List<ElasticContent> contents = beanUtil.mapAll(response.getContent(), ElasticContent.class);
 
                 contents.forEach(content -> {
-                    StockRateDto dto = response.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElseThrow().getRate();
+                    StockDto dto = response.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElse(null);
+                    content.setRateName(!Objects.isNull(dto) && !Objects.isNull(dto.getRate())? dto.getRate().getRateName():null);
+                    content.setPercent(!Objects.isNull(dto) && !Objects.isNull(dto.getRate())? dto.getRate().getPercent():null);
                     content.setContentType(ElasticIndex.STOCK.getName());
                     content.setContentId(ElasticIndex.STOCK.getCode());
-                    content.setRateName(dto.getRateName());
-                    content.setPercent(dto.getPercent());
                     index(esConfig.getIndexStock(), content);
                 });
 

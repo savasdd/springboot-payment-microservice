@@ -95,6 +95,6 @@ public class RateServiceImpl implements RateService {
     }
 
     private static String getPercent(BigDecimal rate) {
-        return rate.multiply(new BigDecimal(100)).intValue() + "/100";
+        return "%" + rate.multiply(new BigDecimal(100)).intValue();
     }
 }

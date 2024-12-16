@@ -44,8 +44,8 @@ export class OrderComponent implements OnInit {
           return {
             data: response.data,
             totalCount: response.totalCount,
-            //summary: response.summary,
-            //groupCount: response.groupCount,
+            summary: response.summary,
+            groupCount: response.groupCount,
           };
         });
       },
