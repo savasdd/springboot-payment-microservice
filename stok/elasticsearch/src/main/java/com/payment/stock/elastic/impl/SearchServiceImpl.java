@@ -5,11 +5,14 @@ import co.elastic.clients.elasticsearch._types.SearchType;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch.core.MsearchRequest;
 import co.elastic.clients.elasticsearch.core.MsearchResponse;
+import com.payment.stock.cdn.CdnService;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.ElasticsearchConfig;
 import com.payment.stock.common.enums.ElasticIndex;
+import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.elastic.SearchService;
 import com.payment.stock.entity.dto.ElasticContent;
+import com.payment.stock.entity.dto.ImageInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +28,8 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchServiceImpl implements SearchService {
     private final ElasticsearchConfig esConfig;
+    private final CdnService cdnService;
+    private final BeanUtil beanUtil;
 
     @Override
     public BaseResponse search(String searchText, Pageable pageable) {
@@ -59,5 +64,11 @@ public class SearchServiceImpl implements SearchService {
                                         .filter(f -> f.terms(tf -> tf.field("contentId").terms(fs -> fs.value(List.of(FieldValue.of(ElasticIndex.STOCK.getCode()))))))
                                 ))
                         .size(pageSize)).header(h -> h.index(esConfig.getIndexStock()))).searchType(SearchType.DfsQueryThenFetch));
+    }
+
+    private String getImage(Long stockId) {
+        BaseResponse response = cdnService.getImage(stockId);
+        List<ImageInfoDto> dtoList = beanUtil.mapAll(List.of(response.getData()), ImageInfoDto.class, ImageInfoDto.class);
+        return !dtoList.isEmpty() ? dtoList.stream().findFirst().get().getImage() : null;
     }
 }

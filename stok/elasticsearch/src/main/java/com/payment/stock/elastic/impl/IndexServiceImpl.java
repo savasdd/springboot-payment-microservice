@@ -3,12 +3,15 @@ package com.payment.stock.elastic.impl;
 import co.elastic.clients.elasticsearch.core.DeleteByQueryResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import com.load.impl.DataLoad;
+import com.payment.stock.cdn.CdnService;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.ElasticsearchConfig;
 import com.payment.stock.common.enums.ElasticIndex;
+import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.elastic.IndexService;
 import com.payment.stock.entity.dto.ElasticContent;
+import com.payment.stock.entity.dto.ImageInfoDto;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.dto.StockRateDto;
 import com.payment.stock.entity.model.Stock;
@@ -34,11 +37,10 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public BaseResponse index(DataLoad load) {
         try {
-            //deleteIndex();
+            deleteIndex();
             BaseResponse response = stockService.findAllLoad(load);
-            List<StockDto> dtoList = beanUtil.mapAll(response.getData(), StockDto.class, StockDto.class);
+            List<StockDto> dtoList = beanUtil.mapAll(response.getData(), StockDto.class, StockDto.class).stream().filter(f -> f.getRecordStatus().equals(RecordStatus.ACTIVE)).toList();
             List<ElasticContent> contents = beanUtil.mapAll(dtoList, ElasticContent.class);
-
 
             contents.forEach(content -> {
                 StockRateDto dto = dtoList.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElseThrow().getRate();
@@ -46,15 +48,15 @@ public class IndexServiceImpl implements IndexService {
                 content.setContentId(ElasticIndex.STOCK.getCode());
                 content.setRateName(dto.getRateName());
                 content.setPercent(dto.getPercent());
-                //index(esConfig.getIndexStock(), content);
+                index(esConfig.getIndexStock(), content);
             });
 
             return BaseResponse.success(contents, (long) contents.size());
         } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new RuntimeException(e);
+            log.error("Exception occurred while indexing data", e);
         }
 
+        return BaseResponse.error("Exception occurred while indexing data");
     }
 
     private void index(String indexName, ElasticContent content) {
@@ -67,8 +69,12 @@ public class IndexServiceImpl implements IndexService {
     }
 
 
-    private void deleteIndex() throws IOException {
-        DeleteByQueryResponse response = esConfig.getEsConfig().deleteByQuery(q -> q.index(esConfig.getIndexStock()).query(builder -> builder.matchAll(ma -> ma)));
-        log.info("cleared index stock {}", response.took());
+    private void deleteIndex() {
+        try {
+            DeleteByQueryResponse response = esConfig.getEsConfig().deleteByQuery(q -> q.index(esConfig.getIndexStock()).query(builder -> builder.matchAll(ma -> ma)));
+            log.info("cleared index: {} response: {}", esConfig.getIndexStock(), response.took());
+        } catch (Exception e) {
+            log.error("cannot delete index {}", e.getMessage());
+        }
     }
 }

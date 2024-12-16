@@ -1,6 +1,7 @@
 package com.payment.stock.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.enums.UnitType;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class ElasticContent implements Serializable {
     private Long id;
     private String contentType;
     private Integer contentId;
+    private RecordStatus recordStatus;
 
     private Long userId;
     private String stockName;
