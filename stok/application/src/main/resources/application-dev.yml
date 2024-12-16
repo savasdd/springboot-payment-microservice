@@ -77,7 +77,7 @@ schedulers:
   outbox:
     enable: true
     initialDelayMillis: 3000
-    fixedRate: 600000
+    fixedRate: 600000 #10dk
 
 topics:
   notification:

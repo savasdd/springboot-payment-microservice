@@ -9,8 +9,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableKafka
+@EnableScheduling
 @EnableEurekaClient
 @SpringBootApplication(scanBasePackages = "com.payment.stock")
 @EntityScan(basePackages = "com.payment.stock")
