@@ -78,7 +78,9 @@ public class SearchServiceImpl implements SearchService {
     }
 
     private MsearchRequest searchAll(int pageSize) {
-        return MsearchRequest.of(of -> of.searches(s -> s.body(bd -> bd.size(pageSize)).header(h -> h.index(esConfig.getIndexStock()))).searchType(SearchType.DfsQueryThenFetch));
+        return MsearchRequest.of(of -> of.searches(s -> s
+                .body(bd -> bd.query(q -> q.bool(b ->b.filter(f -> f.terms(tf -> tf.field("contentId").terms(fs -> fs.value(List.of(FieldValue.of(ElasticIndex.STOCK.getCode()))))))))
+                        .size(pageSize)).header(h -> h.index(esConfig.getIndexStock()))).searchType(SearchType.DfsQueryThenFetch));
     }
 
     private String getImage(Long stockId) {
