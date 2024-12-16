@@ -12,20 +12,8 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-list' },
     children: [
       {
-        name: 'Food',
-        url: 'foods/foods'
-      },
-      {
-        name: 'Orders',
+        name: 'Sipariş',
         url: 'foods/orders'
-      },
-      {
-        name: 'Category',
-        url: 'foods/categorys'
-      },
-      {
-        name: 'Restaurant',
-        url: 'foods/restaurants'
       },
       {
         name: 'Payment',

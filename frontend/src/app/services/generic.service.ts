@@ -36,7 +36,11 @@ export class GenericService {
   }
 
   pageableLoad(loadOptions: any) {
-    return firstValueFrom(this.http.post<any>(this.baseUrl + 'pageable-load' , loadOptions).pipe(catchError(this.handleError)));
+    return firstValueFrom(this.http.post<any>(this.baseUrl + 'pageable-load', loadOptions).pipe(catchError(this.handleError)));
+  }
+
+  search(loadOptions: any, searchText: any) {
+    return firstValueFrom(this.http.post<any>(this.baseUrl + 'search', loadOptions).pipe(catchError(this.handleError)));
   }
 
   save(data: any) {

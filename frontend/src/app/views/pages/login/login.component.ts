@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.logout();
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home/foods/orders';
   }
 
   login() {

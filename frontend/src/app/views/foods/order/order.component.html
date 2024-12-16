@@ -9,7 +9,7 @@
           <div>
 
             <!--BASKET-->
-            <div class="main-content">
+            <!-- <div class="main-content">
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-md-12">
@@ -37,7 +37,7 @@
 
                           <div class="list-container">
                             <dx-scroll-view id="scrollview">
-                              <dx-data-grid #orderDataGrid [dataSource]="dataOrderSource" [showBorders]="true">
+                              <dx-data-grid #orderDataGrid [dataSource]="dataSource" [showBorders]="true">
                                 <dxo-editing mode="form" [allowDeleting]="true" [useIcons]="true">
                                 </dxo-editing>
                                 <dxi-column dataField="image" [width]="130" [allowFiltering]="false"
@@ -61,21 +61,22 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!--ORDER-->
             <div class="card-body" style="min-height: calc(50vh - 193px);">
               <div class="row">
 
                 <dx-data-grid id="gridContainer" [dataSource]="dataSource" keyExpr="ID" [showBorders]="true">
-                  <dxi-column dataField="image" [width]="300" [allowFiltering]="false" [allowSorting]="false"
+                  <dxi-column dataField="image" [width]="300" caption="Resim" [allowFiltering]="false" [allowSorting]="false"
                     cellTemplate="cellTemplate"></dxi-column>
                   <dxo-search-panel [visible]="true" [width]="400" placeholder="Search..."></dxo-search-panel>
 
-                  <dxi-column dataField="foodName"></dxi-column>
-                  <dxi-column dataField="classType" caption="Class" cellTemplate="classTemplate"></dxi-column>
-                  <dxi-column dataField="description" caption="Notes"></dxi-column>
-                  <dxi-column dataField="price" width="100" format="#,###.## ₺"></dxi-column>
+                  <dxi-column dataField="stockName" caption="Ürün"></dxi-column>
+                  <dxi-column dataField="percent" caption="İndirim"></dxi-column>
+                  <dxi-column dataField="availableQuantity" caption="Miktar"></dxi-column>
+                  <dxi-column dataField="availableQuantity" caption="Fiyat" width="100" format="#,###.## ₺"></dxi-column>
+              
 
                   <dxi-column dataField="operationId" caption="Ekle" dataType="text" width="5%"
                     cellTemplate="operationTemplate" [allowSorting]="false" [allowFiltering]="false"></dxi-column>
@@ -85,18 +86,21 @@
                   </div>
 
                   <div *dxTemplate="let data of 'cellTemplate'">
-                    <img *ngIf="data.value===null" class="images" src="assets/images/food/poder.jpg" alt="" />
-                    <img *ngIf="data.value" class="images" [src]="data.value" alt="" />
+                    <!-- <img *ngIf="data.value===null" class="images" src="assets/images/food/poder.jpg" alt="" /> -->
+                    <img *ngIf="data.value" class="images" [src]="'data:image/png;base64,'+data.value" alt="" tabindex="0"/>
                   </div>
 
-                  <div *dxTemplate="let data of 'classTemplate'">
-                    <div class="type" *ngIf="data.value!==null" [ngClass]="data.value.toLowerCase()"></div>
-                  </div>
 
-                  <dxo-paging [pageSize]="5"></dxo-paging>
-                  <dxo-pager [visible]="true" [allowedPageSizes]="[5, 10, 'all']" displayMode="full"
-                    [showPageSizeSelector]="true" [showInfo]="true" [showNavigationButtons]="true">
-                  </dxo-pager>
+                  <dxo-paging [pageSize]="10"></dxo-paging>
+                  <dxo-pager [visible]="true" [showPageSizeSelector]="true" [allowedPageSizes]="[10, 20, 50]"></dxo-pager>
+  
+                  <dxo-header-filter [visible]=false>
+                  </dxo-header-filter>
+                  <dxo-filter-row [visible]="false">
+                  </dxo-filter-row>
+  
+                  <dxo-remote-operations [groupPaging]="true">
+                  </dxo-remote-operations>
                 </dx-data-grid>
               </div>
             </div>
