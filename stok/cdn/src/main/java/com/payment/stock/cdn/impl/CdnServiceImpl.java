@@ -19,6 +19,7 @@ import com.payment.stock.repository.StockRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class CdnServiceImpl implements CdnService {
     private final ImageRepository imageRepository;
     private final BeanUtil beanUtil;
 
+    @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.GET_IMAGE, allEntries = true)
     @Override
     public BaseResponse fileUpload(Long stockId, MultipartFile file) {
         try {

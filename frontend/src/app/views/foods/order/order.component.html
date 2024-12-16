@@ -64,35 +64,16 @@
 
         <dxi-column caption="Resim"></dxi-column>
 
-        <!-- <dxi-column dataField="image" [width]="300" caption="Resim" [allowFiltering]="false" [allowSorting]="false"
-                    cellTemplate="cellTemplate"></dxi-column>
-                  <dxo-search-panel [visible]="true" [width]="400" placeholder="Search..."></dxo-search-panel>
-
-                  <dxi-column dataField="stockName" caption="Ürün"></dxi-column>
-                  <dxi-column dataField="percent" caption="İndirim"></dxi-column>
-                  <dxi-column dataField="availableQuantity" caption="Miktar"></dxi-column>
-                  <dxi-column dataField="availableQuantity" caption="Fiyat" width="100" format="#,###.## ₺"></dxi-column>
-                  <dxi-column dataField="operationId" caption="Ekle" dataType="text" width="5%"
-                    cellTemplate="operationTemplate" [allowSorting]="false" [allowFiltering]="false"></dxi-column>
-                  <div style="text-align: center;" *dxTemplate="let data of 'operationTemplate'">
-                    <fa-icon class="basket-icon" [icon]="faShoppingBasket" title="Ekle"
-                      (click)="addBasket(data.data)"></fa-icon>
-                  </div>
-
-                  <div *dxTemplate="let data of 'cellTemplate'">
-                    <img *ngIf="data.value" class="images" [src]="'data:image/png;base64,'+data.value" alt="" tabindex="0"/>
-                  </div> -->
-
         <ng-container *dxTemplate="let dto of 'dataRowTemplateName'">
 
           <div class="mains">
-            <div style="width:30%;float:left;display:block;">
+            <div style="width:40%;float:left;display:block;">
               <img *ngIf="dto.data.image===null" class="images" src="assets/images/no_image.jpg" alt="" />
               <img *ngIf="dto.data.image" class="images" [src]="'data:image/png;base64,'+dto.data.image" alt=""
                 tabindex="0" />
             </div>
 
-            <div style="width:35%;float:left;display:block;">
+            <div style="width:30%;float:left;display:block;">
               <tr>
                 <td>
                   <div class="ordName">{{dto.data.stockName}}</div>
@@ -108,7 +89,7 @@
               </tr>
             </div>
 
-            <div style="width:35%;float:left;display:block;">
+            <div style="width:30%;float:left;display:block;">
               <tr>
                 <td>
                   <div class="ordRate">{{dto.data.rateName}}</div>
