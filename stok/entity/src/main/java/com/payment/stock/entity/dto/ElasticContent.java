@@ -25,5 +25,6 @@ public class ElasticContent implements Serializable {
     private UnitType unitType;
     private String rateName;
     private String percent;
+    @ToString.Exclude
     private String image;
 }

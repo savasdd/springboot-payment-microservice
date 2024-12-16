@@ -22,8 +22,8 @@ public class ElasticController {
         return ResponseEntity.ok(indexService.index(load));
     }
 
-    @GetMapping(value = "/search{text}")
-    public ResponseEntity<BaseResponse> search(@PathVariable String text, Pageable pageable) {
-        return ResponseEntity.ok(searchService.search(text, pageable));
+    @PostMapping(value = "/search")
+    public ResponseEntity<BaseResponse> search(@RequestParam(value = "text", required = false) String text, @RequestBody DataLoad load) {
+        return ResponseEntity.ok(searchService.search(text, load));
     }
 }
