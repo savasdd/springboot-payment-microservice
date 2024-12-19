@@ -15,6 +15,7 @@ import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.entity.model.StockDetail;
 import com.payment.stock.entity.vo.StockV0;
+import com.payment.stock.repository.CategoryRepository;
 import com.payment.stock.repository.StockDetailRepository;
 import com.payment.stock.repository.StockRateRepository;
 import com.payment.stock.repository.StockRepository;
@@ -47,6 +48,7 @@ public class StockServiceImpl implements StockService {
     private final StockRepository stockRepository;
     private final StockDetailRepository detailRepository;
     private final StockRateRepository rateRepository;
+    private final CategoryRepository categoryRepository;
     private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final Publisher publisher;
@@ -120,10 +122,11 @@ public class StockServiceImpl implements StockService {
     public BaseResponse save(StockV0 dto) {
         Stock stock = beanUtil.mapDto(dto, Stock.class);
         stock.getDetails().forEach(d -> d.setStock(stock));
-        stock.setRate(rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new));
+        stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : null);
+        stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : null);
         Stock model = stockRepository.save(stock);
 
-        log.info("save: {}", model);
+        log.info("save stock: {}", model);
         publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
         return BaseResponse.success(model);
     }
@@ -144,7 +147,7 @@ public class StockServiceImpl implements StockService {
 
         stock.setRecordStatus(RecordStatus.ACTIVE);
         stockRepository.save(stock);
-        log.info("update: {}", stock);
+        log.info("update stock: {}", stock);
         publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
         return BaseResponse.success(stock);
     }
@@ -156,7 +159,7 @@ public class StockServiceImpl implements StockService {
         stock.setRecordStatus(RecordStatus.DELETED);
         Stock model = stockRepository.save(stock);
 
-        log.info("delete: {}", model);
+        log.info("delete stock: {}", model);
         publishNotification(stock.getUserId(), ConstantUtil.STOCK_DELETE + " [" + stock.getStockName() + "]");
         return BaseResponse.success(model);
     }
@@ -188,6 +191,9 @@ public class StockServiceImpl implements StockService {
         stock.setAvailableQuantity(Objects.isNull(dto.getAvailableQuantity()) ? stock.getAvailableQuantity() : dto.getAvailableQuantity());
         stock.setUnitType(Objects.isNull(dto.getUnitType()) ? stock.getUnitType() : dto.getUnitType());
         stock.setRecordStatus(Objects.isNull(dto.getRecordStatus()) ? stock.getRecordStatus() : dto.getRecordStatus());
-        stock.setRate(rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new));
+        stock.setPrice(Objects.isNull(dto.getPrice()) ? stock.getPrice() : dto.getPrice());
+        stock.setYear(Objects.isNull(dto.getYear()) ? stock.getYear() : dto.getYear());
+        stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : stock.getRate());
+        stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : stock.getCategory());
     }
 }

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,14 +18,13 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StockDto extends BaseDto implements Serializable {
 
-    @Schema(example = "22")
     private Long userId;
-    @Schema(example = "Demir")
     private String stockName;
-    @Schema(example = "1")
     private Integer availableQuantity;
-    @Schema(example = "Adet")
     private UnitType unitType;
+    private BigDecimal price;
+    private Integer year;
     private StockRateDto rate;
+    private CategoryDto category;
     private List<StockDetailDto> details;
 }

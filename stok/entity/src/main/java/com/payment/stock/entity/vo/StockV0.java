@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -23,6 +24,11 @@ public class StockV0 extends BaseDto implements Serializable {
     private Integer availableQuantity;
     @Schema(example = "Adet")
     private UnitType unitType;
+    @Schema(example = "10.5")
+    private BigDecimal price;
+    @Schema(example = "2024")
+    private Integer year;
     private StockRateV0 rate;
+    private CategoryV0 category;
     private List<StockDetailDto> details;
 }
