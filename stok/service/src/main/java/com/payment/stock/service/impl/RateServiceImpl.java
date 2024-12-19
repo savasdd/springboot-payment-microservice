@@ -25,7 +25,6 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class RateServiceImpl implements RateService {
-    private static final List<String> LANG = List.of("TR", "EN");
     private final StockRateRepository rateRepository;
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
