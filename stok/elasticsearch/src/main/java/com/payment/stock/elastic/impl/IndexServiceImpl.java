@@ -41,7 +41,7 @@ public class IndexServiceImpl implements IndexService {
     public BaseResponse index() {
         try {
             deleteIndex();
-            Pageable pageable = PageRequest.of(0, 100);
+            Pageable pageable = PageRequest.of(0, 500);
 
             do {
                 Page<StockDto> response = stockService.getPageable(pageable);
@@ -49,8 +49,11 @@ public class IndexServiceImpl implements IndexService {
 
                 contents.forEach(content -> {
                     StockDto dto = response.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElse(null);
-                    content.setRateName(!Objects.isNull(dto) && !Objects.isNull(dto.getRate())? dto.getRate().getRateName():null);
-                    content.setPercent(!Objects.isNull(dto) && !Objects.isNull(dto.getRate())? dto.getRate().getPercent():null);
+
+                    content.setRateName(!Objects.isNull(dto) && !Objects.isNull(dto.getRate()) ? dto.getRate().getRateName() : null);
+                    content.setPercent(!Objects.isNull(dto) && !Objects.isNull(dto.getRate()) ? dto.getRate().getPercent() : null);
+                    content.setCategoryId(!Objects.isNull(dto) && !Objects.isNull(dto.getCategory()) ? dto.getCategory().getId() : null);
+                    content.setCategoryName(!Objects.isNull(dto) && !Objects.isNull(dto.getCategory()) ? dto.getCategory().getCategoryName() : null);
                     content.setContentType(ElasticIndex.STOCK.getName());
                     content.setContentId(ElasticIndex.STOCK.getCode());
                     index(esConfig.getIndexStock(), content);

@@ -2,7 +2,9 @@ package com.payment.stock.elastic.impl;
 
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.SearchType;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.MsearchRequest;
 import co.elastic.clients.elasticsearch.core.MsearchResponse;
 import com.load.impl.DataLoad;
@@ -29,18 +31,18 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchServiceImpl implements SearchService {
-    private static final List<String> SEARCH_FIELDS = List.of("stockName", "unitType", "percent", "rateName");
+    private static final List<String> SEARCH_FIELDS = List.of("stockName", "unitType", "percent", "rateName", "categoryName");
     private final ElasticsearchConfig esConfig;
     private final CdnService cdnService;
     private final BeanUtil beanUtil;
 
     @Override
-    public BaseResponse search(String searchText, DataLoad load) {
+    public BaseResponse search(Integer year, Long category, String searchText, DataLoad load) {
         StringUtils.stripAccents(searchText);
 
         try {
             List<ElasticContent> contents = new ArrayList<>();
-            MsearchResponse<ElasticContent> response = esConfig.getEsConfig().msearch(query(searchText, load.getTake()), ElasticContent.class);
+            MsearchResponse<ElasticContent> response = esConfig.getEsConfig().msearch(query(year, category, searchText, load.getTake()), ElasticContent.class);
 
             response.responses().forEach(f -> {
                 if (!f.isFailure()) {
@@ -59,12 +61,11 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
-    //TODO add to number query
-    private MsearchRequest query(String searchIndex, int pageSize) {
-        return Objects.isNull(searchIndex) ? searchAll(pageSize) : searchString(searchIndex, pageSize);
+    private MsearchRequest query(Integer year, Long category, String searchIndex, int pageSize) {
+        return Objects.isNull(searchIndex) ? searchAll(year, category, pageSize) : searchString(year, category, searchIndex, pageSize);
     }
 
-    private MsearchRequest searchString(String searchIndex, int pageSize) {
+    private MsearchRequest searchString(Integer year, Long category, String searchIndex, int pageSize) {
         return MsearchRequest.of(of -> of.searches(s -> s
                 .body(bd -> bd
                         .query(q -> q
@@ -72,20 +73,44 @@ public class SearchServiceImpl implements SearchService {
                                                 .query("*" + searchIndex + "*")
                                                 .fields(SEARCH_FIELDS).defaultOperator(Operator.Or)
                                                 .fuzzyTranspositions(false)))
-                                        .filter(f -> f.terms(tf -> tf.field("contentId").terms(fs -> fs.value(List.of(FieldValue.of(ElasticIndex.STOCK.getCode()))))))
+                                        .filter(getQueries(year, category))
                                 ))
                         .size(pageSize)).header(h -> h.index(esConfig.getIndexStock()))).searchType(SearchType.DfsQueryThenFetch));
     }
 
-    private MsearchRequest searchAll(int pageSize) {
-        return MsearchRequest.of(of -> of.searches(s -> s
-                .body(bd -> bd.query(q -> q.bool(b ->b.filter(f -> f.terms(tf -> tf.field("contentId").terms(fs -> fs.value(List.of(FieldValue.of(ElasticIndex.STOCK.getCode()))))))))
-                        .size(pageSize)).header(h -> h.index(esConfig.getIndexStock()))).searchType(SearchType.DfsQueryThenFetch));
+    private MsearchRequest searchAll(Integer year, Long category, int pageSize) {
+        return MsearchRequest.of(of -> of.searches(s -> s.body(bd -> bd.query(q -> q.bool(b -> b.filter(getQueries(year, category))))
+                .size(pageSize)).header(h -> h.index(esConfig.getIndexStock()))).searchType(SearchType.DfsQueryThenFetch));
+    }
+
+    private static List<Query> getQueries(Integer year, Long category) {
+        List<Query> queries = new ArrayList<>();
+        queries.add(getBoolQuery("contentId", ElasticIndex.STOCK.getCode()));
+        queries.add(getBoolQuery("year", year));
+        if (!Objects.isNull(category)) {
+            queries.add(getBoolQuery("categoryId", category));
+        }
+        return queries;
+    }
+
+    private static Query getBoolQuery(String field, Object value) {
+        return BoolQuery.of(b -> b.filter(f -> f.terms(tf -> tf.field(field).terms(fs -> fs.value(List.of(FieldValue.of(value)))))))._toQuery();
     }
 
     private String getImage(Long stockId) {
         BaseResponse response = cdnService.getImage(stockId);
         List<ImageInfoDto> dtoList = beanUtil.mapAll(List.of(response.getData()), ImageInfoDto.class, ImageInfoDto.class);
         return !dtoList.isEmpty() ? dtoList.stream().findFirst().get().getImage() : null;
+    }
+
+    //todo not working
+    private MsearchRequest searchAllOld(Integer year, Long category, int pageSize) {
+        return MsearchRequest.of(of -> of.searches(s -> s
+                .body(bd -> bd.query(q -> q.bool(b ->
+                                b.filter(f -> f.terms(tf -> tf.field("contentId").terms(fs -> fs.value(List.of(FieldValue.of(ElasticIndex.STOCK.getCode()))))))
+                                        .filter(f -> f.terms(tf -> tf.field("year").terms(fs -> fs.value(List.of(FieldValue.of(year))))))
+                                        .filter(f -> !Objects.isNull(category) ? f.terms(tf -> tf.field("categoryId").terms(fs -> fs.value(List.of(FieldValue.of(category))))) : f.terms(tf -> tf.field("categoryId").terms(fs -> fs.value(List.of()))))
+                        ))
+                        .size(pageSize)).header(h -> h.index(esConfig.getIndexStock()))).searchType(SearchType.DfsQueryThenFetch));
     }
 }

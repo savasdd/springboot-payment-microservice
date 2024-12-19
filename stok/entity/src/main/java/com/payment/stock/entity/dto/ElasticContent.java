@@ -23,8 +23,13 @@ public class ElasticContent implements Serializable {
     private String stockName;
     private Integer availableQuantity;
     private UnitType unitType;
-    private String rateName;
     private String percent;
+    private BigDecimal price;
+    private Integer year;
+
+    private String rateName;
+    private String categoryName;
+    private Long categoryId;
     @ToString.Exclude
     private String image;
 }
