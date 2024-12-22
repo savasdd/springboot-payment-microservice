@@ -2,51 +2,47 @@ package service;
 
 import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
+import com.load.options.SortOptions;
+import com.payment.stock.application.StockApplication;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
-import com.payment.stock.common.utils.RestUtil;
-import com.payment.stock.entity.dto.CategoryDto;
 import com.payment.stock.entity.dto.StockRateDto;
-import com.payment.stock.entity.model.Category;
 import com.payment.stock.entity.model.StockRate;
-import com.payment.stock.repository.CategoryRepository;
 import com.payment.stock.repository.StockRateRepository;
-import com.payment.stock.service.impl.CategoryServiceImpl;
 import com.payment.stock.service.impl.RateServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-@SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
+@ActiveProfiles("dev")
+@SpringBootTest(classes = StockApplication.class)
 public class RateServiceTest {
     @Mock
     private StockRateRepository repository;
-    @Mock
+    @Autowired
     private BeanUtil beanUtil;
     @InjectMocks
     private RateServiceImpl service;
 
     @BeforeEach
     public void init() {
-        MockitoAnnotations.initMocks(RateServiceTest.class);
-        service = new RateServiceImpl(repository, getBeanUtil());
+        MockitoAnnotations.initMocks(this);
+        service = new RateServiceImpl(repository, beanUtil);
     }
 
     @Test
@@ -62,22 +58,20 @@ public class RateServiceTest {
     @Test
     public void findAllLoad() {
         StockRate model = new StockRate();
+        model.setId(1L);
         model.setRateName("ocak");
         model.setRate(new BigDecimal(35));
         model.setPercent("%" + model.getRate().multiply(new BigDecimal(100)).intValue());
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
 
-        DataLoad load = new DataLoad();
-        load.setTake(10);
-        load.setSearchOperation("contains");
-        load.setFilter(List.of());
         BaseLoadResponse list = new BaseLoadResponse();
-        Mockito.when(repository.load(load)).thenReturn(list);
+        Mockito.when(repository.load(getDataLoad())).thenReturn(list);
 
-        BaseResponse response = service.findAllLoad(load);
+        BaseResponse response = service.findAllLoad(getDataLoad());
         Assertions.assertNotNull(response.getData());
         log.info("Test rate findAllLoad response: {}", response.getTotalCount());
     }
+
 
     @Test
     public void findById() {
@@ -110,7 +104,7 @@ public class RateServiceTest {
         model.setPercent(dto.getPercent());
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
 
-        List<StockRate> response = getResponse(List.of(service.save(dto).getData()), StockRate.class);
+        List<StockRate> response = getResponse(service.save(dto).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRate(), dto.getRate());
         log.info("Test rate save response: {}", response.size());
@@ -136,7 +130,7 @@ public class RateServiceTest {
         dto.setRateName("şubat");
         dto.setRate(new BigDecimal(25));
 
-        List<StockRate> response = getResponse(List.of(service.update(dto).getData()), StockRate.class);
+        List<StockRate> response = getResponse(service.update(dto).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRate(), dto.getRate());
         log.info("Test rate update response: {}", response.size());
@@ -151,17 +145,32 @@ public class RateServiceTest {
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
-        List<StockRate> response = getResponse(List.of(service.delete(1L).getData()), StockRate.class);
+        List<StockRate> response = getResponse(service.delete(1L).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRecordStatus(), RecordStatus.DELETED);
         log.info("Test rate delete response: {}", response.size());
     }
 
-    private static BeanUtil getBeanUtil() {
-        return new BeanUtil(new ModelMapper());
+
+    private static DataLoad getDataLoad() {
+        String[] filter = {"id", "<>", null};
+        List<Object> listFilter = List.of(Arrays.stream(filter).toList());
+        DataLoad load = new DataLoad();
+        load.setSkip(0);
+        load.setTake(10);
+        load.setSort(new SortOptions[]{});
+        load.setSearchOperation("contains");
+        load.setFilter(listFilter);
+        load.setCountQuery(true);
+        load.setSummaryQuery(true);
+        load.setRequireTotalCount(true);
+        load.setRequireGroupCount(true);
+        load.setDefaultSort("creDate");
+        return load;
     }
 
+
     private <T> List<T> getResponse(Object data, Class<T> clazz) {
-        return getBeanUtil().mapAll(List.of(data), clazz, clazz);
+        return beanUtil.mapAll(List.of(data), clazz, clazz);
     }
 }
