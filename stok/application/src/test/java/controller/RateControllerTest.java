@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import util.TestUtil;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +36,13 @@ public class RateControllerTest {
         ResultActions response = mvc.perform(get(URI + "/all"));
         response.andExpect(status().isOk());
         log.info("Test api findAll response: {}", getBody(response));
+    }
+
+    @Test
+    public void findAllLoad() throws Exception {
+        ResultActions response = mvc.perform(post(URI + "/pageable-load").contentType(MediaType.APPLICATION_JSON).content(getAsJson(TestUtil.getDataLoad())));
+        response.andExpect(status().isOk());
+        log.info("Test api load response: {}", getBody(response));
     }
 
     @Test
