@@ -1,8 +1,6 @@
 package service;
 
 import com.load.base.BaseLoadResponse;
-import com.load.impl.DataLoad;
-import com.load.options.SortOptions;
 import com.payment.stock.application.StockApplication;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
@@ -22,9 +20,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import util.TestUtil;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,9 +63,9 @@ public class RateServiceTest {
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
 
         BaseLoadResponse list = new BaseLoadResponse();
-        Mockito.when(repository.load(getDataLoad())).thenReturn(list);
+        Mockito.when(repository.load(TestUtil.getDataLoad())).thenReturn(list);
 
-        BaseResponse response = service.findAllLoad(getDataLoad());
+        BaseResponse response = service.findAllLoad(TestUtil.getDataLoad());
         Assertions.assertNotNull(response.getData());
         log.info("Test rate findAllLoad response: {}", response.getTotalCount());
     }
@@ -82,7 +80,7 @@ public class RateServiceTest {
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
-        List<StockRate> response = getResponse(service.findById(1L).getData(), StockRate.class);
+        List<StockRate> response = TestUtil.getResponse(beanUtil, service.findById(1L).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getId(), model.getId());
 
@@ -104,7 +102,7 @@ public class RateServiceTest {
         model.setPercent(dto.getPercent());
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
 
-        List<StockRate> response = getResponse(service.save(dto).getData(), StockRate.class);
+        List<StockRate> response = TestUtil.getResponse(beanUtil, service.save(dto).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRate(), dto.getRate());
         log.info("Test rate save response: {}", response.size());
@@ -130,7 +128,7 @@ public class RateServiceTest {
         dto.setRateName("şubat");
         dto.setRate(new BigDecimal(25));
 
-        List<StockRate> response = getResponse(service.update(dto).getData(), StockRate.class);
+        List<StockRate> response = TestUtil.getResponse(beanUtil, service.update(dto).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRate(), dto.getRate());
         log.info("Test rate update response: {}", response.size());
@@ -145,32 +143,11 @@ public class RateServiceTest {
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
-        List<StockRate> response = getResponse(service.delete(1L).getData(), StockRate.class);
+        List<StockRate> response = TestUtil.getResponse(beanUtil, service.delete(1L).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRecordStatus(), RecordStatus.DELETED);
         log.info("Test rate delete response: {}", response.size());
     }
 
 
-    private static DataLoad getDataLoad() {
-        String[] filter = {"id", "<>", null};
-        List<Object> listFilter = List.of(Arrays.stream(filter).toList());
-        DataLoad load = new DataLoad();
-        load.setSkip(0);
-        load.setTake(10);
-        load.setSort(new SortOptions[]{});
-        load.setSearchOperation("contains");
-        load.setFilter(listFilter);
-        load.setCountQuery(true);
-        load.setSummaryQuery(true);
-        load.setRequireTotalCount(true);
-        load.setRequireGroupCount(true);
-        load.setDefaultSort("creDate");
-        return load;
-    }
-
-
-    private <T> List<T> getResponse(Object data, Class<T> clazz) {
-        return beanUtil.mapAll(List.of(data), clazz, clazz);
-    }
 }

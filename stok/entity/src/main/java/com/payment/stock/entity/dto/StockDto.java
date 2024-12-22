@@ -1,5 +1,6 @@
 package com.payment.stock.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.base.BaseDto;

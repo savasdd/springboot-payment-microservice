@@ -1,5 +1,6 @@
 package com.payment.stock.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.entity.base.BasicEntity;
 import lombok.*;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "STOCK_DETAILS")
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockDetail extends BasicEntity implements Serializable {
 
     @Column(name = "title")

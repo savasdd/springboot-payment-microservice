@@ -1,5 +1,6 @@
 package com.payment.stock.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.base.BaseEntity;
@@ -30,6 +31,7 @@ public class Stock extends BaseEntity implements Serializable {
     @Column(name = "unitType", nullable = false)
     private UnitType unitType;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Column(name = "price")
     private BigDecimal price;
 
