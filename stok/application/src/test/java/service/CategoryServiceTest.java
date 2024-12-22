@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import util.TestUtil;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,38 +48,38 @@ public class CategoryServiceTest {
 
     @Test
     public void findAll() {
-        List<Category> list = List.of(new Category(), new Category());
+        List<Category> list = List.of(getCategory());
         Mockito.when(repository.findAll()).thenReturn(list);
 
         BaseResponse response = service.findAll();
         Assertions.assertNotNull(response.getData());
-        log.info("Test findAll response: {}", response.getTotalCount());
+        log.info("Test category findAll success");
     }
 
     @Test
     public void findAllLoad() {
-        BaseLoadResponse list = new BaseLoadResponse();
-        Mockito.when(repository.load(TestUtil.getDataLoad())).thenReturn(list);
+        List<Category> list = List.of(getCategory());
+        Mockito.when(repository.findAll()).thenReturn(list);
+        BaseLoadResponse baseLoadResponse = new BaseLoadResponse();
+        Mockito.when(repository.load(TestUtil.getDataLoad())).thenReturn(baseLoadResponse);
 
         BaseResponse response = service.findAllLoad(TestUtil.getDataLoad());
         Assertions.assertNotNull(response.getData());
-        log.info("Test findAllLoad response: {}", response.getTotalCount());
+        log.info("Test category findAllLoad success");
     }
 
     @Test
     public void findById() {
-        Category model = new Category();
-        model.setCategoryName("inşaat");
-        model.setDescription("inşaat malzemesi");
+        Category model = getCategory();
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
         List<Category> response = TestUtil.getResponse(beanUtil, service.findById(1L).getData(), Category.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getId(), model.getId());
-
-        log.info("Test findById response: {}", response.size());
+        log.info("Test category findById success");
     }
+
 
     @Test
     public void save() {
@@ -86,10 +87,7 @@ public class CategoryServiceTest {
         dto.setCategoryName("inşaat");
         dto.setDescription("inşaat malzemesi");
 
-        Category model = new Category();
-        model.setId(1L);
-        model.setCategoryName(dto.getCategoryName());
-        model.setDescription(dto.getDescription());
+        Category model = beanUtil.mapDto(dto, Category.class);
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
 
         List<Category> response = TestUtil.getResponse(beanUtil, service.save(dto).getData(), Category.class);
@@ -100,16 +98,9 @@ public class CategoryServiceTest {
 
     @Test
     public void update() {
-        Category old = new Category();
-        old.setCategoryName("inşaat");
-        old.setDescription("inşaat malzemesi");
-        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(old));
-
-        Category model = new Category();
-        model.setId(1L);
-        model.setCategoryName(old.getCategoryName());
-        model.setDescription(old.getDescription());
+        Category model = getCategory();
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
+        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
         CategoryDto dto = new CategoryDto();
         dto.setId(1L);
@@ -123,9 +114,7 @@ public class CategoryServiceTest {
 
     @Test
     public void delete() {
-        Category model = new Category();
-        model.setId(1L);
-        model.setCategoryName("inşaat");
+        Category model = getCategory();
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
@@ -135,5 +124,14 @@ public class CategoryServiceTest {
         log.info("Test delete success");
     }
 
+    private static Category getCategory() {
+        Category model = new Category();
+        model.setId(1L);
+        model.setCategoryName("inşaat");
+        model.setDescription("inşaat malzemesi");
+        model.setRecordStatus(RecordStatus.ACTIVE);
+        model.setCreDate(new Date());
+        return model;
+    }
 
 }
