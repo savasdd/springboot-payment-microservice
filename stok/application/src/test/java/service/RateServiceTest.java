@@ -23,6 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 import util.TestUtil;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,21 +46,17 @@ public class RateServiceTest {
 
     @Test
     public void findAll() {
-        List<StockRate> list = List.of(new StockRate());
+        List<StockRate> list = List.of(getRate());
         Mockito.when(repository.findAll()).thenReturn(list);
 
         BaseResponse response = service.findAll();
         Assertions.assertNotNull(response.getData());
-        log.info("Test rate findAll response: {}", response.getTotalCount());
+        log.info("Test rate findAll success");
     }
 
     @Test
     public void findAllLoad() {
-        StockRate model = new StockRate();
-        model.setId(1L);
-        model.setRateName("ocak");
-        model.setRate(new BigDecimal(35));
-        model.setPercent("%" + model.getRate().multiply(new BigDecimal(100)).intValue());
+        StockRate model = getRate();
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
 
         BaseLoadResponse list = new BaseLoadResponse();
@@ -67,24 +64,20 @@ public class RateServiceTest {
 
         BaseResponse response = service.findAllLoad(TestUtil.getDataLoad());
         Assertions.assertNotNull(response.getData());
-        log.info("Test rate findAllLoad response: {}", response.getTotalCount());
+        log.info("Test rate findAllLoad success");
     }
 
 
     @Test
     public void findById() {
-        StockRate model = new StockRate();
-        model.setRateName("ocak");
-        model.setRate(new BigDecimal(35));
-        model.setPercent("%" + model.getRate().multiply(new BigDecimal(100)).intValue());
+        StockRate model = getRate();
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
         List<StockRate> response = TestUtil.getResponse(beanUtil, service.findById(1L).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getId(), model.getId());
-
-        log.info("Test rate findById response: {}", response.size());
+        log.info("Test rate findById success");
     }
 
 
@@ -95,33 +88,20 @@ public class RateServiceTest {
         dto.setRate(new BigDecimal(35));
         dto.setPercent("%" + dto.getRate().multiply(new BigDecimal(100)).intValue());
 
-        StockRate model = new StockRate();
-        model.setId(1L);
-        model.setRateName(dto.getRateName());
-        model.setRate(dto.getRate());
-        model.setPercent(dto.getPercent());
+        StockRate model = beanUtil.mapDto(dto, StockRate.class);
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
 
         List<StockRate> response = TestUtil.getResponse(beanUtil, service.save(dto).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRate(), dto.getRate());
-        log.info("Test rate save response: {}", response.size());
+        log.info("Test rate save success");
     }
 
     @Test
     public void update() {
-        StockRate old = new StockRate();
-        old.setRateName("ocak");
-        old.setRate(new BigDecimal(35));
-        old.setPercent("%" + old.getRate().multiply(new BigDecimal(100)).intValue());
-        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(old));
-
-        StockRate model = new StockRate();
-        model.setId(1L);
-        model.setRateName(old.getRateName());
-        model.setRate(old.getRate());
-        model.setPercent(old.getPercent());
+        StockRate model = getRate();
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
+        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
         StockRateDto dto = new StockRateDto();
         dto.setId(1L);
@@ -131,23 +111,29 @@ public class RateServiceTest {
         List<StockRate> response = TestUtil.getResponse(beanUtil, service.update(dto).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRate(), dto.getRate());
-        log.info("Test rate update response: {}", response.size());
+        log.info("Test rate update success");
     }
 
     @Test
     public void delete() {
-        StockRate model = new StockRate();
-        model.setId(1L);
-        model.setRateName("şubat");
-        model.setRate(new BigDecimal(25));
+        StockRate model = getRate();
         Mockito.when(repository.save(Mockito.any())).thenReturn(model);
         Mockito.when(repository.findById(1L)).thenReturn(Optional.of(model));
 
         List<StockRate> response = TestUtil.getResponse(beanUtil, service.delete(1L).getData(), StockRate.class);
         Assertions.assertNotEquals(response.size(), 0);
         Assertions.assertEquals(response.stream().findFirst().orElseThrow().getRecordStatus(), RecordStatus.DELETED);
-        log.info("Test rate delete response: {}", response.size());
+        log.info("Test rate delete success");
     }
 
 
+    private static StockRate getRate() {
+        StockRate model = new StockRate();
+        model.setRateName("ocak");
+        model.setRate(new BigDecimal(35));
+        model.setPercent("%" + model.getRate().multiply(new BigDecimal(100)).intValue());
+        model.setCreDate(new Date());
+        model.setRecordStatus(RecordStatus.ACTIVE);
+        return model;
+    }
 }
