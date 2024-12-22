@@ -5,7 +5,6 @@ import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
-import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.dto.StockRateDto;
 import com.payment.stock.entity.model.StockRate;
 import com.payment.stock.repository.StockRateRepository;
@@ -32,7 +31,7 @@ public class RateServiceImpl implements RateService {
         List<StockRate> stockDtoList = rateRepository.findAll();
 
         log.info("find all rate: {}", stockDtoList.size());
-        return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockDto.class), (long) stockDtoList.size());
+        return BaseResponse.success(beanUtil.mapAll(stockDtoList, StockRateDto.class), (long) stockDtoList.size());
     }
 
     @Override
@@ -48,9 +47,7 @@ public class RateServiceImpl implements RateService {
     @Override
     public BaseResponse findById(Long id) {
         StockRate rate = rateRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        StockDto dto = beanUtil.mapDto(rate, StockDto.class);
-
-        return BaseResponse.success(dto);
+        return BaseResponse.success(beanUtil.mapDto(rate, StockRateDto.class));
     }
 
     @Override
