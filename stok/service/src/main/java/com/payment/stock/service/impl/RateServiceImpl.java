@@ -5,7 +5,6 @@ import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
-import com.payment.stock.common.utils.RestUtil;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.dto.StockRateDto;
 import com.payment.stock.entity.model.StockRate;
@@ -27,7 +26,6 @@ import java.util.Objects;
 public class RateServiceImpl implements RateService {
     private final StockRateRepository rateRepository;
     private final BeanUtil beanUtil;
-    private final RestUtil restUtil;
 
     @Override
     public BaseResponse findAll() {
