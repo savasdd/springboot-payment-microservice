@@ -26,7 +26,7 @@
                   </dxi-item>
                 </dxo-toolbar>
 
-                <dxi-column dataField="category.id" caption="Kategori">
+                <dxi-column dataField="category.id" caption="Kategori" [visible]="false">
                   <dxo-lookup [dataSource]="dataCategorySource" displayExpr="categoryName" valueExpr="id">
                   </dxo-lookup>
                   <dxi-validation-rule type="required"></dxi-validation-rule>

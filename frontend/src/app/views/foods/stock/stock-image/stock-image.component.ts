@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { GenericService } from 'src/app/services/generic.service';
+import { GenericService } from "../../../../services/generic.service";
 import { DxDataGridComponent } from "devextreme-angular";
 import CustomStore from 'devextreme/data/custom_store';
-import { UtilService } from 'src/app/services/util.service';
+
 
 @Component({
   selector: 'app-stock-image',
@@ -14,6 +14,8 @@ export class StockImageComponent implements OnInit {
   dataSource: any = {};
   @ViewChild('dataGrid', { static: true }) dataGrid: any = DxDataGridComponent;
   imageService: GenericService;
+  popupVisible = false;
+  params: Array<{ 'key': any, 'value': any }> = [];
 
   constructor(public service: GenericService) {
     this.imageService = this.service.instance('payment/stocks/cdn');
@@ -50,5 +52,17 @@ export class StockImageComponent implements OnInit {
     const filters: Array<{}> = [];
     filters.push(['stock.id', '=', id]);
     return filters;
+  }
+
+
+  openPopapFile() {
+    this.popupVisible = true;
+    this.params.push({ key: 'stockId', value: this.data.id });
+  }
+
+  fileEmitter(event: any) {
+    if (event.status == 200) {
+      this.popupVisible = false;
+    }
   }
 }

@@ -39,8 +39,6 @@ export class OrderComponent implements OnInit {
       key: 'id',
       load: (loadOptions) => {
         return this.stockService.search(UtilService.setPage(loadOptions), null).then((response: any) => {
-          console.log(response)
-
           return {
             data: response.data,
             totalCount: response.totalCount,
