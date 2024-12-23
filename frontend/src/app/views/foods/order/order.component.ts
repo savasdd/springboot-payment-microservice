@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import CustomStore from "devextreme/data/custom_store";
 import { faShoppingBasket, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { DxDataGridComponent } from "devextreme-angular";
-import { Orders } from "../../../services/food-service-api";
 import { MessageService } from "../../../services/message.service";
 import { Router } from "@angular/router";
 import { UtilService } from "../../../services/util.service";
@@ -75,6 +74,12 @@ export class OrderComponent implements OnInit {
 
   refreshDataGrid() {
     this.orderDataGrid.instance.refresh();
+  }
+
+  onFocusedRowChanged(event: any) {
+    if (event) {
+      this.router.navigate(['home/foods/orders/details'], { state: { data: event.selectedRowsData[0] } });
+    }
   }
 
   protected readonly faShoppingBasket = faShoppingBasket;

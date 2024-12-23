@@ -60,8 +60,10 @@
     <div class="row">
 
       <dx-data-grid id="gridContainer" [dataSource]="dataSource" keyExpr="ID" [showBorders]="true"
-        dataRowTemplate="dataRowTemplateName">
+        dataRowTemplate="dataRowTemplateName" [focusedRowEnabled]="true"
+        (onSelectionChanged)="onFocusedRowChanged($event)">
 
+        <dxo-selection mode="single"></dxo-selection>
         <dxi-column caption="Resim"></dxi-column>
 
         <ng-container *dxTemplate="let dto of 'dataRowTemplateName'">
@@ -84,7 +86,7 @@
               </tr>
               <tr>
                 <td>
-                  <div class="ordPrice">{{dto.data.availableQuantity}} ₺</div>
+                  <div class="ordPrice">{{dto.data.price}} ₺</div>
                 </td>
               </tr>
             </div>

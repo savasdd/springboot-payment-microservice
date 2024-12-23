@@ -27,6 +27,7 @@ import { BasketComponent } from './order/basket/basket.component';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { StockImageComponent } from './stock/stock-image/stock-image.component';
 import { FileComponent } from './file/file.component';
+import { OrderDetailsComponent } from './order/order-details/order-details.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,12 @@ const routes: Routes = [
         }
       },
       {
+        path: 'orders/details', component: OrderDetailsComponent,
+        data: {
+          title: 'Details'
+        }
+      },
+      {
         path: 'baskets', component: BasketComponent,
         data: {
           title: 'Basket'
@@ -76,6 +83,7 @@ const routes: Routes = [
     BasketComponent,
     StockImageComponent,
     FileComponent,
+    OrderDetailsComponent,
   ],
   imports: [
     CommonModule,
