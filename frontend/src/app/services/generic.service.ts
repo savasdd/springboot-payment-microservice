@@ -28,7 +28,7 @@ export class GenericService {
 
 
   findAll(loadOptions: any) {
-    return firstValueFrom(this.http.get<any>(this.baseUrl + 'all', loadOptions).pipe(catchError(this.handleError)));
+    return firstValueFrom(this.http.get<any>(this.baseUrl + 'all').pipe(catchError(this.handleError)));
   }
 
   findAllPageable(loadOptions: any, page: number, size: number, sort: string) {

@@ -5,7 +5,7 @@ import CustomStore from "devextreme/data/custom_store";
 import { UtilService } from "../../../services/util.service";
 import { GenericService } from "../../../services/generic.service";
 import UnitEnum = Stock.UnitEnum;
-import { TokenService } from 'src/app/auth/service/token.service';
+import { TokenService } from "../../../auth/service/token.service";
 
 
 @Component({
@@ -18,6 +18,10 @@ export class StockComponent implements OnInit {
   @ViewChild('stockDataGrid', { static: true }) stockDataGrid: any = DxDataGridComponent;
   dropDownOptions: any;
   stockService: GenericService;
+  categoryService: GenericService;
+  rateService: GenericService;
+  dataCategorySource: any = {};
+  dataRateSource: any = {};
   dataUnitSource: any = [
     { name: UnitEnum.Adet },
     { name: UnitEnum.Kilogram },
@@ -32,6 +36,11 @@ export class StockComponent implements OnInit {
 
   constructor(public service: GenericService, private tokenService: TokenService) {
     this.stockService = this.service.instance('payment/stocks');
+    this.categoryService = this.service.instance('payment/stocks/category');
+    this.rateService = this.service.instance('payment/stocks/rate');
+
+    this.loadCategory();
+    this.loadRate();
     this.loadGrid();
   }
 
@@ -47,6 +56,18 @@ export class StockComponent implements OnInit {
 
   refreshDataGrid(e: any) {
     this.stockDataGrid.instance.refresh();
+  }
+
+  loadCategory() {
+    this.categoryService.findAll(null).then((response: any) => {
+      this.dataCategorySource = response.data;
+    });
+  }
+
+  loadRate() {
+    this.rateService.findAll(null).then((response: any) => {
+      this.dataRateSource = response.data;
+    });
   }
 
   loadGrid() {
@@ -70,6 +91,7 @@ export class StockComponent implements OnInit {
       },
 
       insert: (values) => {
+        values.userId = this.tokenService.getUserId();
         values.details = [];
         return this.stockService.save(values).then((response) => {
           return;
@@ -78,6 +100,7 @@ export class StockComponent implements OnInit {
       update: (key, values: any) => {
         values.id = key;
         values.details = [];
+        values.userId = this.tokenService.getUserId();
         return this.stockService.update(key, values).then((response) => {
           return;
         });
