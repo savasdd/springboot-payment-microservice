@@ -63,16 +63,18 @@
         <dxi-item itemType="group" [colCount]="4">
 
           <dxi-item>
-            <dx-select-box displayExpr="categoryName" [(dataSource)]="dataCategorySource"
+            <dx-select-box displayExpr="categoryName" [(dataSource)]="dataCategorySource" (onEnterKey)="search()"
               [value]="dataCategorySource[0]" (onValueChanged)="setValueCategory($event)"></dx-select-box>
             <dxo-label template="Kategori"></dxo-label>
           </dxi-item>
-          <dxi-item>
-            <dx-select-box displayExpr="year" [(dataSource)]="yearList" [value]="currentYear[0]"
+          <dxi-item dataField="Yıl">
+            <dx-select-box displayExpr="year" [(dataSource)]="yearList" (onEnterKey)="search()" [value]="currentYear[0]"
               (onValueChanged)="setValueYear($event)"></dx-select-box>
             <dxo-label template="Yıl"></dxo-label>
           </dxi-item>
-          <dxi-item dataField="search">
+          <dxi-item>
+            <dx-text-box [value]="filterModel.search" placeholder="Ara" (onEnterKey)="search()"
+              (onValueChanged)="setValueSearch($event)"></dx-text-box>
             <dxo-label template="Ara"></dxo-label>
           </dxi-item>
           <dxi-item dataField="" [colSpan]="2">
@@ -86,7 +88,7 @@
 
     <div class="row">
 
-      <dx-data-grid #orderDataGrid  id="gridContainer" [dataSource]="dataSource" keyExpr="ID" [showBorders]="true"
+      <dx-data-grid #orderDataGrid id="gridContainer" [dataSource]="dataSource" keyExpr="ID" [showBorders]="true"
         dataRowTemplate="dataRowTemplateName" [focusedRowEnabled]="true"
         (onSelectionChanged)="onFocusedRowChanged($event)">
 

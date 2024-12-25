@@ -33,6 +33,7 @@ export class StockComponent implements OnInit {
   ];
   popupVisible = false;
   params: Array<{ 'key': any, 'value': any }> = [];
+  yearList: Array<{ year: number }> = [];
 
   constructor(public service: GenericService, private tokenService: TokenService) {
     this.stockService = this.service.instance('payment/stocks');
@@ -45,6 +46,7 @@ export class StockComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setListYear(2015, 2040);
   }
 
   onSelectionPersonChanged(selectedRowKeys: any, cellInfo: any, dropDownBoxComponent: any) {
@@ -123,6 +125,12 @@ export class StockComponent implements OnInit {
     if (event.status == 200) {
       this.popupVisible = false;
       this.refreshDataGrid(null);
+    }
+  }
+
+  setListYear(start: number, end: number) {
+    for (let index = start; index <= end; index++) {
+      this.yearList.push({ year: index });
     }
   }
 

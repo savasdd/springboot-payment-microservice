@@ -50,7 +50,10 @@
                 <dxi-column dataField="price" format="#0.##" [width]="200" caption="Fiyat">
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
-                <dxi-column dataField="year" caption="Yıl"></dxi-column>
+                <dxi-column dataField="year" caption="Yıl">
+                  <dxo-lookup [dataSource]="yearList" displayExpr="year" valueExpr="year">
+                  </dxo-lookup>
+                </dxi-column>
                 <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"
                   [allowEditing]="false"></dxi-column>
                 <dxi-column dataField="recordStatus" caption="Durum" [allowEditing]="false"></dxi-column>

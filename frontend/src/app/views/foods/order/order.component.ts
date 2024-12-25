@@ -110,6 +110,10 @@ export class OrderComponent implements OnInit {
     this.filterModel.year = event.value.year;
   }
 
+  setValueSearch(event: any) {
+    this.filterModel.search = event.value;
+  }
+
   setListYear(start: number, end: number) {
     for (let index = start; index <= end; index++) {
       this.yearList.push({ year: index });
