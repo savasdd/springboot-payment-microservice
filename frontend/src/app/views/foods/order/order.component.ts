@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import CustomStore from "devextreme/data/custom_store";
 import { faShoppingBasket, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { DxDataGridComponent } from "devextreme-angular";
+import { DxDataGridComponent, DxDrawerComponent } from "devextreme-angular";
 import { MessageService } from "../../../services/message.service";
 import { Router } from "@angular/router";
 import { UtilService } from "../../../services/util.service";
 import { GenericService } from "../../../services/generic.service";
+import { DxFormTypes } from 'devextreme-angular/ui/form';
 
 @Component({
   selector: 'app-order',
@@ -16,20 +17,40 @@ import { GenericService } from "../../../services/generic.service";
 export class OrderComponent implements OnInit {
   @ViewChild('orderDataGrid', { static: true }) orderDataGrid: any = DxDataGridComponent;
   dataSource: any = {};
+  dataCategorySource: any = {};
   totalPrice: number = 0;
   stockService: GenericService;
+  categoryService: GenericService;
   basketList: Array<{ ID: string, Name: string, Price: number, Image: string }> = [];
+  filterModel: FilterModel = new FilterModel();
+  yearList: Array<{ year: number }> = [];
+  currentYear: any;
+
+  labelMode: DxFormTypes.FormLabelMode = 'floating';
 
   constructor(public service: GenericService,
     private messageService: MessageService,
     private router: Router,
     private cd: ChangeDetectorRef) {
+    this.setValueYear.bind(null);
     this.stockService = this.service.instance('payment/stocks/elastic/');
+    this.categoryService = this.service.instance('payment/stocks/category');
+
+    this.loadCategory();
     this.loadGrid();
-    this.totalPrice = 0;
   }
 
   ngOnInit(): void {
+    this.setListYear(2015, 2040);
+    this.currentYear = this.yearList.filter(f => f.year == new Date().getFullYear());
+    this.filterModel.year = this.currentYear ? this.currentYear[0].year : null;
+  }
+
+
+  loadCategory() {
+    this.categoryService.findAll(null).then((response: any) => {
+      this.dataCategorySource = response.data;
+    });
   }
 
 
@@ -37,7 +58,7 @@ export class OrderComponent implements OnInit {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        return this.stockService.search(UtilService.setPage(loadOptions), null).then((response: any) => {
+        return this.stockService.search(UtilService.setPage(loadOptions), this.filterModel).then((response: any) => {
           return {
             data: response.data,
             totalCount: response.totalCount,
@@ -82,12 +103,36 @@ export class OrderComponent implements OnInit {
     }
   }
 
+  setValueCategory(event: any) {
+    this.filterModel.category = event.value.id;
+  }
+  setValueYear(event: any) {
+    this.filterModel.year = event.value.year;
+  }
+
+  setListYear(start: number, end: number) {
+    for (let index = start; index <= end; index++) {
+      this.yearList.push({ year: index });
+    }
+  }
+
+  search() {
+    this.refreshDataGrid();
+  }
+
   protected readonly faShoppingBasket = faShoppingBasket;
   protected readonly faTrashAlt = faTrashAlt;
 }
 
 
+export class FilterModel {
+  category: any = 0;
+  year: any = null;
+  search: any = "";
 
+  constructor() {
+  }
+}
 
 
 

@@ -39,8 +39,9 @@ export class GenericService {
     return firstValueFrom(this.http.post<any>(this.baseUrl + 'pageable-load', loadOptions).pipe(catchError(this.handleError)));
   }
 
-  search(loadOptions: any, searchText: any) {
-    return firstValueFrom(this.http.post<any>(this.baseUrl + 'search', loadOptions).pipe(catchError(this.handleError)));
+  search(loadOptions: any, filterDto: any) {
+    const filter = `?category=${filterDto.category}&year=${filterDto.year}&text=${filterDto.search}`
+    return firstValueFrom(this.http.post<any>(this.baseUrl + 'search' + filter, loadOptions).pipe(catchError(this.handleError)));
   }
 
   save(data: any) {
