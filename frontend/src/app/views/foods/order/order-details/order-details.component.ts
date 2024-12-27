@@ -11,9 +11,15 @@ import { Location } from '@angular/common';
 })
 export class OrderDetailsComponent implements OnInit {
   dataSource: any = {};
+  propertyDataSource: any = ['Özellik 1','Özellik 2','Özellik 2'];
   totalPrice: number = 0;
   stockService: GenericService;
   stateData: any;
+  tabList: any[] = [
+    { id: 1, name: "Ürün", key: 'property' },
+    { id: 2, name: "Yorumlar", key: 'comment' },
+  ];
+
 
   constructor(public service: GenericService,
     private router: Router,
@@ -24,6 +30,7 @@ export class OrderDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.stateData = this.location.getState();
+    console.log(this.stateData)
   }
 
 }

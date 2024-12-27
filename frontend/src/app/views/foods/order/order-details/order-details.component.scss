@@ -1,0 +1,64 @@
+//new
+.images {
+    height: 30em;
+    width: 30rem;
+    display: block;
+    padding: 3px;
+    margin-left: 2rem;
+    transition: transform .2s;
+}
+
+
+.mains {
+    width: 80%;
+    margin: 60px 15px 0;
+    padding: 0;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.mains:hover {
+    bottom: -36px;
+    opacity: 1;
+}
+
+.ordName {
+    margin-top: 90%;
+    font-weight: 300;
+    font-size: 1.9rem;
+    color: green;
+    font-family: "Times New Roman", Times, serif;
+}
+
+
+.ordPrice {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: orange;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.ordRate {
+    margin-top: 30%;
+    font-weight: 300;
+    font-size: 1.2rem;
+    color: green;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.ordPercent {
+    font-size: 1.2rem;
+    margin-left: 0.6rem;
+    font-weight: bold;
+    color: red;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.property {
+    font-size: 1rem;
+    margin: 2rem;
+    width: 60%;
+    font-weight: bold;
+    color: green;
+    font-family: "Times New Roman", Times, serif;
+}

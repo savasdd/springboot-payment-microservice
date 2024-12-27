@@ -28,6 +28,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { StockImageComponent } from './stock/stock-image/stock-image.component';
 import { FileComponent } from './file/file.component';
 import { OrderDetailsComponent } from './order/order-details/order-details.component';
+import { StockCommentComponent } from './stock/stock-comment/stock-comment.component';
 
 const routes: Routes = [
   {
@@ -84,6 +85,7 @@ const routes: Routes = [
     StockImageComponent,
     FileComponent,
     OrderDetailsComponent,
+    StockCommentComponent,
   ],
   imports: [
     CommonModule,

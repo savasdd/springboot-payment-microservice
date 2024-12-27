@@ -1,1 +1,65 @@
-{{this.stateData.data.stockName}}
+<div>
+    <dx-tab-panel height="90%" width="100%" [dataSource]="tabList" [selectedIndex]="0" [loop]="true"
+        [animationEnabled]="true" [swipeEnabled]="true">
+
+        <div *dxTemplate="let dto of 'title'">
+            <span>{{ dto.name }}</span>
+        </div>
+
+        <div *dxTemplate="let dto of 'item'">
+            <div class="tabpanel-item">
+
+                <div *ngIf="dto.id===1">
+                    <div>
+                        <div class="mains">
+                            <div style="width:40%;float:left;display:block;">
+                                <img *ngIf="this.stateData.data.image===null" class="images"
+                                    src="assets/images/no_image.jpg" alt="" />
+                                <img *ngIf="this.stateData.data.image" class="images"
+                                    [src]="'data:image/png;base64,'+this.stateData.data.image" alt="" tabindex="0" />
+
+                                <div class="property">
+                                    <p>Öne Çıkan Özellikler:</p>
+                                    <div class="widget-container">
+                                        <dx-list [dataSource]="propertyDataSource" [height]="400">
+                                        </dx-list>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div style="width:30%;float:left;display:block;">
+                                <tr>
+                                    <td>
+                                        <div class="ordName">{{this.stateData.data.stockName}}</div>
+                                    </td>
+                                    <td>
+                                        <div class="ordPercent">({{this.stateData.data.percent}}
+                                            {{this.stateData.data.rateName}})</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="ordPrice">{{this.stateData.data.price}} ₺</div>
+                                    </td>
+                                </tr>
+                            </div>
+
+                            <div style="width:300%;float:left;display:block;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="dto.id===2">
+                    <app-stock-comment></app-stock-comment>
+                </div>
+
+            </div>
+        </div>
+
+    </dx-tab-panel>
+</div>
