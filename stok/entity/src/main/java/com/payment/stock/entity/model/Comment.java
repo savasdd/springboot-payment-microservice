@@ -16,6 +16,9 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Comment extends BaseEntity implements Serializable {
 
+    @Column(name = "userId")
+    private Long userId;
+
     @Column(name = "comment",length = 4000)
     private String comment;
 

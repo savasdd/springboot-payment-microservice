@@ -10,5 +10,6 @@ public class CommentDto extends BaseSocialDto implements Serializable {
 
     private String comment;
     private String language;
+    private Long userId;
     private StockInfoDto stock;
 }

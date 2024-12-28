@@ -13,9 +13,7 @@ import com.payment.stock.entity.vo.CommentV0;
 import com.payment.stock.repository.CommentRepository;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.CommentService;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,11 +23,17 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@AllArgsConstructor(onConstructor = @__(@Autowired))
-public class CommentServiceImpl implements CommentService {
+public class CommentServiceImpl extends SocialServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final StockRepository stockRepository;
     private final BeanUtil beanUtil;
+
+    public CommentServiceImpl(CommentRepository commentRepository, StockRepository stockRepository, BeanUtil beanUtil) {
+        super(commentRepository);
+        this.commentRepository = commentRepository;
+        this.stockRepository = stockRepository;
+        this.beanUtil = beanUtil;
+    }
 
     @Override
     public BaseResponse findAll() {
@@ -40,12 +44,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public BaseResponse findAllLoad(DataLoad load) {
+    public BaseResponse findAllLoad(DataLoad load, Long userId) {
         BaseLoadResponse response = commentRepository.load(load);
-        List<CommentDto> stockDtoList = beanUtil.mapAll(response.getData(), Comment.class, CommentDto.class);
+        List<CommentDto> dtoList = beanUtil.mapAll(response.getData(), Comment.class, CommentDto.class);
+        dtoList.forEach(dto -> setSocialAction(dto, userId));
 
         log.info("Load all comment: {}", response.getTotalCount());
-        return BaseResponse.success(stockDtoList, response.getTotalCount());
+        return BaseResponse.success(dtoList, response.getTotalCount());
     }
 
 
@@ -56,13 +61,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public BaseResponse save(CommentV0 dto) {
+    public BaseResponse save(CommentV0 dto, Long userId) {
         ValidationDto valid = validation(dto);
         if (valid.isError())
             return BaseResponse.error(valid.getMessage());
 
         Comment comment = beanUtil.mapDto(dto, Comment.class);
         comment.setStock(stockRepository.findById(dto.getStock().getId()).orElseThrow(EntityNotFoundException::new));
+        comment.setUserId(userId);
         Comment model = commentRepository.save(comment);
 
         log.info("save comment: {}", model);
@@ -71,12 +77,13 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public BaseResponse update(CommentV0 dto) {
+    public BaseResponse update(CommentV0 dto, Long userId) {
         ValidationDto valid = validation(dto);
         if (valid.isError())
             return BaseResponse.error(valid.getMessage());
 
         Comment comment = commentRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
+        comment.setUserId(userId);
         updateField(dto, comment);
 
         commentRepository.save(comment);

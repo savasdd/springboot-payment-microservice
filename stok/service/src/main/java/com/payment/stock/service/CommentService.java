@@ -9,12 +9,12 @@ public interface CommentService {
 
     BaseResponse findById(Long id);
 
-    BaseResponse save(CommentV0 dto);
+    BaseResponse save(CommentV0 dto, Long userId);
 
-    BaseResponse update(CommentV0 dto);
+    BaseResponse update(CommentV0 dto, Long userId);
 
     BaseResponse delete(Long id);
 
-    BaseResponse findAllLoad(DataLoad load);
+    BaseResponse findAllLoad(DataLoad load, Long userId);
 
 }
