@@ -30,5 +30,6 @@ public class StockV0 extends BaseDto implements Serializable {
     private Integer year;
     private StockRateV0 rate;
     private CategoryV0 category;
+    private PropertyV0 property;
     private List<StockDetailDto> details;
 }

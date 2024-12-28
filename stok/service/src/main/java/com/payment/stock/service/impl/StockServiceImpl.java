@@ -15,10 +15,7 @@ import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.entity.model.StockDetail;
 import com.payment.stock.entity.vo.StockV0;
-import com.payment.stock.repository.CategoryRepository;
-import com.payment.stock.repository.StockDetailRepository;
-import com.payment.stock.repository.StockRateRepository;
-import com.payment.stock.repository.StockRepository;
+import com.payment.stock.repository.*;
 import com.payment.stock.service.StockService;
 import com.payment.stock.service.excel.ExcelUtility;
 import com.payment.stock.service.publisher.NotifySerializer;
@@ -49,6 +46,7 @@ public class StockServiceImpl implements StockService {
     private final StockDetailRepository detailRepository;
     private final StockRateRepository rateRepository;
     private final CategoryRepository categoryRepository;
+    private final PropertyRepository propertyRepository;
     private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final Publisher publisher;
@@ -124,6 +122,7 @@ public class StockServiceImpl implements StockService {
         stock.getDetails().forEach(d -> d.setStock(stock));
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : null);
         stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : null);
+        stock.setProperty(!Objects.isNull(dto.getProperty()) ? propertyRepository.findById(dto.getProperty().getId()).orElseThrow(EntityNotFoundException::new) : null);
         Stock model = stockRepository.save(stock);
 
         log.info("save stock: {}", model);
@@ -195,5 +194,6 @@ public class StockServiceImpl implements StockService {
         stock.setYear(Objects.isNull(dto.getYear()) ? stock.getYear() : dto.getYear());
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : stock.getRate());
         stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : stock.getCategory());
+        stock.setProperty(!Objects.isNull(dto.getProperty()) ? propertyRepository.findById(dto.getProperty().getId()).orElseThrow(EntityNotFoundException::new) : null);
     }
 }

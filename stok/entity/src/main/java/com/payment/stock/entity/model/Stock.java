@@ -46,6 +46,10 @@ public class Stock extends BaseEntity implements Serializable {
     @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "PROPERTY_ID", referencedColumnName = "ID")
+    private Property property;
+
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", orphanRemoval = true)
     @JsonIgnoreProperties("stock")
