@@ -2,19 +2,13 @@ package com.payment.stock.elastic.impl;
 
 import co.elastic.clients.elasticsearch.core.DeleteByQueryResponse;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
-import com.load.impl.DataLoad;
-import com.payment.stock.cdn.CdnService;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.ElasticsearchConfig;
-import com.payment.stock.common.enums.ElasticIndex;
-import com.payment.stock.common.enums.RecordStatus;
+import com.payment.stock.common.enums.IndexType;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.elastic.IndexService;
 import com.payment.stock.entity.dto.ElasticContent;
-import com.payment.stock.entity.dto.ImageInfoDto;
 import com.payment.stock.entity.dto.StockDto;
-import com.payment.stock.entity.dto.StockRateDto;
-import com.payment.stock.entity.model.Stock;
 import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -54,8 +46,8 @@ public class IndexServiceImpl implements IndexService {
                     content.setPercent(!Objects.isNull(dto) && !Objects.isNull(dto.getRate()) ? dto.getRate().getPercent() : null);
                     content.setCategoryId(!Objects.isNull(dto) && !Objects.isNull(dto.getCategory()) ? dto.getCategory().getId() : null);
                     content.setCategoryName(!Objects.isNull(dto) && !Objects.isNull(dto.getCategory()) ? dto.getCategory().getCategoryName() : null);
-                    content.setContentType(ElasticIndex.STOCK.getName());
-                    content.setContentId(ElasticIndex.STOCK.getCode());
+                    content.setContentType(IndexType.STOCK.getName());
+                    content.setContentId(IndexType.STOCK.getCode());
                     index(esConfig.getIndexStock(), content);
                 });
 
@@ -73,7 +65,7 @@ public class IndexServiceImpl implements IndexService {
 
     private void index(String indexName, ElasticContent content) {
         try {
-            IndexResponse response = esConfig.getEsConfig().index(i -> i.index(indexName).id(ElasticIndex.STOCK.getName() + "_" + content.getId()).document(content));
+            IndexResponse response = esConfig.getEsConfig().index(i -> i.index(indexName).id(IndexType.STOCK.getName() + "_" + content.getId()).document(content));
             log.info("indexed stock {} {}", response.version(), content.getId());
         } catch (Exception ex) {
             log.error("cannot index stock {}", ex.getMessage());

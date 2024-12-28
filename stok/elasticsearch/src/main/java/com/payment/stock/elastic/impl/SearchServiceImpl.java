@@ -11,7 +11,7 @@ import com.load.impl.DataLoad;
 import com.payment.stock.cdn.CdnService;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.ElasticsearchConfig;
-import com.payment.stock.common.enums.ElasticIndex;
+import com.payment.stock.common.enums.IndexType;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.elastic.SearchService;
 import com.payment.stock.entity.dto.ElasticContent;
@@ -20,7 +20,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -85,7 +84,7 @@ public class SearchServiceImpl implements SearchService {
 
     private static List<Query> getQueries(Integer year, Long category) {
         List<Query> queries = new ArrayList<>();
-        queries.add(getBoolQuery("contentId", ElasticIndex.STOCK.getCode()));
+        queries.add(getBoolQuery("contentId", IndexType.STOCK.getCode()));
         queries.add(getBoolQuery("year", year));
         if (!Objects.isNull(category)) {
             queries.add(getBoolQuery("categoryId", category));
@@ -107,7 +106,7 @@ public class SearchServiceImpl implements SearchService {
     private MsearchRequest searchAllOld(Integer year, Long category, int pageSize) {
         return MsearchRequest.of(of -> of.searches(s -> s
                 .body(bd -> bd.query(q -> q.bool(b ->
-                                b.filter(f -> f.terms(tf -> tf.field("contentId").terms(fs -> fs.value(List.of(FieldValue.of(ElasticIndex.STOCK.getCode()))))))
+                                b.filter(f -> f.terms(tf -> tf.field("contentId").terms(fs -> fs.value(List.of(FieldValue.of(IndexType.STOCK.getCode()))))))
                                         .filter(f -> f.terms(tf -> tf.field("year").terms(fs -> fs.value(List.of(FieldValue.of(year))))))
                                         .filter(f -> !Objects.isNull(category) ? f.terms(tf -> tf.field("categoryId").terms(fs -> fs.value(List.of(FieldValue.of(category))))) : f.terms(tf -> tf.field("categoryId").terms(fs -> fs.value(List.of()))))
                         ))
