@@ -2,23 +2,22 @@ package com.payment.stock.entity.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.entity.base.BaseEntity;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
 @Entity
-@Table(name = "STOCK_DETAILS")
+@Table(name = "STOCK_COMMENT")
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StockDetail extends BaseEntity implements Serializable {
+public class Comment extends BaseEntity implements Serializable {
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "description")
-    private String description;
+    @Column(name = "comment",length = 4000)
+    private String comment;
 
     @Column(name = "language")
     private String language;
