@@ -42,13 +42,16 @@ public class IndexServiceImpl implements IndexService {
                 contents.forEach(content -> {
                     StockDto dto = response.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElse(null);
 
-                    content.setRateName(!Objects.isNull(dto) && !Objects.isNull(dto.getRate()) ? dto.getRate().getRateName() : null);
-                    content.setPercent(!Objects.isNull(dto) && !Objects.isNull(dto.getRate()) ? dto.getRate().getPercent() : null);
-                    content.setCategoryId(!Objects.isNull(dto) && !Objects.isNull(dto.getPropertyList()) ? dto.getCategoryList().stream().findFirst().get().getId() : null);
-                    content.setCategoryName(!Objects.isNull(dto) && !Objects.isNull(dto.getCategoryList()) ? dto.getCategoryList().stream().findFirst().get().getCategoryName() : null);
-                    content.setContentType(IndexType.STOCK.getName());
-                    content.setContentId(IndexType.STOCK.getCode());
-                    index(esConfig.getIndexStock(), content);
+                    dto.getCategoryList().forEach(category -> {
+                        content.setRateName(!Objects.isNull(dto.getRate()) ? dto.getRate().getRateName() : null);
+                        content.setPercent(!Objects.isNull(dto.getRate()) ? dto.getRate().getPercent() : null);
+                        content.setCategoryId(category.getId());
+                        content.setCategoryName(category.getCategoryName());
+                        content.setContentType(IndexType.STOCK.getName());
+                        content.setContentId(IndexType.STOCK.getCode());
+                        index(esConfig.getIndexStock(), content);
+                    });
+
                 });
 
                 pageable = response.nextPageable();
