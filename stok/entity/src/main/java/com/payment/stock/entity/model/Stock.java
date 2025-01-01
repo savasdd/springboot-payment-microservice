@@ -9,6 +9,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -46,12 +47,14 @@ public class Stock extends BaseEntity implements Serializable {
     @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "PROPERTY_ID", referencedColumnName = "ID")
-    private Property property;
-
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", orphanRemoval = true)
     @JsonIgnoreProperties("stock")
     private List<StockDetail> details;
+
+
+    @ManyToMany
+    @JoinTable(name = "STOCK_PROPERTY",
+            joinColumns = @JoinColumn(name = "stock_id"), inverseJoinColumns = @JoinColumn(name = "property_id"))
+    private List<Property> propertyList;
 }

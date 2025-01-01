@@ -10,7 +10,10 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -30,6 +33,6 @@ public class StockV0 extends BaseDto implements Serializable {
     private Integer year;
     private StockRateV0 rate;
     private CategoryV0 category;
-    private PropertyV0 property;
+    private List<PropertyV0> propertyList;
     private List<StockDetailDto> details;
 }

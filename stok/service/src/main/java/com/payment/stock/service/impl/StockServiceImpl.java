@@ -12,6 +12,7 @@ import com.payment.stock.common.utils.ConstantUtil;
 import com.payment.stock.common.utils.RestUtil;
 import com.payment.stock.entity.content.KafkaContent;
 import com.payment.stock.entity.dto.StockDto;
+import com.payment.stock.entity.model.Property;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.entity.model.StockDetail;
 import com.payment.stock.entity.vo.StockV0;
@@ -32,10 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -119,16 +117,18 @@ public class StockServiceImpl implements StockService {
     @Override
     public BaseResponse save(StockV0 dto) {
         Stock stock = beanUtil.mapDto(dto, Stock.class);
+
         stock.getDetails().forEach(d -> d.setStock(stock));
+        stock.setPropertyList(getProperties(dto, stock));
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : null);
         stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : null);
-        stock.setProperty(!Objects.isNull(dto.getProperty()) ? propertyRepository.findById(dto.getProperty().getId()).orElseThrow(EntityNotFoundException::new) : null);
-        Stock model = stockRepository.save(stock);
+        Stock model = stockRepository.saveAndFlush(stock);
 
         log.info("save stock: {}", model);
         publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
-        return BaseResponse.success(model);
+        return BaseResponse.success(beanUtil.mapDto(model, StockDto.class));
     }
+
 
     @CacheEvict(cacheManager = CacheUtil.CACHE_MANAGER, cacheNames = CacheUtil.CACHE_NAME, allEntries = true)
     @Override
@@ -143,6 +143,7 @@ public class StockServiceImpl implements StockService {
             BeanUtils.copyProperties(f, detail);
             detail.setStock(stock);
         });
+
 
         stock.setRecordStatus(RecordStatus.ACTIVE);
         stockRepository.save(stock);
@@ -185,6 +186,8 @@ public class StockServiceImpl implements StockService {
     }
 
     private void updateField(StockV0 dto, Stock stock) {
+        List<Property> propertyList = new ArrayList<>();
+
         stock.setUserId(Objects.isNull(dto.getUserId()) ? stock.getUserId() : dto.getUserId());
         stock.setStockName(Objects.isNull(dto.getStockName()) ? stock.getStockName() : dto.getStockName());
         stock.setAvailableQuantity(Objects.isNull(dto.getAvailableQuantity()) ? stock.getAvailableQuantity() : dto.getAvailableQuantity());
@@ -194,6 +197,20 @@ public class StockServiceImpl implements StockService {
         stock.setYear(Objects.isNull(dto.getYear()) ? stock.getYear() : dto.getYear());
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : stock.getRate());
         stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : stock.getCategory());
-        stock.setProperty(!Objects.isNull(dto.getProperty()) ? propertyRepository.findById(dto.getProperty().getId()).orElseThrow(EntityNotFoundException::new) : null);
+
+        dto.getPropertyList().forEach(f -> {
+            Property property = propertyRepository.findById(f.getId()).orElseThrow(EntityNotFoundException::new);
+            BeanUtils.copyProperties(f, property);
+            property.setStockList(List.of(stock));
+            propertyList.add(property);
+        });
+
+        stock.setPropertyList(propertyList.isEmpty() ? stock.getPropertyList() : propertyList);
+    }
+
+    private List<Property> getProperties(StockV0 dto, Stock stock) {
+        List<Property> propertyList = dto.getPropertyList().stream().map(m -> propertyRepository.findById(m.getId()).orElse(null)).toList();
+        propertyList.forEach(f -> f.setStockList(List.of(stock)));
+        return propertyList;
     }
 }
