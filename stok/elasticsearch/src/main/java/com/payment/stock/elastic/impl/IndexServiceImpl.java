@@ -44,8 +44,8 @@ public class IndexServiceImpl implements IndexService {
 
                     content.setRateName(!Objects.isNull(dto) && !Objects.isNull(dto.getRate()) ? dto.getRate().getRateName() : null);
                     content.setPercent(!Objects.isNull(dto) && !Objects.isNull(dto.getRate()) ? dto.getRate().getPercent() : null);
-                    content.setCategoryId(!Objects.isNull(dto) && !Objects.isNull(dto.getCategory()) ? dto.getCategory().getId() : null);
-                    content.setCategoryName(!Objects.isNull(dto) && !Objects.isNull(dto.getCategory()) ? dto.getCategory().getCategoryName() : null);
+                    content.setCategoryId(!Objects.isNull(dto) && !Objects.isNull(dto.getPropertyList()) ? dto.getCategoryList().stream().findFirst().get().getId() : null);
+                    content.setCategoryName(!Objects.isNull(dto) && !Objects.isNull(dto.getCategoryList()) ? dto.getCategoryList().stream().findFirst().get().getCategoryName() : null);
                     content.setContentType(IndexType.STOCK.getName());
                     content.setContentId(IndexType.STOCK.getCode());
                     index(esConfig.getIndexStock(), content);

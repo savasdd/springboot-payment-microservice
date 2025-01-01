@@ -43,18 +43,16 @@ public class Stock extends BaseEntity implements Serializable {
     @JoinColumn(name = "RATE_ID", referencedColumnName = "ID")
     private StockRate rate;
 
-    @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID")
-    private Category category;
-
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", orphanRemoval = true)
     @JsonIgnoreProperties("stock")
     private List<StockDetail> details;
 
+    @ManyToMany
+    @JoinTable(name = "STOCK_CATEGORY", joinColumns = @JoinColumn(name = "stock_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categoryList;
 
     @ManyToMany
-    @JoinTable(name = "STOCK_PROPERTY",
-            joinColumns = @JoinColumn(name = "stock_id"), inverseJoinColumns = @JoinColumn(name = "property_id"))
+    @JoinTable(name = "STOCK_PROPERTY", joinColumns = @JoinColumn(name = "stock_id"), inverseJoinColumns = @JoinColumn(name = "property_id"))
     private List<Property> propertyList;
 }

@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.entity.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "STOCK_CATEGORY")
+@Table(name = "CATEGORY")
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Category extends BaseEntity implements Serializable {
@@ -22,5 +22,10 @@ public class Category extends BaseEntity implements Serializable {
 
     @Column(name = "description", length = 2000)
     private String description;
+
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "categoryList",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("categoryList")
+    private List<Stock> stockList;
 
 }

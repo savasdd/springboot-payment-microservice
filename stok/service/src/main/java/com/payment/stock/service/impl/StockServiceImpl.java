@@ -12,6 +12,7 @@ import com.payment.stock.common.utils.ConstantUtil;
 import com.payment.stock.common.utils.RestUtil;
 import com.payment.stock.entity.content.KafkaContent;
 import com.payment.stock.entity.dto.StockDto;
+import com.payment.stock.entity.model.Category;
 import com.payment.stock.entity.model.Property;
 import com.payment.stock.entity.model.Stock;
 import com.payment.stock.entity.model.StockDetail;
@@ -119,9 +120,9 @@ public class StockServiceImpl implements StockService {
         Stock stock = beanUtil.mapDto(dto, Stock.class);
 
         stock.getDetails().forEach(d -> d.setStock(stock));
+        stock.setCategoryList(getCategory(dto, stock));
         stock.setPropertyList(getProperties(dto, stock));
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : null);
-        stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : null);
         Stock model = stockRepository.saveAndFlush(stock);
 
         log.info("save stock: {}", model);
@@ -187,6 +188,7 @@ public class StockServiceImpl implements StockService {
 
     private void updateField(StockV0 dto, Stock stock) {
         List<Property> propertyList = new ArrayList<>();
+        List<Category> categoryList = new ArrayList<>();
 
         stock.setUserId(Objects.isNull(dto.getUserId()) ? stock.getUserId() : dto.getUserId());
         stock.setStockName(Objects.isNull(dto.getStockName()) ? stock.getStockName() : dto.getStockName());
@@ -196,7 +198,6 @@ public class StockServiceImpl implements StockService {
         stock.setPrice(Objects.isNull(dto.getPrice()) ? stock.getPrice() : dto.getPrice());
         stock.setYear(Objects.isNull(dto.getYear()) ? stock.getYear() : dto.getYear());
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : stock.getRate());
-        stock.setCategory(!Objects.isNull(dto.getCategory()) ? categoryRepository.findById(dto.getCategory().getId()).orElseThrow(EntityNotFoundException::new) : stock.getCategory());
 
         dto.getPropertyList().forEach(f -> {
             Property property = propertyRepository.findById(f.getId()).orElseThrow(EntityNotFoundException::new);
@@ -204,8 +205,21 @@ public class StockServiceImpl implements StockService {
             property.setStockList(List.of(stock));
             propertyList.add(property);
         });
+        dto.getCategoryList().forEach(f -> {
+            Category category = categoryRepository.findById(f.getId()).orElseThrow(EntityNotFoundException::new);
+            BeanUtils.copyProperties(f, category);
+            category.setStockList(List.of(stock));
+            categoryList.add(category);
+        });
 
         stock.setPropertyList(propertyList.isEmpty() ? stock.getPropertyList() : propertyList);
+        stock.setCategoryList(categoryList.isEmpty() ? stock.getCategoryList() : categoryList);
+    }
+
+    private List<Category> getCategory(StockV0 dto, Stock stock) {
+        List<Category> categoryList = dto.getCategoryList().stream().map(m -> categoryRepository.findById(m.getId()).orElse(null)).toList();
+        categoryList.forEach(f -> f.setStockList(List.of(stock)));
+        return categoryList;
     }
 
     private List<Property> getProperties(StockV0 dto, Stock stock) {

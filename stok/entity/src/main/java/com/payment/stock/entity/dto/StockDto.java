@@ -3,7 +3,6 @@ package com.payment.stock.entity.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.base.BaseDto;
-import com.payment.stock.entity.vo.PropertyV0;
 import lombok.*;
 
 import java.io.Serializable;
@@ -22,7 +21,7 @@ public class StockDto extends BaseDto implements Serializable {
     private BigDecimal price;
     private Integer year;
     private StockRateDto rate;
-    private CategoryDto category;
+    private List<CategoryDto> categoryList = new ArrayList<>();
     private List<PropertyDto> propertyList = new ArrayList<>();
     private List<StockDetailDto> details;
 }
