@@ -7,7 +7,6 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,7 +20,7 @@ public class StockDto extends BaseDto implements Serializable {
     private BigDecimal price;
     private Integer year;
     private StockRateDto rate;
-    private List<CategoryDto> categoryList = new ArrayList<>();
-    private List<PropertyDto> propertyList = new ArrayList<>();
+    private List<CategoryDto> categoryList;
+    private List<PropertyDto> propertyList;
     private List<StockDetailDto> details;
 }

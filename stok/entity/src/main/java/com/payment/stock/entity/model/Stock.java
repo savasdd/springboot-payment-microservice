@@ -2,6 +2,7 @@ package com.payment.stock.entity.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.base.BaseEntity;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "STOCK")
 @EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Stock extends BaseEntity implements Serializable {
 
@@ -48,10 +50,12 @@ public class Stock extends BaseEntity implements Serializable {
     @JsonIgnoreProperties("stock")
     private List<StockDetail> details;
 
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "STOCK_CATEGORY", joinColumns = @JoinColumn(name = "stock_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categoryList;
 
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "STOCK_PROPERTY", joinColumns = @JoinColumn(name = "stock_id"), inverseJoinColumns = @JoinColumn(name = "property_id"))
     private List<Property> propertyList;
