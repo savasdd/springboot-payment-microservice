@@ -11,10 +11,11 @@ import { Location } from '@angular/common';
 })
 export class OrderDetailsComponent implements OnInit {
   dataSource: any = {};
-  propertyDataSource: any = ['Özellik 1','Özellik 2','Özellik 2'];
+  propertyDataSource: any = [];
   totalPrice: number = 0;
   stockService: GenericService;
   stateData: any;
+  detailData: any;
   tabList: any[] = [
     { id: 1, name: "Ürün", key: 'property' },
     { id: 2, name: "Yorumlar", key: 'comment' },
@@ -25,12 +26,27 @@ export class OrderDetailsComponent implements OnInit {
     private router: Router,
     private location: Location,
     private cd: ChangeDetectorRef) {
-    this.stockService = this.service.instance('payment/stocks/elastic/');
+    this.stockService = this.service.instance('payment/stocks');
   }
 
   ngOnInit(): void {
     this.stateData = this.location.getState();
-    console.log(this.stateData)
+    this.loadDetail(this.stateData.data.id);
+  }
+
+
+  loadDetail(id: any) {
+    this.stockService.findOne(id).then((response: any) => {
+      this.detailData = response.data;
+
+      if (response.data.propertyList.length > 0) {
+        response.data.propertyList.map((m) => {
+          this.propertyDataSource.push(m.property);
+        });
+      }
+
+
+    });
   }
 
 }

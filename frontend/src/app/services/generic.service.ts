@@ -23,7 +23,7 @@ export class GenericService {
   }
 
   findOne(id: any) {
-    return firstValueFrom(this.http.get(this.baseUrl + 'getOne/' + id).pipe(catchError(this.handleError)));
+    return firstValueFrom(this.http.get(this.baseUrl + 'findOne/' + id).pipe(catchError(this.handleError)));
   }
 
 

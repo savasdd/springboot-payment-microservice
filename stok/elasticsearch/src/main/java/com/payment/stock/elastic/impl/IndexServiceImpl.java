@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -51,6 +52,7 @@ public class IndexServiceImpl implements IndexService {
                         content.setContentType(IndexType.STOCK.getName());
                         content.setContentId(IndexType.STOCK.getCode());
                         content.setYear(DateUtil.getYear(dto.getCreDate()));
+                        content.setElasticId(UUID.randomUUID().toString());
                         index(esConfig.getIndexStock(), content);
                     });
 
@@ -70,7 +72,7 @@ public class IndexServiceImpl implements IndexService {
 
     private void index(String indexName, ElasticContent content) {
         try {
-            IndexResponse response = esConfig.getEsConfig().index(i -> i.index(indexName).id(IndexType.STOCK.getName() + "_" + content.getId()).document(content));
+            IndexResponse response = esConfig.getEsConfig().index(i -> i.index(indexName).id(IndexType.STOCK.getName() + "_" + content.getElasticId()).document(content));
             log.info("indexed stock {} {}", response.version(), content.getId());
         } catch (Exception ex) {
             log.error("cannot index stock {}", ex.getMessage());

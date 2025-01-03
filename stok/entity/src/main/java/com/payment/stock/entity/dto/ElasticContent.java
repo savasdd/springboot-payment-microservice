@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ElasticContent implements Serializable {
     private Long id;
+    private String elasticId;
     private String contentType;
     private Integer contentId;
     private RecordStatus recordStatus;
