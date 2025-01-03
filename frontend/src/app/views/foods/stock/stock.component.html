@@ -26,13 +26,21 @@
                   </dxi-item>
                 </dxo-toolbar>
 
-                <dxi-column dataField="category.id" caption="Kategori" [visible]="false">
-                  <dxo-lookup [dataSource]="dataCategorySource" displayExpr="categoryName" valueExpr="id">
+                <dxi-column dataField="categoryList" caption="Kategori" [width]="200" [allowSorting]="false"
+                  [visible]="false" editCellTemplate="tagBoxCategory" [cellTemplate]="cellTemplate"
+                  [calculateFilterExpression]="calculateFilterExpression">
+                  <dxo-lookup [dataSource]="dataCategorySource" valueExpr="id" displayExpr="categoryName">
                   </dxo-lookup>
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
 
-                <dxi-column dataField="stockName" caption="Stok">
+                <!-- <dxi-column dataField="category.id" caption="Kategori" [visible]="false">
+                  <dxo-lookup [dataSource]="dataCategorySource" displayExpr="categoryName" valueExpr="id">
+                  </dxo-lookup>
+                  <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dxi-column> -->
+
+                <dxi-column dataField="stockName" caption="Stok Adı">
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
                 <dxi-column dataField="rate.id" caption="İndirim">
@@ -61,6 +69,15 @@
 
                 <div *dxTemplate="let item of 'detail'">
                   <app-stock-image *ngIf="item.data" [data]="item.data"></app-stock-image>
+                </div>
+
+                <div *dxTemplate="let cellInfo of 'tagBoxCategory'">
+                  <dx-tag-box [dataSource]="dataCategorySource" [value]="cellInfo.value" valueExpr="id"
+                    displayExpr="categoryName" [showSelectionControls]="true" [maxDisplayedTags]="3"
+                    [showMultiTagOnly]="false" [inputAttr]="{ 'aria-label': 'Name' }" applyValueMode="useButtons"
+                    [searchEnabled]="true" (onValueChanged)="cellInfo.setValue($event.value)"
+                    (onSelectionChanged)="cellInfo.component.updateDimensions()">
+                  </dx-tag-box>
                 </div>
 
                 <div *dxTemplate="let cellInfo of 'singleDropDownBoxEditor'">
