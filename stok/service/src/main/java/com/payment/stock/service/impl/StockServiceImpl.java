@@ -196,7 +196,6 @@ public class StockServiceImpl implements StockService {
         stock.setUnitType(Objects.isNull(dto.getUnitType()) ? stock.getUnitType() : dto.getUnitType());
         stock.setRecordStatus(Objects.isNull(dto.getRecordStatus()) ? stock.getRecordStatus() : dto.getRecordStatus());
         stock.setPrice(Objects.isNull(dto.getPrice()) ? stock.getPrice() : dto.getPrice());
-        stock.setYear(Objects.isNull(dto.getYear()) ? stock.getYear() : dto.getYear());
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : stock.getRate());
 
         dto.getPropertyList().forEach(f -> {

@@ -38,9 +38,6 @@ public class Stock extends BaseEntity implements Serializable {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "year")
-    private Integer year;
-
     @ManyToOne
     @JoinColumn(name = "RATE_ID", referencedColumnName = "ID")
     private StockRate rate;

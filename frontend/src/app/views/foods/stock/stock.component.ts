@@ -19,8 +19,10 @@ export class StockComponent implements OnInit {
   dropDownOptions: any;
   stockService: GenericService;
   categoryService: GenericService;
+  propertyService: GenericService;
   rateService: GenericService;
   dataCategorySource: any = {};
+  dataPropertySource: any = {};
   dataRateSource: any = {};
   dataUnitSource: any = [
     { name: UnitEnum.Adet },
@@ -38,9 +40,11 @@ export class StockComponent implements OnInit {
   constructor(public service: GenericService, private tokenService: TokenService) {
     this.stockService = this.service.instance('payment/stocks');
     this.categoryService = this.service.instance('payment/stocks/category');
+    this.propertyService = this.service.instance('payment/stocks/property');
     this.rateService = this.service.instance('payment/stocks/rate');
 
     this.loadCategory();
+    this.loadProperty();
     this.loadRate();
     this.loadGrid();
   }
@@ -65,6 +69,13 @@ export class StockComponent implements OnInit {
       this.dataCategorySource = response.data;
     });
   }
+
+  loadProperty() {
+    this.propertyService.findAll(null).then((response: any) => {
+      this.dataPropertySource = response.data;
+    });
+  }
+
 
   loadRate() {
     this.rateService.findAll(null).then((response: any) => {

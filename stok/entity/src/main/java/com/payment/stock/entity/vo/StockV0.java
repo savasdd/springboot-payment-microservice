@@ -30,7 +30,6 @@ public class StockV0 extends BaseDto implements Serializable {
     @Schema(example = "10.5")
     private BigDecimal price;
     @Schema(example = "2024")
-    private Integer year;
     private StockRateV0 rate;
     private List<CategoryV0> categoryList = new ArrayList<>();
     private List<PropertyV0> propertyList = new ArrayList<>();

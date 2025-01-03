@@ -18,7 +18,6 @@ public class StockDto extends BaseDto implements Serializable {
     private Integer availableQuantity;
     private UnitType unitType;
     private BigDecimal price;
-    private Integer year;
     private StockRateDto rate;
     private List<CategoryDto> categoryList;
     private List<PropertyDto> propertyList;

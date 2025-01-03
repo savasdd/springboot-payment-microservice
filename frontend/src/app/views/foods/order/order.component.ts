@@ -42,7 +42,7 @@ export class OrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.setListYear(2015, 2040);
-    this.currentYear = this.yearList.filter(f => f.year == new Date().getFullYear());
+    this.currentYear = this.yearList.filter(f => f.year == new Date().getFullYear() - 1);
     this.filterModel.year = this.currentYear ? this.currentYear[0].year : null;
   }
 

@@ -6,6 +6,7 @@ import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.ElasticsearchConfig;
 import com.payment.stock.common.enums.IndexType;
 import com.payment.stock.common.utils.BeanUtil;
+import com.payment.stock.common.utils.DateUtil;
 import com.payment.stock.elastic.IndexService;
 import com.payment.stock.entity.dto.ElasticContent;
 import com.payment.stock.entity.dto.StockDto;
@@ -49,6 +50,7 @@ public class IndexServiceImpl implements IndexService {
                         content.setCategoryName(category.getCategoryName());
                         content.setContentType(IndexType.STOCK.getName());
                         content.setContentId(IndexType.STOCK.getCode());
+                        content.setYear(DateUtil.getYear(dto.getCreDate()));
                         index(esConfig.getIndexStock(), content);
                     });
 
