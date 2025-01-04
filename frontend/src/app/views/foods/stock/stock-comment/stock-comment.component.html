@@ -17,7 +17,7 @@
             </dxo-toolbar>
 
             <dxi-column dataField="comment" caption="Yorum"> </dxi-column>
-            <dxi-column dataField="creDate" dataType="date" caption="Tarihi"></dxi-column>
+            <dxi-column dataField="creDate" dataType="datetime" caption="Tarihi" [allowEditing]="false"></dxi-column>
 
             <dxo-paging [pageSize]="200"></dxo-paging>
             <dxo-pager [visible]="false" [showPageSizeSelector]="true" [allowedPageSizes]="[50, 100, 200]"></dxo-pager>

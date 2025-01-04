@@ -33,6 +33,7 @@ export class BearerAuthInterceptor implements HttpInterceptor {
             .set('Content-Type', 'application/json')
             .set('Access-Control-Allow-Origin', '*')
             .set('Authorization', 'Bearer ' + token)
+            .set('user-id', '' + this.token.getUserId())
         });
         return next.handle(request);
       }
@@ -42,6 +43,7 @@ export class BearerAuthInterceptor implements HttpInterceptor {
           .set('X-Api-Version', '1')// when sending a FormData Request Body, the content-type is omitted because the FormData would set the content-type itself 
           .set('Access-Control-Allow-Origin', '*')
           .set('Authorization', 'Bearer ' + token)
+          .set('user-id', '' + this.token.getUserId())
       });
       return next.handle(request);
     }

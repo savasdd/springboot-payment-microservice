@@ -27,8 +27,7 @@ public class CommentController {
 
     @PostMapping(value = "/pageable-load")
     public ResponseEntity<BaseResponse> findAllLoad(HttpServletRequest request, @RequestBody DataLoad load) {
-        Long userId = HeaderUtil.getUserId(request);
-        return ResponseEntity.ok(commentService.findAllLoad(load, userId));
+        return ResponseEntity.ok(commentService.findAllLoad(load, HeaderUtil.getUserId(request)));
     }
 
     @GetMapping(value = "/findOne/{id}")
@@ -38,8 +37,7 @@ public class CommentController {
 
     @PostMapping(value = "/save")
     public ResponseEntity<BaseResponse> save(HttpServletRequest request, @RequestBody CommentV0 dto) {
-        Long userId = HeaderUtil.getUserId(request);
-        return new ResponseEntity<>(commentService.save(dto, userId), HttpStatus.CREATED);
+        return new ResponseEntity<>(commentService.save(dto, HeaderUtil.getUserId(request)), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update")
@@ -49,8 +47,8 @@ public class CommentController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
-        return new ResponseEntity<>(commentService.delete(id), HttpStatus.OK);
+    public ResponseEntity<BaseResponse> delete(HttpServletRequest request, @PathVariable Long id) {
+        return new ResponseEntity<>(commentService.delete(id, HeaderUtil.getUserId(request)), HttpStatus.OK);
     }
 
 

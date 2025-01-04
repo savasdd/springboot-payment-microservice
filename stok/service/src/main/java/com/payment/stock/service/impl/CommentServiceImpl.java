@@ -82,23 +82,29 @@ public class CommentServiceImpl extends SocialServiceImpl implements CommentServ
         if (valid.isError())
             return BaseResponse.error(valid.getMessage());
 
-        Comment comment = commentRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
-        comment.setUserId(userId);
-        updateField(dto, comment);
+        Optional<Comment> comment = commentRepository.findByIdAndUserIdAndRecordStatus(dto.getId(), userId, RecordStatus.ACTIVE);
+        if (comment.isPresent()) {
+            updateField(dto, comment.get());
 
-        commentRepository.save(comment);
-        log.info("update comment: {}", comment);
-        return BaseResponse.success(beanUtil.mapDto(comment, CommentDto.class));
+            commentRepository.save(comment.get());
+            log.info("update comment: {}", comment);
+            return BaseResponse.success(beanUtil.mapDto(comment, CommentDto.class));
+        } else
+            return BaseResponse.error("Kullanıcı Kendi Yorumunu Güncelleyebilir!");
+
     }
 
     @Override
-    public BaseResponse delete(Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        comment.setRecordStatus(RecordStatus.DELETED);
-        Comment model = commentRepository.save(comment);
+    public BaseResponse delete(Long id, Long userId) {
+        Optional<Comment> comment = commentRepository.findByIdAndUserIdAndRecordStatus(id, userId, RecordStatus.ACTIVE);
 
-        log.info("delete comment: {}", model);
-        return BaseResponse.success(model);
+        if (comment.isPresent()) {
+            comment.get().setRecordStatus(RecordStatus.DELETED);
+            Comment model = commentRepository.save(comment.get());
+            log.info("delete comment: {}", model);
+            return BaseResponse.success(beanUtil.mapDto(comment, CommentDto.class));
+        } else
+            return BaseResponse.error("Kullanıcı Kendi Yorumunu Silebilir!");
     }
 
     private void updateField(CommentV0 dto, Comment model) {

@@ -13,7 +13,7 @@ public interface CommentService {
 
     BaseResponse update(CommentV0 dto, Long userId);
 
-    BaseResponse delete(Long id);
+    BaseResponse delete(Long id,Long userId);
 
     BaseResponse findAllLoad(DataLoad load, Long userId);
 
