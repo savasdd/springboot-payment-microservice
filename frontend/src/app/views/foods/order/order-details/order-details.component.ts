@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { DxDataGridComponent } from "devextreme-angular";
 import { Router } from "@angular/router";
 import { GenericService } from "../../../../services/generic.service";
 import { Location } from '@angular/common';
@@ -14,6 +13,7 @@ export class OrderDetailsComponent implements OnInit {
   propertyDataSource: any = [];
   totalPrice: number = 0;
   stockService: GenericService;
+  commentService: GenericService;
   stateData: any;
   detailData: any;
   tabList: any[] = [
