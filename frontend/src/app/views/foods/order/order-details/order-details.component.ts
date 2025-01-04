@@ -16,6 +16,7 @@ export class OrderDetailsComponent implements OnInit {
   commentService: GenericService;
   stateData: any;
   detailData: any;
+  quantity: number=0;
   tabList: any[] = [
     { id: 1, name: "Ürün", key: 'property' },
     { id: 2, name: "Yorumlar", key: 'comment' },
@@ -44,9 +45,17 @@ export class OrderDetailsComponent implements OnInit {
           this.propertyDataSource.push(m.property);
         });
       }
-
-
     });
   }
+
+
+  addBasket() {
+    console.log(this.quantity)
+  }
+
+  setValueQuantity(event: any) {
+    this.quantity = event.value;
+  }
+
 
 }

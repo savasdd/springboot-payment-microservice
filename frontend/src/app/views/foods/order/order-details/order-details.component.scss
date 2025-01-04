@@ -23,6 +23,9 @@
 }
 
 .ordName {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     margin-top: 90%;
     font-weight: 300;
     font-size: 1.9rem;
@@ -39,6 +42,9 @@
 }
 
 .ordRate {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     margin-top: 30%;
     font-weight: 300;
     font-size: 1.2rem;
@@ -47,6 +53,9 @@
 }
 
 .ordPercent {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     font-size: 1.2rem;
     margin-left: 0.6rem;
     font-weight: bold;

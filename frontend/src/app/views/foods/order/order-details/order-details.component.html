@@ -13,7 +13,7 @@
                 <div *ngIf="dto.id===1">
                     <div>
                         <div class="mains">
-                            <div style="width:40%;float:left;display:block;">
+                            <div style="width:40%;float:left;display:block;height:auto;">
                                 <img *ngIf="this.stateData.data.image===null" class="images"
                                     src="assets/images/no_image.jpg" alt="" />
                                 <img *ngIf="this.stateData.data.image" class="images"
@@ -25,11 +25,10 @@
                                         <dx-list [dataSource]="propertyDataSource" [height]="400">
                                         </dx-list>
                                     </div>
-
                                 </div>
                             </div>
 
-                            <div style="width:30%;float:left;display:block;">
+                            <div style="width:30%;float:left;display:block;height:auto;">
                                 <tr>
                                     <td>
                                         <div class="ordName">{{this.stateData.data.stockName}}</div>
@@ -47,12 +46,33 @@
                                         <div class="ordPrice">{{this.stateData.data.price}} ₺</div>
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <td>
+                                        <div style="font-size: 1rem;font-weight: bold;margin-top: 3rem;">Adet</div>
+                                    </td>
+                                    <td>
+                                        <div style="width: 7rem;">
+                                            <dx-number-box #numberBox [max]="100" [min]="0" [showSpinButtons]="true"
+                                                (onValueChanged)="setValueQuantity($event)" [value]="quantity"></dx-number-box>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <button id="button" type="button" class="btn btn-outline-warning"
+                                                (click)="addBasket()">Sepete Ekle
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
                             </div>
 
-                            <div style="width:300%;float:left;display:block;">
+                            <div style="width:300%;float:left;display:block;height:auto;">
                             </div>
                         </div>
                     </div>
+
+
                 </div>
 
                 <div *ngIf="dto.id===2">
