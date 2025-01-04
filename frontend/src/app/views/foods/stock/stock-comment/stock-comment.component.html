@@ -1,1 +1,35 @@
-<p>stock-comment works!</p>
+<div class="card-body" style="min-height: calc(90vh - 193px);">
+    <div class="row">
+        <dx-data-grid #dataSourceGrid [dataSource]="dataSource" keyExpr="id" [allowColumnReordering]="true"
+            [showBorders]="true" (onEditingStart)="logEvent('EditingStart')">
+
+            <dxo-paging [enabled]="true"></dxo-paging>
+            <dxo-editing mode="row" [allowUpdating]="true" [allowDeleting]="true" [allowAdding]="true"
+                [useIcons]="true">
+            </dxo-editing>
+
+            <dxo-toolbar>
+                <dxi-item name="addRowButton"></dxi-item>
+                <dxi-item location="after">
+                    <dx-button icon="refresh" (onClick)="refreshDataGrid($event)">
+                    </dx-button>
+                </dxi-item>
+            </dxo-toolbar>
+
+            <dxi-column dataField="comment" caption="Yorum"> </dxi-column>
+            <dxi-column dataField="creDate" dataType="date" caption="Tarihi"></dxi-column>
+
+            <dxo-paging [pageSize]="200"></dxo-paging>
+            <dxo-pager [visible]="false" [showPageSizeSelector]="true" [allowedPageSizes]="[50, 100, 200]"></dxo-pager>
+
+            <dxo-header-filter [visible]=false>
+            </dxo-header-filter>
+            <dxo-filter-row [visible]="true">
+            </dxo-filter-row>
+
+            <dxo-remote-operations [groupPaging]="true">
+            </dxo-remote-operations>
+        </dx-data-grid>
+
+    </div>
+</div>
