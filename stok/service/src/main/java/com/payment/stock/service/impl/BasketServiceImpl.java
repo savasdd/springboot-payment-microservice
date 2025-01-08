@@ -10,20 +10,26 @@ import com.payment.stock.entity.dto.BasketDto;
 import com.payment.stock.entity.dto.CommentDto;
 import com.payment.stock.entity.model.Basket;
 import com.payment.stock.entity.model.Stock;
+import com.payment.stock.entity.model.StockDetail;
 import com.payment.stock.entity.vo.BasketV0;
+import com.payment.stock.entity.vo.StockDetailV0;
+import com.payment.stock.entity.vo.StockV0;
 import com.payment.stock.repository.BasketRepository;
 import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.BasketService;
+import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -31,6 +37,7 @@ import java.util.Optional;
 public class BasketServiceImpl implements BasketService {
     private final BasketRepository basketRepository;
     private final StockRepository stockRepository;
+    private final StockService stockService;
     private final BeanUtil beanUtil;
 
     @Override
@@ -57,6 +64,7 @@ public class BasketServiceImpl implements BasketService {
         return BaseResponse.success(beanUtil.mapDto(model, BasketDto.class));
     }
 
+    @Transactional
     @Override
     public BaseResponse save(BasketV0 dto, Long userId) {
         ValidationDto valid = validation(dto);
@@ -75,7 +83,7 @@ public class BasketServiceImpl implements BasketService {
         basket.setDisprice(getDisCount(basket));
         Basket model = basketRepository.save(basket);
 
-        decreaseQuantity(dto.getQuantity(), stock);
+        updateStockQuantity(dto.getQuantity(), stock, false);
         log.info("save basket: {}", model);
         return BaseResponse.success(beanUtil.mapDto(model, BasketDto.class));
     }
@@ -87,8 +95,9 @@ public class BasketServiceImpl implements BasketService {
 
         if (basket.isPresent()) {
             basketRepository.deleteById(id);
+            updateStockQuantity(basket.get().getQuantity(), basket.get().getStock(), true);
+
             log.info("delete basket: {}", id);
-            increasesQuantity(basket.get().getQuantity(), basket.get().getStock());
             return BaseResponse.success("delete basket");
         } else
             return BaseResponse.error("Kullanıcı Kendi Ürününü Silebilir!");
@@ -109,19 +118,25 @@ public class BasketServiceImpl implements BasketService {
 
     }
 
-    private void decreaseQuantity(Integer quantity, Stock stock) {
-        //stock.setAvailableQuantity(stock.getAvailableQuantity() - quantity);
-        stockRepository.save(stock);
+    private void updateStockQuantity(Integer quantity, Stock stock, boolean increase) {
+        StockDetail detail = getActiveDetail(stock).findFirst().get();
+        StockDetailV0 detailV0 = beanUtil.mapDto(detail, StockDetailV0.class);
+        detailV0.setQuantity(increase ? (detail.getQuantity() + quantity) : (detail.getQuantity() - quantity));
+        detailV0.setId(null);
+
+        StockV0 v0 = beanUtil.mapDto(stock, StockV0.class);
+        v0.setDetails(List.of(detailV0));
+        stockService.update(v0);
     }
 
-    private void increasesQuantity(Integer quantity, Stock stock) {
-        //stock.setAvailableQuantity(stock.getAvailableQuantity() + quantity);
-        stockRepository.save(stock);
-    }
 
     private static boolean validateStockQuantity(BasketV0 dto, Stock stock) {
-        //return dto.getQuantity() > stock.getAvailableQuantity();
-        return true;
+        Integer quantity = getActiveDetail(stock).mapToInt(StockDetail::getQuantity).sum();
+        return quantity.equals(0) || dto.getQuantity() > quantity;
+    }
+
+    private static Stream<StockDetail> getActiveDetail(Stock stock) {
+        return stock.getDetails().stream().filter(f -> f.getRecordStatus().equals(RecordStatus.ACTIVE));
     }
 
     private static BigDecimal getDisCount(Basket basket) {

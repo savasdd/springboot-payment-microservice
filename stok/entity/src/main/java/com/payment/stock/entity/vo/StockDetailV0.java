@@ -19,4 +19,5 @@ public class StockDetailV0 implements Serializable {
     private UnitType unitType;
     @Schema(example = "TR")
     private String language;
+
 }
