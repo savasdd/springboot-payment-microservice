@@ -1,6 +1,7 @@
 package com.payment.stock.entity.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.payment.stock.common.enums.UnitType;
@@ -27,13 +28,6 @@ public class Stock extends BaseEntity implements Serializable {
     @Column(name = "stockName")
     private String stockName;
 
-    @Column(name = "availableQuantity")
-    private Integer availableQuantity;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "unitType", nullable = false)
-    private UnitType unitType;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Column(name = "price")
     private BigDecimal price;
@@ -43,8 +37,7 @@ public class Stock extends BaseEntity implements Serializable {
     private StockRate rate;
 
     @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", orphanRemoval = true)
-    @JsonIgnoreProperties("stock")
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StockDetail> details;
 
     @ToString.Exclude

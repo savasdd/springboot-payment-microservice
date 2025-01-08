@@ -42,7 +42,6 @@ import java.util.*;
 public class StockServiceImpl implements StockService {
     private static final List<String> LANG = List.of("TR", "EN");
     private final StockRepository stockRepository;
-    private final StockDetailRepository detailRepository;
     private final StockRateRepository rateRepository;
     private final CategoryRepository categoryRepository;
     private final PropertyRepository propertyRepository;
@@ -126,7 +125,7 @@ public class StockServiceImpl implements StockService {
         Stock model = stockRepository.saveAndFlush(stock);
 
         log.info("save stock: {}", model);
-        publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
+        publishNotification(dto.getUserId(), ConstantUtil.STOCK_CREATE + " [" + dto.getStockName() + " - " + dto.getPrice() + "]");
         return BaseResponse.success(beanUtil.mapDto(model, StockDto.class));
     }
 
@@ -137,19 +136,9 @@ public class StockServiceImpl implements StockService {
         Stock stock = stockRepository.findById(dto.getId()).orElseThrow(EntityNotFoundException::new);
         //BeanUtils.copyProperties(stock, dto);
         updateField(dto, stock);
-
-        stock.getDetails().forEach(d -> d.setRecordStatus(RecordStatus.DELETED));
-        dto.getDetails().forEach(f -> {
-            StockDetail detail = detailRepository.findById(f.getId()).orElseThrow(EntityNotFoundException::new);
-            BeanUtils.copyProperties(f, detail);
-            detail.setStock(stock);
-        });
-
-
-        stock.setRecordStatus(RecordStatus.ACTIVE);
         stockRepository.save(stock);
         log.info("update stock: {}", stock);
-        publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE + " [" + dto.getStockName() + " - " + dto.getAvailableQuantity() + "]");
+        publishNotification(dto.getUserId(), ConstantUtil.STOCK_UPDATE + " [" + dto.getStockName() + " - " + dto.getPrice() + "]");
         return BaseResponse.success(stock);
     }
 
@@ -165,14 +154,6 @@ public class StockServiceImpl implements StockService {
         return BaseResponse.success(model);
     }
 
-    @Override
-    public BaseResponse updateStockQuantity(Long id, Integer quantity) {
-        Stock stock = stockRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        stock.setAvailableQuantity(stock.getAvailableQuantity() > quantity ? stock.getAvailableQuantity() - quantity : 0);
-        stockRepository.save(stock);
-        log.info("updateStockQuantity: {}", stock);
-        return BaseResponse.success(stock);
-    }
 
     private void publishNotification(Long userId, String message) {
         try {
@@ -189,11 +170,10 @@ public class StockServiceImpl implements StockService {
     private void updateField(StockV0 dto, Stock stock) {
         List<Property> propertyList = new ArrayList<>();
         List<Category> categoryList = new ArrayList<>();
+        List<StockDetail> detailList = new ArrayList<>();
 
         stock.setUserId(Objects.isNull(dto.getUserId()) ? stock.getUserId() : dto.getUserId());
         stock.setStockName(Objects.isNull(dto.getStockName()) ? stock.getStockName() : dto.getStockName());
-        stock.setAvailableQuantity(Objects.isNull(dto.getAvailableQuantity()) ? stock.getAvailableQuantity() : dto.getAvailableQuantity());
-        stock.setUnitType(Objects.isNull(dto.getUnitType()) ? stock.getUnitType() : dto.getUnitType());
         stock.setRecordStatus(Objects.isNull(dto.getRecordStatus()) ? stock.getRecordStatus() : dto.getRecordStatus());
         stock.setPrice(Objects.isNull(dto.getPrice()) ? stock.getPrice() : dto.getPrice());
         stock.setRate(!Objects.isNull(dto.getRate()) ? rateRepository.findById(dto.getRate().getId()).orElseThrow(EntityNotFoundException::new) : stock.getRate());
@@ -211,8 +191,17 @@ public class StockServiceImpl implements StockService {
             categoryList.add(category);
         });
 
+        dto.getDetails().forEach(f -> {
+            StockDetail detail = new StockDetail(f.getLanguage(), f.getQuantity(), f.getUnitType(), stock);
+            BeanUtils.copyProperties(f, detail);
+            detailList.add(detail);
+        });
+        if (!detailList.isEmpty())
+            stock.getDetails().forEach(d -> d.setRecordStatus(RecordStatus.DELETED));
+
         stock.setPropertyList(propertyList.isEmpty() ? stock.getPropertyList() : propertyList);
         stock.setCategoryList(categoryList.isEmpty() ? stock.getCategoryList() : categoryList);
+        stock.setDetails(detailList.isEmpty() ? stock.getDetails() : detailList);
     }
 
     private List<Category> getCategory(StockV0 dto, Stock stock) {

@@ -1,7 +1,6 @@
 package com.payment.stock.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.base.BaseDto;
 import lombok.*;
 
@@ -15,8 +14,6 @@ public class StockDto extends BaseDto implements Serializable {
 
     private Long userId;
     private String stockName;
-    private Integer availableQuantity;
-    private UnitType unitType;
     private BigDecimal price;
     private StockRateDto rate;
     private List<CategoryDto> categoryList;

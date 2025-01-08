@@ -110,17 +110,18 @@ public class BasketServiceImpl implements BasketService {
     }
 
     private void decreaseQuantity(Integer quantity, Stock stock) {
-        stock.setAvailableQuantity(stock.getAvailableQuantity() - quantity);
+        //stock.setAvailableQuantity(stock.getAvailableQuantity() - quantity);
         stockRepository.save(stock);
     }
 
     private void increasesQuantity(Integer quantity, Stock stock) {
-        stock.setAvailableQuantity(stock.getAvailableQuantity() + quantity);
+        //stock.setAvailableQuantity(stock.getAvailableQuantity() + quantity);
         stockRepository.save(stock);
     }
 
     private static boolean validateStockQuantity(BasketV0 dto, Stock stock) {
-        return dto.getQuantity() > stock.getAvailableQuantity();
+        //return dto.getQuantity() > stock.getAvailableQuantity();
+        return true;
     }
 
     private static BigDecimal getDisCount(Basket basket) {

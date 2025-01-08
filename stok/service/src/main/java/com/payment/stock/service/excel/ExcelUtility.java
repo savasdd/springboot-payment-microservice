@@ -1,6 +1,5 @@
 package com.payment.stock.service.excel;
 
-import com.payment.stock.common.enums.UnitType;
 import com.payment.stock.entity.dto.StockDto;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Cell;
@@ -50,10 +49,10 @@ public class ExcelUtility {
                             dto.setStockName(currentCell.getStringCellValue());
                             break;
                         case 1:
-                            dto.setAvailableQuantity(Integer.valueOf(currentCell.getStringCellValue()));
+                            //dto.setAvailableQuantity(Integer.valueOf(currentCell.getStringCellValue()));
                             break;
                         case 2:
-                            dto.setUnitType(UnitType.fromValue(currentCell.getStringCellValue()));
+                            //dto.setUnitType(UnitType.fromValue(currentCell.getStringCellValue()));
                             break;
                         default:
                             break;

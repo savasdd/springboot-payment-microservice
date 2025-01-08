@@ -23,14 +23,10 @@ public class StockV0 extends BaseDto implements Serializable {
     private Long userId;
     @Schema(example = "Demir")
     private String stockName;
-    @Schema(example = "1")
-    private Integer availableQuantity;
-    @Schema(example = "Adet")
-    private UnitType unitType;
     @Schema(example = "10.5")
     private BigDecimal price;
     private StockRateV0 rate;
     private List<CategoryV0> categoryList = new ArrayList<>();
     private List<PropertyV0> propertyList = new ArrayList<>();
-    private List<StockDetailDto> details;
+    private List<StockDetailV0> details = new ArrayList<>();
 }

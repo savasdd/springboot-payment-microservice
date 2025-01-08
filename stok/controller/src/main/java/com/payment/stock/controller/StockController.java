@@ -56,11 +56,6 @@ public class StockController {
         return new ResponseEntity<>(stockService.delete(id), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/update-quantity/{id}")
-    public ResponseEntity<BaseResponse> updateStockQuantity(@PathVariable Long id, @RequestParam Integer quantity) {
-        return new ResponseEntity<>(stockService.updateStockQuantity(id, quantity), HttpStatus.OK);
-    }
-
     @PostMapping(value = "/excel", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<BaseResponse> uploadExcel(@RequestPart(value = "userId") String userId, @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(stockService.uploadExcel(Long.valueOf(userId), file));
