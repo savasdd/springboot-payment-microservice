@@ -11,13 +11,14 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class HeaderUtil {
+    private static final Long defaultUserId = 11L;
     private static final String USER_ID = "user-id";
     private static final String USER_FIRSTNAME = "user-first-name";
     private static final String USER_LASTNAME = "user-last-name";
 
     public static Long getUserId(HttpServletRequest request) {
         Map<String, Serializable> headers = extracted(request);
-        return headers.containsKey(USER_ID) ? Long.valueOf(headers.get(USER_ID).toString()) : null;
+        return headers.containsKey(USER_ID) ? Long.valueOf(headers.get(USER_ID).toString()) : defaultUserId;
     }
 
     public static String getFullName(HttpServletRequest request) {
