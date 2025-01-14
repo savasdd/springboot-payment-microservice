@@ -42,8 +42,8 @@
                   </dxo-lookup>
                 </dxi-column>
 
-                <!-- <dxi-column dataField="category.id" caption="Kategori" [visible]="false">
-                  <dxo-lookup [dataSource]="dataCategorySource" displayExpr="categoryName" valueExpr="id">
+                <!-- <dxi-column dataField="unitType" caption="Birim" [width]="200">
+                  <dxo-lookup [dataSource]="dataUnitSource" displayExpr="name" valueExpr="name">
                   </dxo-lookup>
                   <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column> -->
@@ -54,14 +54,6 @@
                 <dxi-column dataField="rate.id" caption="İndirim">
                   <dxo-lookup [dataSource]="dataRateSource" displayExpr="rateName" valueExpr="id">
                   </dxo-lookup>
-                </dxi-column>
-                <dxi-column dataField="unitType" caption="Birim" [width]="200">
-                  <dxo-lookup [dataSource]="dataUnitSource" displayExpr="name" valueExpr="name">
-                  </dxo-lookup>
-                  <dxi-validation-rule type="required"></dxi-validation-rule>
-                </dxi-column>
-                <dxi-column dataField="availableQuantity" format="#0.##" [width]="200" caption="Miktar">
-                  <dxi-validation-rule type="required"></dxi-validation-rule>
                 </dxi-column>
                 <dxi-column dataField="price" format="#0.##" [width]="200" caption="Fiyat">
                   <dxi-validation-rule type="required"></dxi-validation-rule>

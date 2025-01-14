@@ -2,6 +2,7 @@ package com.payment.stock.controller;
 
 import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
+import com.payment.stock.common.utils.HeaderUtil;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.entity.vo.StockV0;
 import com.payment.stock.service.StockService;
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/api/payment/stocks")
@@ -42,12 +45,14 @@ public class StockController {
     }
 
     @PostMapping(value = "/save")
-    public ResponseEntity<BaseResponse> save(@RequestBody StockV0 stock) {
+    public ResponseEntity<BaseResponse> save(HttpServletRequest request, @RequestBody StockV0 stock) {
+        stock.setUserId(HeaderUtil.getUserId(request));
         return new ResponseEntity<>(stockService.save(stock), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update")
-    public ResponseEntity<BaseResponse> update(@RequestBody StockV0 stock) {
+    public ResponseEntity<BaseResponse> update(HttpServletRequest request, @RequestBody StockV0 stock) {
+        stock.setUserId(HeaderUtil.getUserId(request));
         return new ResponseEntity<>(stockService.update(stock), HttpStatus.OK);
     }
 
