@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
 import { GenericService } from "../../../../services/generic.service";
 import { Location } from '@angular/common';
+import { MessageService } from '../../../../services/message.service';
 
 @Component({
   selector: 'app-order-details',
@@ -13,10 +14,10 @@ export class OrderDetailsComponent implements OnInit {
   propertyDataSource: any = [];
   totalPrice: number = 0;
   stockService: GenericService;
-  commentService: GenericService;
+  basketService: GenericService;
   stateData: any;
   detailData: any;
-  quantity: number=0;
+  quantity: number = 0;
   tabList: any[] = [
     { id: 1, name: "Ürün", key: 'property' },
     { id: 2, name: "Yorumlar", key: 'comment' },
@@ -24,10 +25,12 @@ export class OrderDetailsComponent implements OnInit {
 
 
   constructor(public service: GenericService,
+    private notify: MessageService,
     private router: Router,
     private location: Location,
     private cd: ChangeDetectorRef) {
     this.stockService = this.service.instance('payment/stocks');
+    this.basketService = this.service.instance('payment/stocks/basket');
   }
 
   ngOnInit(): void {
@@ -50,7 +53,14 @@ export class OrderDetailsComponent implements OnInit {
 
 
   addBasket() {
-    console.log(this.quantity)
+    const basket = new Basket(this.quantity, this.stateData.data.id);
+    this.basketService.customPost('save', basket).then((response: any) => {
+      if (response.status == 200) {
+        this.notify.success("Ürün Sepete Eklendi!")
+      } else {
+        this.notify.error(response.data)
+      }
+    });
   }
 
   setValueQuantity(event: any) {
@@ -58,4 +68,16 @@ export class OrderDetailsComponent implements OnInit {
   }
 
 
+}
+
+
+export class Basket {
+  type: any = 'NEW';
+  quantity: any = 0;
+  stock: any = { 'id': null };
+
+  constructor(quantity: any, stockId: any) {
+    this.quantity = quantity;
+    this.stock.id = stockId;
+  }
 }

@@ -67,7 +67,7 @@ const routes: Routes = [
       {
         path: 'baskets', component: BasketComponent,
         data: {
-          title: 'Basket'
+          title: ''
         }
       },
     ]

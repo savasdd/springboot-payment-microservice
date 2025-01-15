@@ -109,6 +109,8 @@ public class BasketServiceImpl implements BasketService {
             return ValidationDto.validation(true, "Stock is required");
         if (Objects.isNull(vo.getQuantity()))
             return ValidationDto.validation(true, "Quantity is required");
+        if (vo.getQuantity().equals(0))
+            return ValidationDto.validation(true, "Quantity is min 1");
 
         Optional<Stock> stock = stockRepository.findById(vo.getStock().getId());
         if (stock.isEmpty())

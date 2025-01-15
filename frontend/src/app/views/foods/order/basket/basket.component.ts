@@ -2,8 +2,8 @@ import { ChangeDetectorRef, Component, OnChanges, SimpleChanges, ViewChild } fro
 import CustomStore from "devextreme/data/custom_store";
 import { DxDataGridComponent } from "devextreme-angular";
 import { Orders } from "../../../../services/food-service-api";
-import { GenericService } from 'src/app/services/generic.service';
-import { UtilService } from 'src/app/services/util.service';
+import { GenericService } from '../../../../services/generic.service';
+import { UtilService } from '../../../../services/util.service';
 
 @Component({
   selector: 'app-basket',
@@ -11,65 +11,57 @@ import { UtilService } from 'src/app/services/util.service';
   styleUrls: ['./basket.component.scss']
 })
 export class BasketComponent implements OnChanges {
-  @ViewChild('orderDataGrid', { static: true }) orderDataGrid: any = DxDataGridComponent;
+  @ViewChild('dataSourceGrid', { static: true }) dataSourceGrid: any = DxDataGridComponent;
   dataSource: any = {};
   totalPrice: number = 0;
-  orderService: GenericService;
+  basketService: GenericService;
+  events: Array<string> = [];
 
   constructor(private cd: ChangeDetectorRef,
     private service: GenericService) {
-    this.orderService = this.service.instance('foods/orders');
-    this.loadOrderGrid();
-
+    this.basketService = this.service.instance('payment/stocks/basket');
+    this.loadGrid();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
   }
 
-  loadOrderGrid() {
+
+
+  logEvent(eventName: any) {
+    this.events.unshift(eventName);
+  }
+
+  refreshDataGrid(e: any) {
+    this.dataSourceGrid.instance.refresh();
+  }
+
+
+  loadGrid() {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        loadOptions.filter = [];
-        loadOptions.filter.push(['status', '=', Orders.StatusEnum.Basket]);
-        return this.orderService.findAll(UtilService.setPage(loadOptions)).then((response: any) => {
-          this.calculateBasket(response.items);
+        return this.basketService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
           return {
-            data: response.items,
-            totalCount: response.totalCount
+            data: response.data,
+            totalCount: response.totalCount,
+            summary: response.summary,
+            groupCount: response.groupCount,
           };
         });
       },
-
       byKey: (key) => {
-        return this.orderService.findOne(key).then((response) => {
+        return this.basketService.findOne(key).then((response: any) => {
           return response;
-        }, err => {
-          throw (err.error.errorMessage ? err.error.errorMessage : err.error.warningMessage);
         });
       },
-
+      remove: (key) => {
+        return this.basketService.delete(key).then((response) => {
+          return;
+        }
+        );
+      }
     });
-  }
-
-  paymentBasket() {
-    if (this.totalPrice > 0) {
-
-      this.refreshDataGrid();
-    }
-  }
-
-  calculateBasket(data: any[]) {
-    if (data) {
-      this.totalPrice = 0;
-      data.map((m) => {
-        this.totalPrice = m.status === Orders.StatusEnum.Basket ? this.totalPrice + m.price : 0;
-      });
-    }
-  }
-
-  refreshDataGrid() {
-    this.orderDataGrid.instance.refresh();
   }
 
 }
