@@ -22,7 +22,7 @@ public class ElasticContent implements Serializable {
 
     private Long userId;
     private String stockName;
-    private Integer availableQuantity;
+    private Integer quantity;
     private UnitType unitType;
     private String percent;
     private BigDecimal price;

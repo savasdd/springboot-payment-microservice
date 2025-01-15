@@ -30,7 +30,7 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchServiceImpl implements SearchService {
-    private static final List<String> SEARCH_FIELDS = List.of("stockName", "unitType", "percent", "rateName", "categoryName");
+    private static final List<String> SEARCH_FIELDS = List.of("stockName", "percent", "rateName", "categoryName");
     private final ElasticsearchConfig esConfig;
     private final CdnService cdnService;
     private final BeanUtil beanUtil;

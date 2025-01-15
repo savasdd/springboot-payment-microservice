@@ -5,10 +5,12 @@ import co.elastic.clients.elasticsearch.core.IndexResponse;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.common.config.ElasticsearchConfig;
 import com.payment.stock.common.enums.IndexType;
+import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.common.utils.DateUtil;
 import com.payment.stock.elastic.IndexService;
 import com.payment.stock.entity.dto.ElasticContent;
+import com.payment.stock.entity.dto.StockDetailDto;
 import com.payment.stock.entity.dto.StockDto;
 import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -44,17 +47,21 @@ public class IndexServiceImpl implements IndexService {
                 contents.forEach(content -> {
                     StockDto dto = response.stream().filter(f -> f.getId().equals(content.getId())).toList().stream().findFirst().orElse(null);
 
-                    dto.getCategoryList().forEach(category -> {
-                        content.setRateName(!Objects.isNull(dto.getRate()) ? dto.getRate().getRateName() : null);
-                        content.setPercent(!Objects.isNull(dto.getRate()) ? dto.getRate().getPercent() : null);
-                        content.setCategoryId(category.getId());
-                        content.setCategoryName(category.getCategoryName());
-                        content.setContentType(IndexType.STOCK.getName());
-                        content.setContentId(IndexType.STOCK.getCode());
-                        content.setYear(DateUtil.getYear(dto.getCreDate()));
-                        content.setElasticId(UUID.randomUUID().toString());
-                        index(esConfig.getIndexStock(), content);
-                    });
+                    if (!Objects.isNull(dto) && !dto.getCategoryList().isEmpty()) {
+                        dto.getCategoryList().forEach(category -> {
+                            content.setRateName(!Objects.isNull(dto.getRate()) ? dto.getRate().getRateName() : null);
+                            content.setPercent(!Objects.isNull(dto.getRate()) ? dto.getRate().getPercent() : null);
+                            content.setQuantity(getStockDetailDto(dto).mapToInt(StockDetailDto::getQuantity).sum());
+                            content.setUnitType(getStockDetailDto(dto).toList().get(0).getUnitType());
+                            content.setCategoryId(category.getId());
+                            content.setCategoryName(category.getCategoryName());
+                            content.setContentType(IndexType.STOCK.getName());
+                            content.setContentId(IndexType.STOCK.getCode());
+                            content.setYear(DateUtil.getYear(dto.getCreDate()));
+                            content.setElasticId(UUID.randomUUID().toString());
+                            index(esConfig.getIndexStock(), content);
+                        });
+                    }
 
                 });
 
@@ -68,6 +75,10 @@ public class IndexServiceImpl implements IndexService {
         }
 
         return BaseResponse.error("Exception occurred while indexing data");
+    }
+
+    private static Stream<StockDetailDto> getStockDetailDto(StockDto dto) {
+        return dto.getDetails().stream().filter(f -> f.getRecordStatus().equals(RecordStatus.ACTIVE));
     }
 
     private void index(String indexName, ElasticContent content) {
