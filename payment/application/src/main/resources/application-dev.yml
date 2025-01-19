@@ -83,7 +83,7 @@ topics:
     partitions: 3
     replication: 1
   removed:
-    name: product-added
+    name: product-removed
     partitions: 3
     replication: 1
   payment:

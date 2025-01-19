@@ -1,5 +1,6 @@
 package com.payment.service.publisher;
 
+import com.payment.common.enums.EventType;
 import com.payment.common.utils.SerializerUtil;
 import com.payment.entity.model.Order;
 import com.payment.entity.model.OutboxOrder;
@@ -14,35 +15,19 @@ import org.springframework.stereotype.Component;
 public class OutboxSerializer {
     private final SerializerUtil serializerUtil;
 
-    public OutboxOrder createEvent(Order order) {
-        return generateOutboxOrder(order.getId(), new CreatedEvent(order), CreatedEvent.EVENT);
+    public OutboxOrder event(Order order, EventType eventType) {
+        return generateOutboxOrder(order.getId(), new PaymentEvent(order.getId(), null, null, null), eventType);
     }
 
-    public OutboxOrder cancelledEvent(Order order, String description) {
-        return generateOutboxOrder(order.getId(), new CancelledEvent(order.getId(), description), CancelledEvent.EVENT);
+    public OutboxOrder event(Order order, ProductItem item, EventType eventType) {
+        return generateOutboxOrder(order.getId(), new PaymentEvent(order.getId(), null, item, null), eventType);
     }
 
-    public OutboxOrder completedEvent(Order order) {
-        return generateOutboxOrder(order.getId(), new CompletedEvent(order.getId()), CompletedEvent.EVENT);
+    public OutboxOrder event(Order order, String paymentId, String description, EventType eventType) {
+        return generateOutboxOrder(order.getId(), new PaymentEvent(order.getId(), paymentId, null, description), eventType);
     }
 
-    public OutboxOrder paidEvent(Order order, String paymentId) {
-        return generateOutboxOrder(order.getId(), new PaymentEvent(order.getId(), paymentId), PaymentEvent.EVENT);
-    }
-
-    public OutboxOrder addedEvent(Order order, ProductItem item) {
-        return generateOutboxOrder(order.getId(), new AddedEvent(order.getId(), item), AddedEvent.EVENT);
-    }
-
-    public OutboxOrder removedEvent(Order order, ProductItem item) {
-        return generateOutboxOrder(order.getId(), new RemovedEvent(order.getId(), item), RemovedEvent.EVENT);
-    }
-
-    public OutboxOrder submittedEvent(Order order) {
-        return generateOutboxOrder(order.getId(), new SubmittedEvent(order.getId()), SubmittedEvent.EVENT);
-    }
-
-    private OutboxOrder generateOutboxOrder(Long aggregateId, Object data, String eventType) {
-        return OutboxOrder.builder().aggregateId(aggregateId).eventType(eventType).data(serializerUtil.serializeToBytes(data)).build();
+    private OutboxOrder generateOutboxOrder(Long aggregateId, Object data, EventType eventType) {
+        return OutboxOrder.builder().aggregateId(aggregateId).eventType(eventType.getName()).data(serializerUtil.serializeToBytes(data)).build();
     }
 }

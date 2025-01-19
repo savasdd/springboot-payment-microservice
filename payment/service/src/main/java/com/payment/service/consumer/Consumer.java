@@ -50,7 +50,6 @@ public class Consumer {
 
             log.info("CONSUMER RETRY RECORD: {}", getRecordInfo(consumerRecord));
         } catch (Exception ex) {
-
             int currentRetry = Integer.parseInt(Arrays.toString(consumerRecord.headers().lastHeader(RETRY_COUNT_HEADER).value()));
             if (currentRetry > MAX_RETRY_COUNT) {
                 publishRetryTopic(topicsConfig.getDeadLetterQueue().getName(), consumerRecord, currentRetry + 1);

@@ -5,12 +5,11 @@ import com.load.impl.DataLoad;
 import com.payment.common.base.BaseResponse;
 import com.payment.common.config.KafkaTopicsConfig;
 import com.payment.common.config.UrlPropsConfig;
+import com.payment.common.enums.EventType;
 import com.payment.common.enums.OrderStatus;
 import com.payment.common.enums.RecordStatus;
 import com.payment.common.utils.BeanUtil;
-import com.payment.common.utils.ConstantUtil;
 import com.payment.common.utils.RestUtil;
-import com.payment.entity.base.BaseEntity;
 import com.payment.entity.dto.*;
 import com.payment.entity.model.Order;
 import com.payment.entity.model.ProductItem;
@@ -78,8 +77,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("create order {}", model);
-        publishOutbox(outbox.createEvent(model));
-        sendNotification(model.getUserId(), ConstantUtil.ORDER_SUCCESS + " - " + model.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.CREATED), order);
         return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
     }
 
@@ -101,22 +99,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("add item {}", dto);
-        publishOutbox(outbox.addedEvent(order, item));
-        sendNotification(order.getUserId(), ConstantUtil.PRODUCT_ADD + " - " + order.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.ADDED), order);
         return BaseResponse.success(model);
     }
 
-    private static void setItems(Order order, ProductItem item) {
-        List<ProductItem> items = new ArrayList<>();
-        item.setOrder(order);
-        order.getItems().add(item);
-        order.getItems().forEach(f -> {
-            ProductItem newItem = new ProductItem(f.getStockId(), f.getStockName(), f.getPrice(), f.getQuantity(), order);
-            BeanUtils.copyProperties(f, newItem);
-            items.add(newItem);
-        });
-        order.setItems(items);
-    }
 
     @Override
     public BaseResponse removeItem(String orderNo, ItemV0 vo) {
@@ -127,8 +113,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
         Order model = orderRepository.save(order);
         log.info("remove item {}", item);
-        publishOutbox(outbox.removedEvent(order, item));
-        sendNotification(order.getUserId(), ConstantUtil.PRODUCT_REMOVE + " - " + order.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.REMOVED), order);
         return BaseResponse.success(model);
     }
 
@@ -145,8 +130,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("payment success {}", paymentId);
-        publishOutbox(outbox.paidEvent(model, paymentId));
-        sendNotification(order.getUserId(), ConstantUtil.ORDER_PAYMENT + " - " + order.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.PAID), order);
         return BaseResponse.success(model);
     }
 
@@ -164,8 +148,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("cancel success {}", dto.getDescription());
-        publishOutbox(outbox.cancelledEvent(model, dto.getDescription()));
-        sendNotification(order.getUserId(), ConstantUtil.ORDER_CANSEL + " - " + order.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.CANCELLED), order);
         return BaseResponse.success(model);
     }
 
@@ -183,8 +166,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("submit success {}", orderNo);
-        publishOutbox(outbox.submittedEvent(model));
-        sendNotification(order.getUserId(), ConstantUtil.ORDER_SUBMIT + " - " + order.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.SUBMITTED), order);
         return BaseResponse.success(model);
     }
 
@@ -199,8 +181,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("complete success {}", orderNo);
-        publishOutbox(outbox.completedEvent(model));
-        sendNotification(order.getUserId(), ConstantUtil.ORDER_COMPETE + " - " + order.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.COMPLETED), order);
         return BaseResponse.success(model);
     }
 
@@ -234,6 +215,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     private Order findOrderNo(String orderNo) {
         return orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+    }
+
+    private static void setItems(Order order, ProductItem item) {
+        List<ProductItem> items = new ArrayList<>();
+        item.setOrder(order);
+        order.getItems().add(item);
+        order.getItems().forEach(f -> {
+            ProductItem newItem = new ProductItem(f.getStockId(), f.getStockName(), f.getPrice(), f.getQuantity(), order);
+            BeanUtils.copyProperties(f, newItem);
+            items.add(newItem);
+        });
+        order.setItems(items);
     }
 
 

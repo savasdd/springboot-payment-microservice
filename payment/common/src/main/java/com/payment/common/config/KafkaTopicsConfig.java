@@ -1,5 +1,6 @@
 package com.payment.common.config;
 
+import com.payment.common.enums.EventType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,17 +38,16 @@ public class KafkaTopicsConfig {
         return Stream.of(created, added, removed, payment, cancelled, submitted, completed, retryTopic, deadLetterQueue, notification).map(KafkaTopicsConfigDto::getName).collect(Collectors.joining(", ", "[", "]"));
     }
 
-    public String getTopicName(String eventType) {
+    public String getTopicName(EventType eventType) {
         return switch (eventType) {
-            case "ORDER_CANCELLED_EVENT" -> cancelled.getName();
-            case "ORDER_COMPLETED" -> completed.getName();
-            case "ORDER_CREATED" -> created.getName();
-            case "ORDER_PAID" -> payment.getName();
-            case "PRODUCT_ITEM_ADDED" -> added.getName();
-            case "PRODUCT_ITEM_REMOVED" -> removed.getName();
-            case "ORDER_SUBMITTED" -> submitted.getName();
-            case "NOTIFICATION" -> notification.getName();
-            default -> throw new EntityNotFoundException("Type not found");
+            case CREATED -> created.getName();
+            case CANCELLED -> cancelled.getName();
+            case COMPLETED -> completed.getName();
+            case PAID -> payment.getName();
+            case ADDED -> added.getName();
+            case REMOVED -> removed.getName();
+            case SUBMITTED -> submitted.getName();
+            case NOTIFICATION -> notification.getName();
         };
     }
 }

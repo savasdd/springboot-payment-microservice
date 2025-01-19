@@ -1,7 +1,10 @@
 package com.payment.service.base;
 
 import com.payment.common.config.KafkaTopicsConfig;
+import com.payment.common.enums.EventType;
+import com.payment.common.utils.ConstantUtil;
 import com.payment.entity.content.KafkaContent;
+import com.payment.entity.model.Order;
 import com.payment.entity.model.OutboxOrder;
 import com.payment.repository.OutboxOrderRepository;
 import com.payment.service.publisher.NotifySerializer;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @EqualsAndHashCode(callSuper = false)
 public class BaseService implements Serializable {
+    private static final String RETRY_COUNT_HEADER = "retryCount";
     private final OutboxOrderRepository outboxRepository;
     private final Publisher publisher;
     private final NotifySerializer notifySerializer;
@@ -52,7 +56,7 @@ public class BaseService implements Serializable {
             OutboxOrder outboxOrder = outboxRepository.save(event);
             log.info("publishing outbox event: {}", outboxOrder);
             outboxRepository.deleteById(outboxOrder.getId());
-            publisher.publish(topicsConfig.getTopicName(outboxOrder.getEventType()), String.valueOf(outboxOrder.getAggregateId()), outboxOrder);
+            publisher.publish(topicsConfig.getTopicName(EventType.fromValue(event.getEventType())), String.valueOf(outboxOrder.getAggregateId()), outboxOrder);
 
             log.info("outbox event published and deleted: {}", outboxOrder.getId());
         } catch (Exception e) {
@@ -60,11 +64,26 @@ public class BaseService implements Serializable {
         }
     }
 
-    public void sendNotification(Long userId, String message) {
+    public void publishOutboxNotification(OutboxOrder event, Order order) {
         try {
-            KafkaContent event = notifySerializer.notification(generateNotifyNo(), String.valueOf(userId), message);
+            EventType eventType = EventType.fromValue(event.getEventType());
+            OutboxOrder outboxOrder = outboxRepository.save(event);
+            log.info("publishing outbox event: {}", outboxOrder);
+            outboxRepository.deleteById(outboxOrder.getId());
+            publisher.publish(topicsConfig.getTopicName(eventType), String.valueOf(outboxOrder.getAggregateId()), outboxOrder);
+            log.info("outbox event published and deleted: {}", outboxOrder.getId());
+
+            sendNotification(order.getUserId(), eventType.getMessage() + " - " + order.getOrderNo(), EventType.NOTIFICATION);
+        } catch (Exception e) {
+            log.error("exception while publishing outbox event: {}", e.getLocalizedMessage());
+        }
+    }
+
+    public void sendNotification(Long userId, String message, EventType eventType) {
+        try {
+            KafkaContent event = notifySerializer.notification(generateNotifyNo(), String.valueOf(userId), message, eventType);
             log.info("publishing notification event: {}", event);
-            publisher.publish(topicsConfig.getTopicName(event.getEventType()), String.valueOf(event.getAggregateId()), event);
+            publisher.publish(topicsConfig.getTopicName(eventType), String.valueOf(event.getAggregateId()), event, Map.of(RETRY_COUNT_HEADER, "1".getBytes()));
 
             log.info("notification event published: {}", event.getAggregateId());
         } catch (Exception e) {

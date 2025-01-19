@@ -1,5 +1,6 @@
 package com.payment.entity.content;
 
+import com.payment.common.enums.EventType;
 import lombok.*;
 
 import javax.persistence.Column;

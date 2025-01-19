@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NotificationEvent extends BaseEvent {
-    public static final String EVENT = "NOTIFICATION";
     private Long id;
     private String userId;
     private String message;

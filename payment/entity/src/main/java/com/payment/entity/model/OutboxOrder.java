@@ -1,6 +1,7 @@
 package com.payment.entity.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.payment.common.enums.EventType;
 import com.payment.entity.base.BaseEntity;
 import lombok.*;
 
