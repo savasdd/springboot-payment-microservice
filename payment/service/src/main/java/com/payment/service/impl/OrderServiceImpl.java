@@ -20,7 +20,6 @@ import com.payment.entity.vo.ProductItemV0;
 import com.payment.repository.OrderRepository;
 import com.payment.repository.OutboxOrderRepository;
 import com.payment.repository.ParameterRepository;
-import com.payment.repository.ProductItemRepository;
 import com.payment.service.OrderService;
 import com.payment.service.base.BaseService;
 import com.payment.service.publisher.NotifySerializer;
@@ -43,7 +42,6 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 public class OrderServiceImpl extends BaseService implements OrderService {
     private final OrderRepository orderRepository;
-    private final ProductItemRepository itemRepository;
     private final OutboxOrderRepository outboxRepository;
     private final ParameterRepository parameterRepository;
     private final Publisher publisher;
@@ -54,10 +52,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private final BeanUtil beanUtil;
     private final RestUtil restUtil;
 
-    public OrderServiceImpl(OutboxOrderRepository outboxRepository, Publisher publisher, NotifySerializer notifySerializer, KafkaTopicsConfig topicsConfig, OrderRepository orderRepository, ProductItemRepository itemRepository, OutboxOrderRepository outboxRepository1, ParameterRepository parameterRepository, Publisher publisher1, OutboxSerializer outboxSerializer, NotifySerializer notifySerializer1, KafkaTopicsConfig topicsConfig1, UrlPropsConfig propsConfig, BeanUtil beanUtil, RestUtil restUtil) {
+    public OrderServiceImpl(OutboxOrderRepository outboxRepository, Publisher publisher, NotifySerializer notifySerializer, KafkaTopicsConfig topicsConfig, OrderRepository orderRepository, OutboxOrderRepository outboxRepository1, ParameterRepository parameterRepository, Publisher publisher1, OutboxSerializer outboxSerializer, NotifySerializer notifySerializer1, KafkaTopicsConfig topicsConfig1, UrlPropsConfig propsConfig, BeanUtil beanUtil, RestUtil restUtil) {
         super(outboxRepository, publisher, notifySerializer, topicsConfig);
         this.orderRepository = orderRepository;
-        this.itemRepository = itemRepository;
         this.outboxRepository = outboxRepository1;
         this.parameterRepository = parameterRepository;
         this.publisher = publisher1;
