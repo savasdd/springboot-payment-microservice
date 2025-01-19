@@ -1,6 +1,5 @@
-package com.payment.entity.dto;
+package com.payment.entity.vo;
 
-import com.payment.entity.base.BaseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -12,7 +11,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductItemDto extends BaseDto implements Serializable {
+public class ProductItemV0 implements Serializable {
+    private Long id;
     @Schema(example = "1")
     private Long stockId;
     @Schema(example = "test")

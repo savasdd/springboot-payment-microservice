@@ -6,12 +6,17 @@ import com.payment.common.base.BaseResponse;
 import com.payment.common.config.KafkaTopicsConfig;
 import com.payment.common.config.UrlPropsConfig;
 import com.payment.common.enums.OrderStatus;
+import com.payment.common.enums.RecordStatus;
 import com.payment.common.utils.BeanUtil;
 import com.payment.common.utils.ConstantUtil;
 import com.payment.common.utils.RestUtil;
+import com.payment.entity.base.BaseEntity;
 import com.payment.entity.dto.*;
 import com.payment.entity.model.Order;
 import com.payment.entity.model.ProductItem;
+import com.payment.entity.vo.ItemV0;
+import com.payment.entity.vo.OrderV0;
+import com.payment.entity.vo.ProductItemV0;
 import com.payment.repository.OrderRepository;
 import com.payment.repository.OutboxOrderRepository;
 import com.payment.repository.ParameterRepository;
@@ -23,9 +28,9 @@ import com.payment.service.publisher.OutboxSerializer;
 import com.payment.service.publisher.Publisher;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -42,7 +47,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private final OutboxOrderRepository outboxRepository;
     private final ParameterRepository parameterRepository;
     private final Publisher publisher;
-    private final OutboxSerializer outboxSerializer;
+    private final OutboxSerializer outbox;
     private final NotifySerializer notifySerializer;
     private final KafkaTopicsConfig topicsConfig;
     private final UrlPropsConfig propsConfig;
@@ -56,7 +61,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         this.outboxRepository = outboxRepository1;
         this.parameterRepository = parameterRepository;
         this.publisher = publisher1;
-        this.outboxSerializer = outboxSerializer;
+        this.outbox = outboxSerializer;
         this.notifySerializer = notifySerializer1;
         this.topicsConfig = topicsConfig1;
         this.propsConfig = propsConfig;
@@ -64,42 +69,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         this.restUtil = restUtil;
     }
 
-    @Transactional
     @Override
-    public BaseResponse createOrder(OrderV0 dto) {
-        List<ProductItem> itemNewList = new ArrayList<>();
-        List<ProductItem> itemList = new ArrayList<>();
-        Order model;
+    public BaseResponse createOrder(Long userId, OrderV0 dto) {
+        Order order = beanUtil.mapDto(dto, Order.class);
+        order.setUserId(userId);
+        order.setOrderNo(generateOrderNo());
+        order.getItems().forEach(d -> d.setOrder(order));
+        Order model = orderRepository.save(order);
 
-        dto.getProductItems().forEach(item -> {
-            StockDto stock = restUtil.exchangeGet(getUrlParam() + "findOne/" + item.getStockId(), StockDto.class);
-            ProductItem product = beanUtil.mapDto(item, ProductItem.class);
-            if (stock != null && item.getQuantity() <= stock.getAvailableQuantity()) {
-                itemNewList.add(product);
-                updateStockRest(item.getStockId(), item.getQuantity());
-            } else {
-                product.setStockName(stock != null ? stock.getStockName() : "");
-                itemList.add(product);
-            }
-        });
-
-        if (!itemNewList.isEmpty()) {
-            model = orderRepository.save(beanUtil.mapDto(dto, Order.class));
-            model.setOrderNo(generateOrderNo());
-            itemNewList.forEach(item -> {
-                item.setOrder(model);
-                item.setOrderNo(model.getOrderNo());
-            });
-            itemRepository.saveAll(itemNewList);
-
-            log.info("create order success {}", model);
-            publishOutbox(outboxSerializer.createEvent(model));
-            sendNotification(model.getUserId(), ConstantUtil.ORDER_SUCCESS + " - " + model.getOrderNo());
-            return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
-        }
-
-
-        return !itemList.isEmpty() ? BaseResponse.success("Stock Not Found: " + getStockName(itemList)) : BaseResponse.error("Order Exception");
+        log.info("create order {}", model);
+        publishOutbox(outbox.createEvent(model));
+        sendNotification(model.getUserId(), ConstantUtil.ORDER_SUCCESS + " - " + model.getOrderNo());
+        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
     }
 
     @Override
@@ -113,30 +94,42 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     }
 
     @Override
-    public BaseResponse addProduct(String orderNo, ProductItemDto dto) {
+    public BaseResponse addItem(String orderNo, ProductItemV0 dto) {
         Order order = findOrderNo(orderNo);
-        ProductItem productItem = beanUtil.mapDto(dto, ProductItem.class);
-        productItem.setOrder(order);
-        productItem.setOrderNo(order.getOrderNo());
-        ProductItem model = itemRepository.save(productItem);
+        ProductItem item = beanUtil.mapDto(dto, ProductItem.class);
+        setItems(order, item);
+        Order model = orderRepository.save(order);
 
-        log.info("add product success {}", productItem);
-        publishOutbox(outboxSerializer.productAddedEvent(order, model));
+        log.info("add item {}", dto);
+        publishOutbox(outbox.addedEvent(order, item));
         sendNotification(order.getUserId(), ConstantUtil.PRODUCT_ADD + " - " + order.getOrderNo());
         return BaseResponse.success(model);
     }
 
-    @Override
-    public BaseResponse deleteProduct(String orderNo, Long productId) {
-        if (itemRepository.existsById(productId)) {
-            Order order = findOrderNo(orderNo);
-            itemRepository.deleteById(productId);
+    private static void setItems(Order order, ProductItem item) {
+        List<ProductItem> items = new ArrayList<>();
+        item.setOrder(order);
+        order.getItems().add(item);
+        order.getItems().forEach(f -> {
+            ProductItem newItem = new ProductItem(f.getStockId(), f.getStockName(), f.getPrice(), f.getQuantity(), order);
+            BeanUtils.copyProperties(f, newItem);
+            items.add(newItem);
+        });
+        order.setItems(items);
+    }
 
-            log.info("delete product success {}", productId);
-            publishOutbox(outboxSerializer.productRemovedEvent(order, productId));
-            sendNotification(order.getUserId(), ConstantUtil.PRODUCT_REMOVE + " - " + order.getOrderNo());
-        }
-        return BaseResponse.success("Delete product success");
+    @Override
+    public BaseResponse removeItem(String orderNo, ItemV0 vo) {
+        Order order = findOrderNo(orderNo);
+        List<ProductItem> items = order.getItems().stream().filter(f -> f.getId().equals(vo.getId())).toList();
+        ProductItem item = items.isEmpty() ? null : items.get(0);
+        order.getItems().stream().filter(f -> f.getId().equals(vo.getId())).toList().stream().peek(p -> p.setRecordStatus(RecordStatus.DELETED)).toList();
+
+        Order model = orderRepository.save(order);
+        log.info("remove item {}", item);
+        publishOutbox(outbox.removedEvent(order, item));
+        sendNotification(order.getUserId(), ConstantUtil.PRODUCT_REMOVE + " - " + order.getOrderNo());
+        return BaseResponse.success(model);
     }
 
     @Override
@@ -152,7 +145,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("payment success {}", paymentId);
-        publishOutbox(outboxSerializer.paidEvent(model, paymentId));
+        publishOutbox(outbox.paidEvent(model, paymentId));
         sendNotification(order.getUserId(), ConstantUtil.ORDER_PAYMENT + " - " + order.getOrderNo());
         return BaseResponse.success(model);
     }
@@ -163,11 +156,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
             throw new RuntimeException("cannot cansel order with id: " + orderNo + " and status: " + order.getOrderStatus());
 
+        if (Objects.isNull(dto.getDescription()))
+            return BaseResponse.error("Description can't be empty");
+
         order.setOrderStatus(OrderStatus.CANCELLED);
+        order.setDescription(dto.getDescription());
         Order model = orderRepository.save(order);
 
         log.info("cancel success {}", dto.getDescription());
-        publishOutbox(outboxSerializer.cancelledEvent(model, dto.getDescription()));
+        publishOutbox(outbox.cancelledEvent(model, dto.getDescription()));
         sendNotification(order.getUserId(), ConstantUtil.ORDER_CANSEL + " - " + order.getOrderNo());
         return BaseResponse.success(model);
     }
@@ -186,7 +183,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("submit success {}", orderNo);
-        publishOutbox(outboxSerializer.submittedEvent(model));
+        publishOutbox(outbox.submittedEvent(model));
         sendNotification(order.getUserId(), ConstantUtil.ORDER_SUBMIT + " - " + order.getOrderNo());
         return BaseResponse.success(model);
     }
@@ -202,7 +199,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
 
         log.info("complete success {}", orderNo);
-        publishOutbox(outboxSerializer.completedEvent(model));
+        publishOutbox(outbox.completedEvent(model));
         sendNotification(order.getUserId(), ConstantUtil.ORDER_COMPETE + " - " + order.getOrderNo());
         return BaseResponse.success(model);
     }
@@ -218,7 +215,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public BaseResponse getPageable(Pageable pageable) {
         Page<Order> orders = orderRepository.findAll(pageable);
         log.info("pageable orders: {}", orders.getTotalElements());
-        return BaseResponse.success(beanUtil.mapAll(orders,OrderDto.class), orders.getTotalElements());
+        return BaseResponse.success(beanUtil.mapAll(orders, OrderDto.class), orders.getTotalElements());
     }
 
     @Override
@@ -229,27 +226,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return BaseResponse.success(orderDtoList, response.getTotalCount());
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void deleteOutboxRecord() {
         outboxRepository.deleteOutboxRecordByLimit();
+    }
+
+    private Order findOrderNo(String orderNo) {
+        return orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
     }
 
 
     public void updateStockRest(Long id, Integer quantity) {
         try {
             Integer stock = restUtil.exchangeGet(getUrlParam() + "update-quantity/" + id, quantity);
+            //StockDto stock = restUtil.exchangeGet(getUrlParam() + "findOne/" + item.getStockId(), StockDto.class);
             log.info("update stock: {}", stock);
         } catch (Exception e) {
             log.error("exception while update stock: {}", e.getLocalizedMessage());
         }
     }
-
-
-    private Order findOrderNo(String orderNo) {
-        return orderRepository.findByOrderNo(orderNo).orElseThrow(() -> new EntityNotFoundException("Entity not found"));
-    }
-
 
     private String getStockName(List<ProductItem> itemDtoList) {
         return itemDtoList.stream().map(ProductItem::getStockName).collect(Collectors.joining(",", "[", "]"));

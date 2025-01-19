@@ -1,23 +1,23 @@
 package com.payment.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.payment.common.enums.OrderStatus;
 import com.payment.entity.base.BaseDto;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDto extends BaseDto implements Serializable {
 
     private String orderNo;
-    @Schema(example = "3")
     private Long userId;
     private String paymentId;
     private OrderStatus orderStatus;
+    private String description;
+    private List<ProductItemDto> items;
 }

@@ -30,12 +30,12 @@ public class OutboxSerializer {
         return generateOutboxOrder(order.getId(), new PaymentEvent(order.getId(), paymentId), PaymentEvent.EVENT);
     }
 
-    public OutboxOrder productAddedEvent(Order order, ProductItem productItem) {
-        return generateOutboxOrder(order.getId(), new ProductAddedEvent(order.getId(), productItem.getId()), ProductAddedEvent.EVENT);
+    public OutboxOrder addedEvent(Order order, ProductItem item) {
+        return generateOutboxOrder(order.getId(), new AddedEvent(order.getId(), item), AddedEvent.EVENT);
     }
 
-    public OutboxOrder productRemovedEvent(Order order, Long productItemId) {
-        return generateOutboxOrder(order.getId(), new ProductRemovedEvent(order.getId(), productItemId), ProductRemovedEvent.EVENT);
+    public OutboxOrder removedEvent(Order order, ProductItem item) {
+        return generateOutboxOrder(order.getId(), new RemovedEvent(order.getId(), item), RemovedEvent.EVENT);
     }
 
     public OutboxOrder submittedEvent(Order order) {

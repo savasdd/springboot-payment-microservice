@@ -1,18 +1,19 @@
 package com.payment.service.event;
 
+import com.payment.entity.model.ProductItem;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductRemovedEvent extends BaseEvent {
+public class RemovedEvent extends BaseEvent {
     public static final String EVENT = "PRODUCT_ITEM_REMOVED";
     private Long orderId;
-    private Long productItemId;
+    private ProductItem item;
 
-    public ProductRemovedEvent(Long orderId, Long productItemId) {
+    public RemovedEvent(Long orderId, ProductItem item) {
         super(orderId);
         this.orderId = orderId;
-        this.productItemId = productItemId;
+        this.item = item;
     }
 }

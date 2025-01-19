@@ -3,8 +3,11 @@ package com.payment.entity.base;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.payment.common.enums.RecordStatus;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,9 +18,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @MappedSuperclass
+@SuperBuilder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class BaseEntity implements Serializable {
 
