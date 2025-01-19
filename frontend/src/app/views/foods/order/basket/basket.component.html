@@ -21,6 +21,10 @@
                     <dx-button icon="refresh" (onClick)="refreshDataGrid($event)">
                     </dx-button>
                   </dxi-item>
+                  <dxi-item location="after">
+                    <button id="button" type="button" class="btn btn-outline-info" (click)="payment()">Ödeme
+                    </button>
+                  </dxi-item>
                 </dxo-toolbar>
 
                 <dxi-column dataField="stock.stockName" caption="Ürün Adı"></dxi-column>
@@ -33,7 +37,8 @@
 
                 <dxo-summary [recalculateWhileEditing]="true">
                   <dxi-total-item column="price" summaryType="sum" valueFormat="#0.00"> </dxi-total-item>
-                  <dxi-total-item column="disprice" summaryType="sum" displayFormat="Sum: {0}"     name="disprice"> </dxi-total-item>
+                  <dxi-total-item column="disprice" summaryType="sum" displayFormat="Sum: {0}" name="disprice">
+                  </dxi-total-item>
                 </dxo-summary>
 
                 <dxo-paging [pageSize]="100"></dxo-paging>

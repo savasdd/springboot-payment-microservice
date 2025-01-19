@@ -10,6 +10,7 @@ import com.payment.common.enums.OrderStatus;
 import com.payment.common.enums.RecordStatus;
 import com.payment.common.utils.BeanUtil;
 import com.payment.common.utils.RestUtil;
+import com.payment.entity.base.ValidationDto;
 import com.payment.entity.dto.*;
 import com.payment.entity.model.Order;
 import com.payment.entity.model.ProductItem;
@@ -70,6 +71,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     @Override
     public BaseResponse createOrder(Long userId, OrderV0 dto) {
+        ValidationDto validation = validate(dto);
+        if (validation.isError())
+            return BaseResponse.error(validation.getMessage());
+
         Order order = beanUtil.mapDto(dto, Order.class);
         order.setUserId(userId);
         order.setOrderNo(generateOrderNo());
@@ -227,6 +232,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             items.add(newItem);
         });
         order.setItems(items);
+    }
+
+    private ValidationDto validate(OrderV0 order) {
+        if (Objects.isNull(order.getItems()) || order.getItems().isEmpty())
+            return ValidationDto.validation(true, "items can't be empty");
+
+        return ValidationDto.validation(false, "success");
+
     }
 
 

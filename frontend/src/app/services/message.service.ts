@@ -1,39 +1,40 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 import notify from 'devextreme/ui/notify';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
+  display: number = 5000;
 
   constructor() {
   }
 
   success(message: string) {
-    notify({message: message, width: 300, displayTime: 1500, type: 'success', shading: true}, {
+    notify({ message: message, width: 300, displayTime: this.display, type: 'success', shading: true }, {
       position: "top right",
-      direction: "up-push"
+      direction: "down-push"
     });
   }
 
   info(message: string) {
-    notify({message: message, width: 300, displayTime: 1500, type: 'info', shading: true}, {
+    notify({ message: message, width: 300, displayTime: this.display, type: 'info', shading: true }, {
       position: "top right",
-      direction: "up-push"
+      direction: "down-push"
     });
   }
 
   error(message: string) {
-    notify({message: message, width: 300, displayTime: 1500, type: 'error', shading: true}, {
+    notify({ message: message, width: 300, displayTime: this.display, type: 'error', shading: true }, {
       position: "top right",
-      direction: "up-push"
+      direction: "down-push"
     });
   }
 
   warning(message: string) {
-    notify({message: message, width: 300, displayTime: 1500, type: 'warning', shading: true}, {
+    notify({ message: message, width: 300, displayTime: this.display, type: 'warning', shading: true }, {
       position: "top right",
-      direction: "up-push"
+      direction: "down-push"
     });
   }
 
