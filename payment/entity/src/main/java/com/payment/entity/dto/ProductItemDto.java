@@ -13,12 +13,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class ProductItemDto extends BaseDto implements Serializable {
-    @Schema(example = "1")
     private Long stockId;
-    @Schema(example = "test")
+    private Long basketId;
     private String stockName;
-    @Schema(example = "10.5")
     private BigDecimal price;
-    @Schema(example = "2")
     private Integer quantity;
 }

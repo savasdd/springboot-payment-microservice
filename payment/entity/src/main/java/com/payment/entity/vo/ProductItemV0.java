@@ -15,6 +15,8 @@ public class ProductItemV0 implements Serializable {
     private Long id;
     @Schema(example = "1")
     private Long stockId;
+    @Schema(example = "1")
+    private Long basketId;
     @Schema(example = "test")
     private String stockName;
     @Schema(example = "10.5")

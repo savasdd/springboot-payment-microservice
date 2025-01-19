@@ -21,6 +21,9 @@ public class ProductItem extends BaseEntity implements Serializable {
     @Column(name = "stockId", nullable = false)
     private Long stockId;
 
+    @Column(name = "basketId", nullable = false)
+    private Long basketId;
+
     @Column(name = "stockName", nullable = false)
     private String stockName;
 
