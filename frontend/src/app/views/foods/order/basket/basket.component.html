@@ -9,7 +9,7 @@
           <div class="card-body" style="min-height: calc(90vh - 193px);">
             <div class="row">
               <dx-data-grid #dataSourceGrid [dataSource]="dataSource" keyExpr="id" [allowColumnReordering]="true"
-                [showBorders]="true">
+                [showBorders]="true" (onCellPrepared)="onCellPrepared($event)">
 
                 <dxo-selection mode="single"></dxo-selection>
                 <dxo-editing mode="cell" [allowUpdating]="false" [allowDeleting]="true" [allowAdding]="false"

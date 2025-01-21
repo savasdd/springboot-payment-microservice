@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import CustomStore from "devextreme/data/custom_store";
 import { DxDataGridComponent } from "devextreme-angular";
-import { Orders } from "../../../../services/food-service-api";
 import { GenericService } from '../../../../services/generic.service';
 import { UtilService } from '../../../../services/util.service';
 import { MessageService } from '../../../../services/message.service';
@@ -39,6 +38,18 @@ export class BasketComponent implements OnInit {
   refreshDataGrid() {
     this.dataSourceGrid.instance.refresh();
   }
+
+  onCellPrepared(e) {
+    if (e.rowType === "data") {
+      if (e.column.dataField === "type" && e.data.type == 'NEW') {
+        e.cellElement.style.cssText = "color: red";
+      }
+      if (e.column.dataField === "type" && e.data.type == 'BUY') {
+        e.cellElement.style.cssText = "color: green";
+      }
+    }
+  }
+
 
 
   loadGrid() {
