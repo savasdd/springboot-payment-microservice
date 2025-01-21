@@ -34,7 +34,7 @@ export class BasketComponent implements OnInit {
     this.events.unshift(eventName);
   }
 
-  refreshDataGrid(e: any) {
+  refreshDataGrid() {
     this.dataSourceGrid.instance.refresh();
   }
 
@@ -86,6 +86,7 @@ export class BasketComponent implements OnInit {
       this.orderService.customPost('create', { 'items': items }).then((response: any) => {
         if (response.status == 200) {
           this.notify.success("Sipariş No: " + response.data.orderNo)
+          this.refreshDataGrid();
         } else {
           this.notify.error(response.data)
         }

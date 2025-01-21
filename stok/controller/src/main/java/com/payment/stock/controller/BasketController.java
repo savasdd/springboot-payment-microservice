@@ -44,9 +44,9 @@ public class BasketController {
     }
 
     @PostMapping(value = "/update")
-    public ResponseEntity<?> update(@RequestBody List<Long> idList) {
+    public ResponseEntity<BaseResponse> update(@RequestBody List<Long> idList) {
         basketService.update(idList);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(BaseResponse.success("Success"), HttpStatus.OK);
     }
 
 

@@ -5,6 +5,7 @@ import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.entity.vo.BasketV0;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface BasketService {
     BaseResponse findAll();
@@ -13,7 +14,7 @@ public interface BasketService {
 
     BaseResponse save(BasketV0 dto, Long userId);
 
-    void update(List<Long> idList);
+    CompletableFuture<Void> update(List<Long> idList);
 
     BaseResponse delete(Long id, Long userId);
 

@@ -6,6 +6,8 @@ import notify from 'devextreme/ui/notify';
 })
 export class MessageService {
   display: number = 5000;
+  displayError: number = 3000;
+
 
   constructor() {
   }
@@ -25,14 +27,14 @@ export class MessageService {
   }
 
   error(message: string) {
-    notify({ message: message, width: 300, displayTime: this.display, type: 'error', shading: true }, {
+    notify({ message: message, width: 300, displayTime: this.displayError, type: 'error', shading: true }, {
       position: "top right",
       direction: "down-push"
     });
   }
 
   warning(message: string) {
-    notify({ message: message, width: 300, displayTime: this.display, type: 'warning', shading: true }, {
+    notify({ message: message, width: 300, displayTime: this.displayError, type: 'warning', shading: true }, {
       position: "top right",
       direction: "down-push"
     });

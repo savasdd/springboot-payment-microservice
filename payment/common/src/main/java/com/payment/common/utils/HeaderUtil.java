@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -15,10 +16,17 @@ public class HeaderUtil {
     private static final String USER_ID = "user-id";
     private static final String USER_FIRSTNAME = "user-first-name";
     private static final String USER_LASTNAME = "user-last-name";
+    private static final String TOKEN = "authorization";
 
     public static Long getUserId(HttpServletRequest request) {
         Map<String, Serializable> headers = extracted(request);
         return headers.containsKey(USER_ID) ? Long.valueOf(headers.get(USER_ID).toString()) : defaultUserId;
+    }
+
+    public static String getToken(HttpServletRequest request) {
+        Map<String, Serializable> headers = extracted(request);
+        String token = headers.containsKey(TOKEN) ? (String) headers.get(TOKEN) : null;
+        return Objects.nonNull(token) ? token.substring(7, token.length()) : null;
     }
 
     public static String getFullName(HttpServletRequest request) {

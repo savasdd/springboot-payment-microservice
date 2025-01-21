@@ -2,6 +2,8 @@ package com.payment.common.utils;
 
 import com.payment.common.base.BaseResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -19,6 +23,7 @@ import java.util.Objects;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class RestUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(RestUtil.class);
     private final RestTemplate restTemplate;
     private final BeanUtil beanUtil;
 
@@ -35,6 +40,19 @@ public class RestUtil {
         return response.getStatusCode().value();
     }
 
+    public int exchangePost(String uri, Object object) {
+        HttpEntity<Object> request = new HttpEntity<>(object, getHeaders());
+        ResponseEntity<?> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);
+        return response.getStatusCode().value();
+    }
+
+    public BaseResponse exchangeBasePost(String uri, Object object) {
+        HttpEntity<Object> request = new HttpEntity<>(object, getHeaders());
+        ResponseEntity<BaseResponse> response = restTemplate.exchange(uri, HttpMethod.POST, request, BaseResponse.class);
+        return response.getStatusCode().value() == 200 ? response.getBody() : null;
+    }
+
+
     public <T> List<T> exchangeAsList(String uri, ParameterizedTypeReference<List<T>> responseType) {
         return restTemplate.exchange(uri, HttpMethod.GET, null, responseType).getBody();
     }
@@ -43,6 +61,11 @@ public class RestUtil {
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
+        headers.set("Authorization", getToken());
         return headers;
+    }
+
+    private static String getToken() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
     }
 }

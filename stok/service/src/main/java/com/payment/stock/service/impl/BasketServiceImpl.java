@@ -20,7 +20,6 @@ import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.BasketService;
 import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -93,7 +93,7 @@ public class BasketServiceImpl implements BasketService {
 
     @Async
     @Override
-    public void update(List<Long> idList) {
+    public CompletableFuture<Void> update(List<Long> idList) {
         List<Basket> basketList = basketRepository.findAllByIdInAndRecordStatus(idList, RecordStatus.ACTIVE);
         if (!basketList.isEmpty()) {
             basketList.forEach(f -> f.setType(BasketType.BUY));
@@ -101,6 +101,7 @@ public class BasketServiceImpl implements BasketService {
 
         basketRepository.saveAll(basketList);
         log.info("async update basket: {}", idList);
+        return new CompletableFuture<>();
     }
 
 

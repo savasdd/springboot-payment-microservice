@@ -25,6 +25,7 @@ import com.payment.service.base.BaseService;
 import com.payment.service.publisher.NotifySerializer;
 import com.payment.service.publisher.OutboxSerializer;
 import com.payment.service.publisher.Publisher;
+import com.thoughtworks.xstream.core.BaseException;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @EqualsAndHashCode(callSuper = true)
 public class OrderServiceImpl extends BaseService implements OrderService {
     private final OrderRepository orderRepository;
@@ -72,15 +74,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if (validation.isError())
             return BaseResponse.error(validation.getMessage());
 
-        Order order = beanUtil.mapDto(dto, Order.class);
-        order.setUserId(userId);
-        order.setOrderNo(generateOrderNo());
-        order.getItems().forEach(d -> d.setOrder(order));
-        Order model = orderRepository.save(order);
+        try {
+            Order order = beanUtil.mapDto(dto, Order.class);
+            order.setUserId(userId);
+            order.setOrderNo(generateOrderNo());
+            order.getItems().forEach(d -> d.setOrder(order));
+            Order model = orderRepository.save(order);
 
-        log.info("create order {}", model);
-        publishOutboxNotification(outbox.event(model, EventType.CREATED), order);
-        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
+            log.info("create order {}", model);
+            updateStockBasket(dto);
+            publishOutboxNotification(outbox.event(model, EventType.CREATED), order);
+            return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
+        } catch (Exception e) {
+            log.error("create order error", e);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private void updateStockBasket(OrderV0 dto) {
+        Integer response = restUtil.exchangePost(getUrlParam("BASKET"), dto.getItems().stream().map(m -> List.of(m.getBasketId())).flatMap(Collection::stream).toList());
+        log.info("update stock basket {}", response);
     }
 
     @Override
@@ -242,7 +255,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
     public void updateStockRest(Long id, Integer quantity) {
         try {
-            Integer stock = restUtil.exchangeGet(getUrlParam() + "update-quantity/" + id, quantity);
+            Integer stock = restUtil.exchangeGet(getUrlParam(null) + "update-quantity/" + id, quantity);
             //StockDto stock = restUtil.exchangeGet(getUrlParam() + "findOne/" + item.getStockId(), StockDto.class);
             log.info("update stock: {}", stock);
         } catch (Exception e) {
@@ -254,8 +267,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         return itemDtoList.stream().map(ProductItem::getStockName).collect(Collectors.joining(",", "[", "]"));
     }
 
-    private String getUrlParam() {
-        return parameterRepository.findByKey(propsConfig.getStock()).orElseThrow(() -> new EntityNotFoundException("Not Found")).getValue();
+    private String getUrlParam(String key) {
+        return parameterRepository.findByKey(key).orElseThrow(() -> new EntityNotFoundException("Parameter not found")).getValue();
     }
 
 
