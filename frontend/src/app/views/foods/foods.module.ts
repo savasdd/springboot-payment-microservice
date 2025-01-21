@@ -49,7 +49,7 @@ const routes: Routes = [
       {
         path: 'payments', component: PaymentComponent,
         data: {
-          title: 'Payment'
+          title: ''
         }
       },
       {

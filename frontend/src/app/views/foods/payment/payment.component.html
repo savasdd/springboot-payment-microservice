@@ -2,62 +2,67 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        <div class="card border" style="margin-bottom: 0;">
+        <div class="card border" style="margin-bottom: 0px;">
           <div class="card-header card-header-info card-header-icon">
-            <h4 class="card-title">Payment List</h4>
+            <h4 class="card-title">Siparişlerim</h4>
           </div>
           <div class="card-body" style="min-height: calc(90vh - 193px);">
             <div class="row">
-              <dx-data-grid #paymentDataGrid
-                            [allowColumnReordering]="true"
-                            [showBorders]="true"
-                            [dataSource]="dataSource">
-                <dxo-paging [enabled]="false"></dxo-paging>
-                <dxo-editing
-                  mode="form"
-                  [allowUpdating]="true"
-                  [allowAdding]="true"
-                  [allowDeleting]="true"
+              <dx-data-grid #dataSourceGrid [dataSource]="dataSource" keyExpr="id" [allowColumnReordering]="true"
+                [showBorders]="true" (onCellPrepared)="onCellPrepared($event)">
+
+                <dxo-selection mode="single"></dxo-selection>
+                <dxo-editing mode="cell" [allowUpdating]="false" [allowDeleting]="true" [allowAdding]="false"
                   [useIcons]="true">
                 </dxo-editing>
 
                 <dxo-toolbar>
-                  <dxi-item name="addRowButton"></dxi-item>
                   <dxi-item location="after">
-                    <dx-button icon="refresh" (onClick)="refreshDataGrid($event)">
+                    <dx-button icon="refresh" (onClick)="refreshDataGrid()">
                     </dx-button>
                   </dxi-item>
                 </dxo-toolbar>
 
-                <dxi-column dataField="stockId" [allowSorting]="false" caption="Stock">
-                  <dxo-lookup [dataSource]="stockDataSource" displayExpr="name" valueExpr="id">
-                  </dxo-lookup>
-                  <dxi-validation-rule type="required"></dxi-validation-rule>
+                <dxi-column dataField="orderNo" caption="Sipariş No"></dxi-column>
+                <dxi-column dataField="orderStatus" caption="Durum"> </dxi-column>
+                <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
+
+                <dxi-column dataField="submit" type="buttons" caption="Ödeme">
+                  <dxi-button hint="Ödemeyi Kabul Et" icon="check" text="Ödeme" [onClick]="submitOrder"
+                    [visible]="true"></dxi-button>
                 </dxi-column>
-                <dxi-column dataField="amountAvailable" [width]="150">
-                  <dxi-validation-rule type="required"></dxi-validation-rule>
+
+                <dxi-column type="buttons" caption="İptal">
+                  <dxi-button hint="Ödemeyi İptal Et" icon="close" text="VAZGEÇ" [onClick]="cancelOrder"
+                    [visible]="true"></dxi-button>
                 </dxi-column>
-                <dxi-column dataField="amountReserved" [width]="150"></dxi-column>
-                <dxi-column dataField="amount" [width]="120"></dxi-column>
-                <dxi-column dataField="status" caption="State" [width]="125">
-                  <dxo-lookup [dataSource]="dataTypeSource" displayExpr="name" valueExpr="name">
-                    <dxi-validation-rule type="required"></dxi-validation-rule>
-                  </dxo-lookup>
+
+                <dxi-column type="buttons" caption="Fatura">
+                  <dxi-button hint="Ödeme Faturası" icon="download" text="VAZGEÇ" [onClick]="invoiceOrder"
+                    [visible]="true"></dxi-button>
                 </dxi-column>
-                <dxi-column dataField="transactionDate" dataType="datetime"></dxi-column>
 
 
-                <dxo-paging [pageSize]="10"></dxo-paging>
-                <dxo-pager
-                  [showPageSizeSelector]="true"
-                  [allowedPageSizes]="[5,10, 20, 50, 100]"
-                  [showInfo]="true">
-                </dxo-pager>
+                <dxo-paging [pageSize]="100"></dxo-paging>
+                <dxo-pager [visible]="false" [showPageSizeSelector]="true"
+                  [allowedPageSizes]="[10, 20, 50]"></dxo-pager>
 
-                <dxo-filter-row
-                  [visible]="true">
+                <dxo-header-filter [visible]=false>
+                </dxo-header-filter>
+                <dxo-filter-row [visible]="false">
                 </dxo-filter-row>
+
+                <dxo-remote-operations [groupPaging]="false">
+                </dxo-remote-operations>
               </dx-data-grid>
+
+              <dx-popup [width]="1200" [height]="600" [showTitle]="true" title="ÖDEME" [dragEnabled]="false"
+                [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="popupVisible">
+
+                <div *dxTemplate="let data of 'content'">
+                  <app-payment *ngIf="popupVisible"></app-payment>
+                </div>
+              </dx-popup>
 
             </div>
           </div>

@@ -1,0 +1,24 @@
+
+
+.dx-button {
+    text-transform: lowercase;
+    font-size: 20rem;
+}
+
+.submet {
+    font-size: 20rem;
+    background-color: red;
+    color: white;
+}
+
+.submet .dx-button {
+    font-size: 20rem;
+    background-color: red;
+}
+
+::ng-deep .submet {
+    cursor: pointer;
+    color: red;
+    background-color: red;
+    font-weight: bold;
+  }

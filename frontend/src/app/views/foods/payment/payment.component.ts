@@ -1,9 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {DxDataGridComponent} from "devextreme-angular";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DxDataGridComponent } from "devextreme-angular";
 import CustomStore from "devextreme/data/custom_store";
-import {Payment} from "../../../services/payment-service-api";
-import {UtilService} from "../../../services/util.service";
-import {GenericService} from "../../../services/generic.service";
+import { Payment } from "../../../services/payment-service-api";
+import { UtilService } from "../../../services/util.service";
+import { GenericService } from "../../../services/generic.service";
 import StatusEnum = Payment.StatusEnum;
 
 @Component({
@@ -13,76 +13,62 @@ import StatusEnum = Payment.StatusEnum;
 })
 export class PaymentComponent implements OnInit {
   dataSource: any = {};
-  stockDataSource: any = {};
-  @ViewChild('paymentDataGrid', {static: true}) paymentDataGrid: any = DxDataGridComponent;
-  stockService: GenericService;
-  paymentService: GenericService;
-  dataTypeSource: any = [
-    {name: StatusEnum.New},
-    {name: StatusEnum.Accept},
-    {name: StatusEnum.Reject},
-    {name: StatusEnum.Confirmed},
-    {name: StatusEnum.Rollback},
-  ];
+  @ViewChild('dataSourceGrid', { static: true }) dataSourceGrid: any = DxDataGridComponent;
+  orderService: GenericService;
+  popupVisible = false;
 
   constructor(private service: GenericService) {
-    this.stockService = this.service.instance('stocks');
-    this.paymentService = this.service.instance('payments');
-    this.loadStock();
+    this.orderService = this.service.instance('order');
     this.loadGrid();
   }
 
   ngOnInit(): void {
   }
 
-  loadStock() {
-    this.stockService.findAll({skip: 0, take: 200}).then((response: any) => {
-      this.stockDataSource = response.items;
-    });
-  }
 
-  refreshDataGrid(e: any) {
-    this.paymentDataGrid.instance.refresh();
+  refreshDataGrid() {
+    this.dataSourceGrid.instance.refresh();
   }
 
   loadGrid() {
     this.dataSource = new CustomStore({
       key: 'id',
       load: (loadOptions) => {
-        return this.paymentService.findAll(UtilService.setPage(loadOptions)).then((response: any) => {
+        return this.orderService.pageableLoad(UtilService.setPage(loadOptions)).then((response: any) => {
           return {
-            data: response.items,
-            totalCount: response.totalCount
+            data: response.data,
+            totalCount: response.totalCount,
+            summary: response.summary,
+            groupCount: response.groupCount,
           };
         });
       },
-
       byKey: (key) => {
-        return this.paymentService.findOne(key).then((response) => {
+        return this.orderService.findOne(key).then((response: any) => {
           return response;
         });
-      },
-
-      insert: (values) => {
-        return this.paymentService.save(values).then((response) => {
-            return;
-          }
-        );
-      },
-      update: (key, values: any) => {
-        values.id = key;
-        return this.paymentService.update(key, values).then((response) => {
-            return;
-          }
-        );
-      },
-      remove: (key) => {
-        return this.paymentService.delete(key).then((response) => {
-            return;
-          }
-        );
       }
     });
+  }
+
+  onCellPrepared(e) {
+    if (e.rowType === "data") {
+      if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'NEW') {
+        e.cellElement.style.cssText = "color: rgb(225, 39, 39); font-weight: bold";
+      }
+    }
+  }
+
+  submitOrder() {
+    console.log("Submit")
+  }
+
+  cancelOrder() {
+    console.log("Cancel")
+  }
+
+  invoiceOrder() {
+    console.log("Invoice")
   }
 
 }

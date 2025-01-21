@@ -5,6 +5,7 @@ import { Orders } from "../../../../services/food-service-api";
 import { GenericService } from '../../../../services/generic.service';
 import { UtilService } from '../../../../services/util.service';
 import { MessageService } from '../../../../services/message.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-basket',
@@ -21,6 +22,7 @@ export class BasketComponent implements OnInit {
 
   constructor(private cd: ChangeDetectorRef,
     private notify: MessageService,
+    private router: Router,
     private service: GenericService) {
     this.basketService = this.service.instance('payment/stocks/basket');
     this.orderService = this.service.instance('order');
@@ -79,6 +81,7 @@ export class BasketComponent implements OnInit {
     }
 
     this.createOrder(items);
+    this.router.navigate(['home/foods/payments'], { state: { data: null } });
   }
 
   createOrder(items: any) {
