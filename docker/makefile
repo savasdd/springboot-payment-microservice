@@ -1,6 +1,6 @@
  APP_NAME = "system-toolbox"
  
-up: discovery-up gateway-up user-up stock-up
+up: discovery-up gateway-up user-up #stock-up
 	@echo "MAKE UP"
 	
 down: stock-down user-down gateway-down discovery-down

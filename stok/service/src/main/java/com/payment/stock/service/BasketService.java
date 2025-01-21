@@ -4,12 +4,16 @@ import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
 import com.payment.stock.entity.vo.BasketV0;
 
+import java.util.List;
+
 public interface BasketService {
     BaseResponse findAll();
 
     BaseResponse findById(Long id);
 
     BaseResponse save(BasketV0 dto, Long userId);
+
+    void update(List<Long> idList);
 
     BaseResponse delete(Long id, Long userId);
 

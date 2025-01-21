@@ -3,6 +3,7 @@ package com.payment.stock.service.impl;
 import com.load.base.BaseLoadResponse;
 import com.load.impl.DataLoad;
 import com.payment.stock.common.base.BaseResponse;
+import com.payment.stock.common.enums.BasketType;
 import com.payment.stock.common.enums.RecordStatus;
 import com.payment.stock.common.utils.BeanUtil;
 import com.payment.stock.entity.base.ValidationDto;
@@ -19,8 +20,10 @@ import com.payment.stock.repository.StockRepository;
 import com.payment.stock.service.BasketService;
 import com.payment.stock.service.StockService;
 import lombok.AllArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -86,6 +89,18 @@ public class BasketServiceImpl implements BasketService {
         updateStockQuantity(dto.getQuantity(), stock, false);
         log.info("save basket: {}", model);
         return BaseResponse.success(beanUtil.mapDto(model, BasketDto.class));
+    }
+
+    @Async
+    @Override
+    public void update(List<Long> idList) {
+        List<Basket> basketList = basketRepository.findAllByIdInAndRecordStatus(idList, RecordStatus.ACTIVE);
+        if (!basketList.isEmpty()) {
+            basketList.forEach(f -> f.setType(BasketType.BUY));
+        }
+
+        basketRepository.saveAll(basketList);
+        log.info("async update basket: {}", idList);
     }
 
 

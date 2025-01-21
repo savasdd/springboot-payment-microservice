@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/payment/stocks/basket")
@@ -40,6 +41,12 @@ public class BasketController {
     public ResponseEntity<BaseResponse> save(HttpServletRequest request, @RequestBody BasketV0 dto) {
         Long userId = HeaderUtil.getUserId(request);
         return new ResponseEntity<>(basketService.save(dto, userId), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/update")
+    public ResponseEntity<?> update(@RequestBody List<Long> idList) {
+        basketService.update(idList);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
