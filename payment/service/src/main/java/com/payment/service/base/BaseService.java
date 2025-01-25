@@ -51,6 +51,14 @@ public class BaseService implements Serializable {
         return "000" + set.stream().findFirst().get();
     }
 
+    public String generateSecurityCode() {
+        int min = 10000;
+        int max = 90000;
+
+        Set<Integer> set = new Random().ints(min, max - min + 1).distinct().limit(5).boxed().collect(Collectors.toSet());
+        return String.valueOf(set.stream().toList().get(0));
+    }
+
     public void publishOutbox(OutboxOrder event) {
         try {
             OutboxOrder outboxOrder = outboxRepository.save(event);

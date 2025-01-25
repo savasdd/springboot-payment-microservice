@@ -9,6 +9,7 @@ import org.apache.kafka.common.protocol.types.Field;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -49,4 +50,7 @@ public class Order extends BaseEntity implements Serializable {
 
     @Column(name = "securityCode")
     private String securityCode;
+
+    @Column(name = "securityExpTime")
+    private Date securityExpTime;
 }

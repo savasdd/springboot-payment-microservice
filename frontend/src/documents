@@ -1,0 +1,15 @@
+
+=>DevExtreme Add Buttons
+<dxi-column dataField="operationId" caption="Delete" dataType="text" width="15%" cellTemplate="operationTemplate"></dxi-column>
+
+<div *dxTemplate="let data of 'operationTemplate'">
+    <fa-icon class="basket-icon" [icon]="faRefresh" title="Refresh" style="cursor: pointer"
+    (click)="refreshDataGrid($event)"></fa-icon>
+  </div>
+
+
+  =>DevExtreme Add Colum Buttons
+  <dxi-column dataField="submit" type="buttons" caption="Ödeme">
+    <dxi-button hint="Ödemeyi Kabul Et" icon="check" text="Ödeme" [onClick]="submitOrder"
+      [visible]="true"></dxi-button>
+  </dxi-column>

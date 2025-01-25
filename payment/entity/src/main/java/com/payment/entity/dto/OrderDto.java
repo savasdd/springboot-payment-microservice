@@ -7,6 +7,7 @@ import com.payment.entity.base.BaseDto;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -20,5 +21,6 @@ public class OrderDto extends BaseDto implements Serializable {
     private String paymentNo;
     private OrderStatus orderStatus;
     private String description;
+    private Date securityExpTime;
     private List<ProductItemDto> items;
 }

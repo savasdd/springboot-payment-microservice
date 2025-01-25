@@ -145,6 +145,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setCartExpMonth(v0.getCartExpMonth());
         order.setCartExpYear(v0.getCartExpYear());
         order.setOrderStatus(OrderStatus.PAID);
+        order.setSecurityCode(generateSecurityCode());
+        order.setSecurityExpTime(new Date());
         Order model = orderRepository.save(order);
 
         log.info("payment success {}", paymentNo);
