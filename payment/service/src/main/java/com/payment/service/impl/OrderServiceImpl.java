@@ -9,6 +9,7 @@ import com.payment.common.enums.EventType;
 import com.payment.common.enums.OrderStatus;
 import com.payment.common.enums.RecordStatus;
 import com.payment.common.utils.BeanUtil;
+import com.payment.common.utils.DateUtil;
 import com.payment.common.utils.RestUtil;
 import com.payment.entity.base.ValidationDto;
 import com.payment.entity.dto.*;
@@ -146,7 +147,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setCartExpYear(v0.getCartExpYear());
         order.setOrderStatus(OrderStatus.PAID);
         order.setSecurityCode(generateSecurityCode());
-        order.setSecurityExpTime(new Date());
+        order.setSecurityExpTime(DateUtil.addMinute(new Date(), 2));
         Order model = orderRepository.save(order);
 
         log.info("payment success {}", paymentNo);
@@ -163,11 +164,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
         Order order = findOrderNo(v0.getOrderNo());
 
-        if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
+        if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED) || !order.getOrderStatus().equals(OrderStatus.PAID))
             throw new RuntimeException("cannot submit order with id: " + v0.getOrderNo() + " and status: " + order.getOrderStatus());
 
-        if (!order.getOrderStatus().equals(OrderStatus.PAID))
-            throw new EntityNotFoundException("Order not paid");
+        if (!order.getSecurityCode().equals(v0.getSecurityCode()))
+            throw new RuntimeException("security code mismatch");
+
+        if (DateUtil.format(new Date()).after(DateUtil.format(order.getSecurityExpTime())))
+            throw new RuntimeException("security time expired");
 
         order.setOrderStatus(OrderStatus.SUBMITTED);
         Order model = orderRepository.save(order);
