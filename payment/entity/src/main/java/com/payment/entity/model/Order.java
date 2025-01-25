@@ -24,8 +24,8 @@ public class Order extends BaseEntity implements Serializable {
     @Column(name = "userId", nullable = false)
     private Long userId;
 
-    @Column(name = "paymentId")
-    private String paymentId;
+    @Column(name = "paymentNo")
+    private String paymentNo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "orderStatus")
@@ -38,5 +38,15 @@ public class Order extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductItem> items;
 
+    @Column(name = "cartNo")
+    private String cartNo;
 
+    @Column(name = "cartExpMonth")
+    private Integer cartExpMonth;
+
+    @Column(name = "cartExpYear")
+    private Integer cartExpYear;
+
+    @Column(name = "securityCode")
+    private String securityCode;
 }

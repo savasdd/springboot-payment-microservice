@@ -10,13 +10,14 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDto extends BaseDto implements Serializable {
 
     private String orderNo;
     private Long userId;
-    private String paymentId;
+    private String paymentNo;
     private OrderStatus orderStatus;
     private String description;
     private List<ProductItemDto> items;

@@ -25,6 +25,7 @@
 
 
                 <dxi-column dataField="orderNo" caption="Sipariş No"></dxi-column>
+                <dxi-column dataField="paymentId" caption="Ödeme No"></dxi-column>
                 <dxi-column dataField="orderStatus" caption="Durum"> </dxi-column>
                 <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
 
@@ -35,7 +36,7 @@
 
                 <div *dxTemplate="let dto of 'paymentTemplate'">
                   <fa-icon class="basket-icon" [icon]="faCreditCard" title="Ödeme Yap" style="cursor: pointer;"
-                    (click)="submitOrder(dto.data)"></fa-icon>
+                    (click)="openPayment(dto.data)"></fa-icon>
                 </div>
                 <div *dxTemplate="let dto of 'invoiceTemplate'">
                   <fa-icon class="basket-icon" [icon]="faFileDownload" title="Fatura Al" style="cursor: pointer;"
@@ -69,11 +70,12 @@
 
                     <dxo-toolbar>
                       <dxi-item location="after">
-                        <button id="button" type="button" class="btn btn-outline-success" (click)="payment()">Ödeme
+                        <button id="button" type="button" class="btn btn-outline-success" (click)="paymentOrder()">Ödeme
                         </button>
                       </dxi-item>
                       <dxi-item location="after">
-                        <button id="button" type="button" class="btn btn-outline-secondary" (click)="payment()">Vazgeç
+                        <button id="button" type="button" class="btn btn-outline-secondary"
+                          (click)="canselOrder()">Vazgeç
                         </button>
                       </dxi-item>
                     </dxo-toolbar>
@@ -89,6 +91,11 @@
                   </dx-data-grid>
 
                 </div>
+              </dx-popup>
+
+              <dx-popup [width]="500" [height]="400" [showTitle]="true" title="Ödeme Ekranı" [dragEnabled]="false"
+                [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="paymentVisible">
+                Ödemeler
               </dx-popup>
 
             </div>

@@ -3,11 +3,8 @@ package com.payment.controller;
 import com.load.impl.DataLoad;
 import com.payment.common.base.BaseResponse;
 import com.payment.common.utils.HeaderUtil;
-import com.payment.entity.dto.OrderCanselDto;
-import com.payment.entity.vo.ItemV0;
-import com.payment.entity.vo.OrderV0;
-import com.payment.entity.dto.ProductItemDto;
-import com.payment.entity.vo.ProductItemV0;
+import com.payment.entity.vo.CanselV0;
+import com.payment.entity.vo.*;
 import com.payment.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -28,33 +25,33 @@ public class PaymentController {
 
     @Operation(summary = "1", tags = "orders")
     @PostMapping(value = "/create")
-    public ResponseEntity<BaseResponse> createOrder(HttpServletRequest request, @RequestBody OrderV0 order) {
+    public ResponseEntity<BaseResponse> createOrder(HttpServletRequest request, @RequestBody OrderV0 v0) {
         Long userId = HeaderUtil.getUserId(request);
-        return new ResponseEntity<>(orderService.createOrder(userId, order), HttpStatus.CREATED);
+        return new ResponseEntity<>(orderService.createOrder(userId, v0), HttpStatus.CREATED);
     }
 
     @Operation(summary = "2", tags = "orders")
-    @GetMapping(value = "/payment/{orderNo}")
-    public ResponseEntity<BaseResponse> payment(@PathVariable String orderNo) {
-        return ResponseEntity.ok(orderService.payment(orderNo));
+    @PostMapping(value = "/payment")
+    public ResponseEntity<BaseResponse> payment(@RequestBody PaymentV0 v0) {
+        return ResponseEntity.ok(orderService.payment(v0));
     }
 
     @Operation(summary = "2", tags = "orders")
-    @PostMapping(value = "/cancel/{orderNo}")
-    public ResponseEntity<BaseResponse> cancel(@PathVariable String orderNo, @RequestBody OrderCanselDto orderCansel) {
-        return ResponseEntity.ok(orderService.cancel(orderNo, orderCansel));
+    @PostMapping(value = "/cancel")
+    public ResponseEntity<BaseResponse> cancel(@RequestBody CanselV0 v0) {
+        return ResponseEntity.ok(orderService.cancel(v0));
     }
 
     @Operation(summary = "3", tags = "orders")
-    @GetMapping(value = "/submit/{orderNo}")
-    public ResponseEntity<BaseResponse> submit(@PathVariable String orderNo) {
-        return ResponseEntity.ok(orderService.submit(orderNo));
+    @PostMapping(value = "/submit")
+    public ResponseEntity<BaseResponse> submit(@RequestBody SubmitV0 v0) {
+        return ResponseEntity.ok(orderService.submit(v0));
     }
 
     @Operation(summary = "4", tags = "orders")
-    @GetMapping(value = "/complete/{orderNo}")
-    public ResponseEntity<BaseResponse> complete(@PathVariable String orderNo) {
-        return ResponseEntity.ok(orderService.complete(orderNo));
+    @PostMapping(value = "/complete")
+    public ResponseEntity<BaseResponse> complete(@RequestBody CompleteV0 v0) {
+        return ResponseEntity.ok(orderService.complete(v0));
     }
 
     @Operation(tags = "items")

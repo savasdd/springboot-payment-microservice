@@ -14,9 +14,7 @@ import com.payment.entity.base.ValidationDto;
 import com.payment.entity.dto.*;
 import com.payment.entity.model.Order;
 import com.payment.entity.model.ProductItem;
-import com.payment.entity.vo.ItemV0;
-import com.payment.entity.vo.OrderV0;
-import com.payment.entity.vo.ProductItemV0;
+import com.payment.entity.vo.*;
 import com.payment.repository.OrderRepository;
 import com.payment.repository.OutboxOrderRepository;
 import com.payment.repository.ParameterRepository;
@@ -25,7 +23,6 @@ import com.payment.service.base.BaseService;
 import com.payment.service.publisher.NotifySerializer;
 import com.payment.service.publisher.OutboxSerializer;
 import com.payment.service.publisher.Publisher;
-import com.thoughtworks.xstream.core.BaseException;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -36,7 +33,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -115,7 +111,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
         log.info("add item {}", dto);
         publishOutboxNotification(outbox.event(model, EventType.ADDED), order);
-        return BaseResponse.success(model);
+        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
     }
 
 
@@ -129,50 +125,44 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         Order model = orderRepository.save(order);
         log.info("remove item {}", item);
         publishOutboxNotification(outbox.event(model, EventType.REMOVED), order);
-        return BaseResponse.success(model);
+        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
     }
 
     @Override
-    public BaseResponse payment(String orderNo) {
-        String paymentId = generatePaymentNo();
-        Order order = findOrderNo(orderNo);
+    public BaseResponse payment(PaymentV0 v0) {
+        ValidationDto validation = validate(v0);
+        if (validation.isError())
+            return BaseResponse.error(validation.getMessage());
+
+        String paymentNo = generatePaymentNo();
+        Order order = findOrderNo(v0.getOrderNo());
 
         if (order.getOrderStatus().equals(OrderStatus.CANCELLED))
-            throw new RuntimeException("cannot payment order with id: " + orderNo + " and status: " + order.getOrderStatus());
+            throw new RuntimeException("cannot payment order with id: " + v0.getOrderNo() + " and status: " + order.getOrderStatus());
 
-        order.setPaymentId(paymentId);
+        order.setPaymentNo(paymentNo);
+        order.setCartNo(v0.getCartNo());
+        order.setCartExpMonth(v0.getCartExpMonth());
+        order.setCartExpYear(v0.getCartExpYear());
         order.setOrderStatus(OrderStatus.PAID);
         Order model = orderRepository.save(order);
 
-        log.info("payment success {}", paymentId);
+        log.info("payment success {}", paymentNo);
         publishOutboxNotification(outbox.event(model, EventType.PAID), order);
-        return BaseResponse.success(model);
+        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
     }
 
-    @Override
-    public BaseResponse cancel(String orderNo, OrderCanselDto dto) {
-        Order order = findOrderNo(orderNo);
-        if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
-            throw new RuntimeException("cannot cansel order with id: " + orderNo + " and status: " + order.getOrderStatus());
-
-        if (Objects.isNull(dto.getDescription()))
-            return BaseResponse.error("Description can't be empty");
-
-        order.setOrderStatus(OrderStatus.CANCELLED);
-        order.setDescription(dto.getDescription());
-        Order model = orderRepository.save(order);
-
-        log.info("cancel success {}", dto.getDescription());
-        publishOutboxNotification(outbox.event(model, EventType.CANCELLED), order);
-        return BaseResponse.success(model);
-    }
 
     @Override
-    public BaseResponse submit(String orderNo) {
-        Order order = findOrderNo(orderNo);
+    public BaseResponse submit(SubmitV0 v0) {
+        ValidationDto validation = validate(v0);
+        if (validation.isError())
+            return BaseResponse.error(validation.getMessage());
+
+        Order order = findOrderNo(v0.getOrderNo());
 
         if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
-            throw new RuntimeException("cannot submit order with id: " + orderNo + " and status: " + order.getOrderStatus());
+            throw new RuntimeException("cannot submit order with id: " + v0.getOrderNo() + " and status: " + order.getOrderStatus());
 
         if (!order.getOrderStatus().equals(OrderStatus.PAID))
             throw new EntityNotFoundException("Order not paid");
@@ -180,24 +170,47 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setOrderStatus(OrderStatus.SUBMITTED);
         Order model = orderRepository.save(order);
 
-        log.info("submit success {}", orderNo);
+        log.info("submit success {}", v0.getOrderNo());
         publishOutboxNotification(outbox.event(model, EventType.SUBMITTED), order);
-        return BaseResponse.success(model);
+        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
     }
 
     @Override
-    public BaseResponse complete(String orderNo) {
-        Order order = findOrderNo(orderNo);
+    public BaseResponse complete(CompleteV0 v0) {
+        ValidationDto validation = validate(v0);
+        if (validation.isError())
+            return BaseResponse.error(validation.getMessage());
+
+        Order order = findOrderNo(v0.getOrderNo());
 
         if (order.getOrderStatus().equals(OrderStatus.CANCELLED) || !order.getOrderStatus().equals(OrderStatus.SUBMITTED))
-            throw new RuntimeException("cannot complete order with id: " + orderNo + " and status: " + order.getOrderStatus());
+            throw new RuntimeException("cannot complete order with id: " + v0.getOrderNo() + " and status: " + order.getOrderStatus());
 
         order.setOrderStatus(OrderStatus.COMPLETED);
         Order model = orderRepository.save(order);
 
-        log.info("complete success {}", orderNo);
+        log.info("complete success {}", v0.getOrderNo());
         publishOutboxNotification(outbox.event(model, EventType.COMPLETED), order);
-        return BaseResponse.success(model);
+        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
+    }
+
+    @Override
+    public BaseResponse cancel(CanselV0 v0) {
+        ValidationDto validation = validate(v0);
+        if (validation.isError())
+            return BaseResponse.error(validation.getMessage());
+
+        Order order = findOrderNo(v0.getOrderNo());
+        if (order.getOrderStatus().equals(OrderStatus.COMPLETED) || order.getOrderStatus().equals(OrderStatus.CANCELLED))
+            throw new RuntimeException("cannot cansel order with id: " + v0.getOrderNo() + " and status: " + order.getOrderStatus());
+
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        order.setDescription(v0.getDescription());
+        Order model = orderRepository.save(order);
+
+        log.info("cancel success {}", v0.getOrderNo());
+        publishOutboxNotification(outbox.event(model, EventType.CANCELLED), order);
+        return BaseResponse.success(beanUtil.mapDto(model, OrderDto.class));
     }
 
     @Override
@@ -244,28 +257,38 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         order.setItems(items);
     }
 
-    private ValidationDto validate(OrderV0 order) {
-        if (Objects.isNull(order.getItems()) || order.getItems().isEmpty())
-            return ValidationDto.validation(true, "items can't be empty");
+    private ValidationDto validate(Object object) {
+        if (object instanceof OrderV0 vo) {
+            if (Objects.isNull(vo.getItems()) || vo.getItems().isEmpty())
+                return ValidationDto.validation(true, "items can't be empty");
+        } else if (object instanceof PaymentV0 v0) {
+            if (Objects.isNull(v0.getOrderNo()))
+                return ValidationDto.validation(true, "OrderNo can't be empty");
+            if (Objects.isNull(v0.getCartNo()))
+                return ValidationDto.validation(true, "Cart No can't be empty");
+            if (Objects.isNull(v0.getCartExpMonth()))
+                return ValidationDto.validation(true, "Cart Expiry Month can't be empty");
+            if (Objects.isNull(v0.getCartExpYear()))
+                return ValidationDto.validation(true, "Cart Expiry Year can't be empty");
+        } else if (object instanceof SubmitV0 v0) {
+            if (Objects.isNull(v0.getOrderNo()))
+                return ValidationDto.validation(true, "OrderNo can't be empty");
+            if (Objects.isNull(v0.getSecurityCode()))
+                return ValidationDto.validation(true, "Security Code can't be empty");
+        } else if (object instanceof CanselV0 v0) {
+            if (Objects.isNull(v0.getOrderNo()))
+                return ValidationDto.validation(true, "OrderNo can't be empty");
+            if (Objects.isNull(v0.getDescription()))
+                return ValidationDto.validation(true, "Description can't be empty");
+        } else if (object instanceof CompleteV0 v0) {
+            if (Objects.isNull(v0.getOrderNo()))
+                return ValidationDto.validation(true, "OrderNo can't be empty");
+        }
+
 
         return ValidationDto.validation(false, "success");
-
     }
 
-
-    public void updateStockRest(Long id, Integer quantity) {
-        try {
-            Integer stock = restUtil.exchangeGet(getUrlParam(null) + "update-quantity/" + id, quantity);
-            //StockDto stock = restUtil.exchangeGet(getUrlParam() + "findOne/" + item.getStockId(), StockDto.class);
-            log.info("update stock: {}", stock);
-        } catch (Exception e) {
-            log.error("exception while update stock: {}", e.getLocalizedMessage());
-        }
-    }
-
-    private String getStockName(List<ProductItem> itemDtoList) {
-        return itemDtoList.stream().map(ProductItem::getStockName).collect(Collectors.joining(",", "[", "]"));
-    }
 
     private String getUrlParam(String key) {
         return parameterRepository.findByKey(key).orElseThrow(() -> new EntityNotFoundException("Parameter not found")).getValue();

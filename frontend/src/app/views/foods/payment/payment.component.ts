@@ -16,6 +16,8 @@ export class PaymentComponent implements OnInit {
   @ViewChild('dataSourceGrid', { static: true }) dataSourceGrid: any = DxDataGridComponent;
   orderService: GenericService;
   popupVisible = false;
+  paymentVisible = false;
+  orderData: any;
 
   constructor(private service: GenericService) {
     this.orderService = this.service.instance('order');
@@ -65,10 +67,21 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  submitOrder(event: any) {
-    console.log(event)
+  openPayment(event: any) {
+    this.orderData = event;
     this.dataItemsSource = event.items;
     this.popupVisible = true;
+  }
+
+
+  paymentOrder() {
+    console.log(this.orderData)
+    this.paymentVisible = true;
+  }
+
+  canselOrder() {
+    console.log(this.orderData)
+
   }
 
   invoiceOrder(event: any) {

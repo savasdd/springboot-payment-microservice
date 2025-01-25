@@ -2,11 +2,8 @@ package com.payment.service;
 
 import com.load.impl.DataLoad;
 import com.payment.common.base.BaseResponse;
-import com.payment.entity.dto.OrderCanselDto;
-import com.payment.entity.vo.ItemV0;
-import com.payment.entity.vo.OrderV0;
-import com.payment.entity.dto.ProductItemDto;
-import com.payment.entity.vo.ProductItemV0;
+import com.payment.entity.vo.CanselV0;
+import com.payment.entity.vo.*;
 import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
@@ -20,13 +17,13 @@ public interface OrderService {
 
     BaseResponse removeItem(String orderNo, ItemV0 item);
 
-    BaseResponse payment(String orderNo);
+    BaseResponse payment(PaymentV0 v0);
 
-    BaseResponse cancel(String orderNo, OrderCanselDto dto);
+    BaseResponse cancel(CanselV0 v0);
 
-    BaseResponse submit(String orderNo);
+    BaseResponse submit(SubmitV0 v0);
 
-    BaseResponse complete(String orderNo);
+    BaseResponse complete(CompleteV0 v0);
 
     BaseResponse getAllOrder();
 
