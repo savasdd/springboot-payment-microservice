@@ -12,7 +12,7 @@
                 [showBorders]="true" (onCellPrepared)="onCellPrepared($event)">
 
                 <dxo-selection mode="single"></dxo-selection>
-                <dxo-editing mode="cell" [allowUpdating]="false" [allowDeleting]="true" [allowAdding]="false"
+                <dxo-editing mode="cell" [allowUpdating]="false" [allowDeleting]="false" [allowAdding]="false"
                   [useIcons]="true">
                 </dxo-editing>
 
@@ -23,25 +23,24 @@
                   </dxi-item>
                 </dxo-toolbar>
 
+
                 <dxi-column dataField="orderNo" caption="Sipariş No"></dxi-column>
                 <dxi-column dataField="orderStatus" caption="Durum"> </dxi-column>
                 <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
 
-                <dxi-column dataField="submit" type="buttons" caption="Ödeme">
-                  <dxi-button hint="Ödemeyi Kabul Et" icon="check" text="Ödeme" [onClick]="submitOrder"
-                    [visible]="true"></dxi-button>
-                </dxi-column>
+                <dxi-column dataField="paymentButton" caption="Ödeme" dataType="text" width="5%"
+                  cellTemplate="paymentTemplate"></dxi-column>
+                <dxi-column dataField="invoiceButton" caption="Fatura" dataType="text" width="5%"
+                  cellTemplate="invoiceTemplate"></dxi-column>
 
-                <dxi-column type="buttons" caption="İptal">
-                  <dxi-button hint="Ödemeyi İptal Et" icon="close" text="VAZGEÇ" [onClick]="cancelOrder"
-                    [visible]="true"></dxi-button>
-                </dxi-column>
-
-                <dxi-column type="buttons" caption="Fatura">
-                  <dxi-button hint="Ödeme Faturası" icon="download" text="VAZGEÇ" [onClick]="invoiceOrder"
-                    [visible]="true"></dxi-button>
-                </dxi-column>
-
+                <div *dxTemplate="let dto of 'paymentTemplate'">
+                  <fa-icon class="basket-icon" [icon]="faCreditCard" title="Ödeme Yap" style="cursor: pointer;"
+                    (click)="submitOrder(dto.data)"></fa-icon>
+                </div>
+                <div *dxTemplate="let dto of 'invoiceTemplate'">
+                  <fa-icon class="basket-icon" [icon]="faFileDownload" title="Fatura Al" style="cursor: pointer;"
+                    (click)="invoiceOrder($event)"></fa-icon>
+                </div>
 
                 <dxo-paging [pageSize]="100"></dxo-paging>
                 <dxo-pager [visible]="false" [showPageSizeSelector]="true"
@@ -56,11 +55,39 @@
                 </dxo-remote-operations>
               </dx-data-grid>
 
-              <dx-popup [width]="1200" [height]="600" [showTitle]="true" title="ÖDEME" [dragEnabled]="false"
+              <dx-popup [width]="800" [height]="500" [showTitle]="true" title="Ödeme Listesi" [dragEnabled]="false"
                 [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="popupVisible">
 
                 <div *dxTemplate="let data of 'content'">
-                  <app-payment *ngIf="popupVisible"></app-payment>
+                  <dx-data-grid #dataSourceGrid [dataSource]="dataItemsSource" keyExpr="id"
+                    [allowColumnReordering]="true" [showBorders]="true">
+
+                    <dxo-selection mode="single"></dxo-selection>
+                    <dxo-editing mode="cell" [allowUpdating]="false" [allowDeleting]="false" [allowAdding]="false"
+                      [useIcons]="true">
+                    </dxo-editing>
+
+                    <dxo-toolbar>
+                      <dxi-item location="after">
+                        <button id="button" type="button" class="btn btn-outline-success" (click)="payment()">Ödeme
+                        </button>
+                      </dxi-item>
+                      <dxi-item location="after">
+                        <button id="button" type="button" class="btn btn-outline-secondary" (click)="payment()">Vazgeç
+                        </button>
+                      </dxi-item>
+                    </dxo-toolbar>
+
+                    <dxi-column dataField="stockName" caption="Ürün Adı"></dxi-column>
+                    <dxi-column dataField="price" valueFormat="#0.00" caption="İndirimli Fiyat" dataType="number">
+                    </dxi-column>
+                    <dxi-column dataField="quantity" caption="Miktar"> </dxi-column>
+
+                    <dxo-summary [recalculateWhileEditing]="true">
+                      <dxi-total-item column="price" summaryType="sum" valueFormat="#0.00"> </dxi-total-item>
+                    </dxo-summary>
+                  </dx-data-grid>
+
                 </div>
               </dx-popup>
 

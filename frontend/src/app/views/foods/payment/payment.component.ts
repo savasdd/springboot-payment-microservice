@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DxDataGridComponent } from "devextreme-angular";
 import CustomStore from "devextreme/data/custom_store";
-import { Payment } from "../../../services/payment-service-api";
 import { UtilService } from "../../../services/util.service";
 import { GenericService } from "../../../services/generic.service";
-import StatusEnum = Payment.StatusEnum;
+import { faRefresh, faShoppingBasket, faCheck, faCreditCard, faFileDownload } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-payment',
@@ -13,6 +12,7 @@ import StatusEnum = Payment.StatusEnum;
 })
 export class PaymentComponent implements OnInit {
   dataSource: any = {};
+  dataItemsSource: any = {};
   @ViewChild('dataSourceGrid', { static: true }) dataSourceGrid: any = DxDataGridComponent;
   orderService: GenericService;
   popupVisible = false;
@@ -54,21 +54,30 @@ export class PaymentComponent implements OnInit {
   onCellPrepared(e) {
     if (e.rowType === "data") {
       if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'NEW') {
-        e.cellElement.style.cssText = "color: rgb(225, 39, 39); font-weight: bold";
+        e.cellElement.style.cssText = "color: rgb(225, 39, 39);";
+      }
+      if (e.column.dataField === "paymentButton") {
+        e.cellElement.style.cssText = "color: green;text-align: center;font-size: 1.2rem;";
+      }
+      if (e.column.dataField === "invoiceButton") {
+        e.cellElement.style.cssText = "color: rgb(225, 39, 39);text-align: center;font-size: 1.2rem;";
       }
     }
   }
 
-  submitOrder() {
-    console.log("Submit")
+  submitOrder(event: any) {
+    console.log(event)
+    this.dataItemsSource = event.items;
+    this.popupVisible = true;
   }
 
-  cancelOrder() {
-    console.log("Cancel")
-  }
-
-  invoiceOrder() {
+  invoiceOrder(event: any) {
     console.log("Invoice")
   }
 
+  protected readonly faShoppingBasket = faShoppingBasket;
+  protected readonly faRefresh = faRefresh;
+  protected readonly faCheck = faCheck;
+  protected readonly faCreditCard = faCreditCard;
+  protected readonly faFileDownload = faFileDownload;
 }
