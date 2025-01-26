@@ -16,6 +16,7 @@ import { DxFormTypes } from 'devextreme-angular/ui/form';
 })
 export class OrderComponent implements OnInit {
   @ViewChild('orderDataGrid', { static: true }) orderDataGrid: any = DxDataGridComponent;
+  labelMode: DxFormTypes.FormLabelMode = 'floating';
   dataSource: any = {};
   dataCategorySource: any = {};
   totalPrice: number = 0;
@@ -25,8 +26,6 @@ export class OrderComponent implements OnInit {
   filterModel: FilterModel = new FilterModel();
   yearList: Array<{ year: number }> = [];
   currentYear: any;
-
-  labelMode: DxFormTypes.FormLabelMode = 'floating';
 
   constructor(public service: GenericService,
     private messageService: MessageService,

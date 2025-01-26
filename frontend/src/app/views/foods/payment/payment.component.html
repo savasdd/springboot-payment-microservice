@@ -25,7 +25,7 @@
 
 
                 <dxi-column dataField="orderNo" caption="Sipariş No"></dxi-column>
-                <dxi-column dataField="paymentId" caption="Ödeme No"></dxi-column>
+                <dxi-column dataField="paymentNo" caption="Ödeme No"></dxi-column>
                 <dxi-column dataField="orderStatus" caption="Durum"> </dxi-column>
                 <dxi-column dataField="creDate" dataType="date" caption="Kayıt Tarihi"></dxi-column>
 
@@ -93,9 +93,9 @@
                 </div>
               </dx-popup>
 
-              <dx-popup [width]="500" [height]="400" [showTitle]="true" title="Ödeme Ekranı" [dragEnabled]="false"
+              <dx-popup [width]="500" [height]="500" [showTitle]="true" title="Ödeme Ekranı" [dragEnabled]="false"
                 [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="paymentVisible">
-                Ödemeler
+                <app-payment-scane [orderData]="orderData"></app-payment-scane>
               </dx-popup>
 
             </div>

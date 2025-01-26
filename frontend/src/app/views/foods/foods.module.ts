@@ -29,7 +29,8 @@ import { StockImageComponent } from './stock/stock-image/stock-image.component';
 import { FileComponent } from './file/file.component';
 import { OrderDetailsComponent } from './order/order-details/order-details.component';
 import { StockCommentComponent } from './stock/stock-comment/stock-comment.component';
-import { SubmitComponent } from './payment/submit/submit.component';
+import { PaymentScaneComponent } from './payment/payment-scane/payment-scane.component';
+import { SubmitScaneComponent } from './payment/submit-scane/submit-scane.component';
 
 const routes: Routes = [
   {
@@ -87,7 +88,8 @@ const routes: Routes = [
     FileComponent,
     OrderDetailsComponent,
     StockCommentComponent,
-    SubmitComponent,
+    PaymentScaneComponent,
+    SubmitScaneComponent,
   ],
   imports: [
     CommonModule,

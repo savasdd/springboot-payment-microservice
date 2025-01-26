@@ -269,26 +269,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 return ValidationDto.validation(true, "items can't be empty");
         } else if (object instanceof PaymentV0 v0) {
             if (Objects.isNull(v0.getOrderNo()))
-                return ValidationDto.validation(true, "OrderNo can't be empty");
+                return ValidationDto.validation(true, "Sipariş no zorunlu alandır!");
             if (Objects.isNull(v0.getCartNo()))
-                return ValidationDto.validation(true, "Cart No can't be empty");
+                return ValidationDto.validation(true, "Kart no zorunlu alandır!");
             if (Objects.isNull(v0.getCartExpMonth()))
-                return ValidationDto.validation(true, "Cart Expiry Month can't be empty");
+                return ValidationDto.validation(true, "Kart geçerlilik ayı zorunlu alandır!");
             if (Objects.isNull(v0.getCartExpYear()))
-                return ValidationDto.validation(true, "Cart Expiry Year can't be empty");
+                return ValidationDto.validation(true, "Kart geçerlilik yılı zorunlu alandır!");
         } else if (object instanceof SubmitV0 v0) {
             if (Objects.isNull(v0.getOrderNo()))
-                return ValidationDto.validation(true, "OrderNo can't be empty");
+                return ValidationDto.validation(true, "Sipariş no zorunlu alandır!");
             if (Objects.isNull(v0.getSecurityCode()))
-                return ValidationDto.validation(true, "Security Code can't be empty");
+                return ValidationDto.validation(true, "Güvenlik kodu zorunlu alandır!");
         } else if (object instanceof CanselV0 v0) {
             if (Objects.isNull(v0.getOrderNo()))
-                return ValidationDto.validation(true, "OrderNo can't be empty");
+                return ValidationDto.validation(true, "Sipariş no zorunlu alandır!");
             if (Objects.isNull(v0.getDescription()))
-                return ValidationDto.validation(true, "Description can't be empty");
+                return ValidationDto.validation(true, "Sipariş iptal açıklaması zorunlu alandır!");
         } else if (object instanceof CompleteV0 v0) {
             if (Objects.isNull(v0.getOrderNo()))
-                return ValidationDto.validation(true, "OrderNo can't be empty");
+                return ValidationDto.validation(true, "Sipariş no zorunlu alandır!");
         }
 
 

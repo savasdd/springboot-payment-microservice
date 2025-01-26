@@ -73,9 +73,7 @@ export class PaymentComponent implements OnInit {
     this.popupVisible = true;
   }
 
-
   paymentOrder() {
-    console.log(this.orderData)
     this.paymentVisible = true;
   }
 
@@ -87,6 +85,7 @@ export class PaymentComponent implements OnInit {
   invoiceOrder(event: any) {
     console.log("Invoice")
   }
+
 
   protected readonly faShoppingBasket = faShoppingBasket;
   protected readonly faRefresh = faRefresh;
