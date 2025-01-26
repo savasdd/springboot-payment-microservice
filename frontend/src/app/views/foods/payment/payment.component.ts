@@ -86,6 +86,13 @@ export class PaymentComponent implements OnInit {
     console.log("Invoice")
   }
 
+  paymentEmitter(event: any) {
+    if (event.status == 200) {
+      //this.paymentVisible = false;
+      this.refreshDataGrid();
+    }
+  }
+
 
   protected readonly faShoppingBasket = faShoppingBasket;
   protected readonly faRefresh = faRefresh;

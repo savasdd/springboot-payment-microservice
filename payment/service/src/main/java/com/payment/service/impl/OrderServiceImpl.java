@@ -168,10 +168,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             throw new RuntimeException("cannot submit order with id: " + v0.getOrderNo() + " and status: " + order.getOrderStatus());
 
         if (!order.getSecurityCode().equals(v0.getSecurityCode()))
-            throw new RuntimeException("security code mismatch");
+            throw new RuntimeException("Güvenlik kodu hatalıdır!");
 
         if (DateUtil.format(new Date()).after(DateUtil.format(order.getSecurityExpTime())))
-            throw new RuntimeException("security time expired");
+            throw new RuntimeException("Güvenlik kodu giriş süresi dolmuştur. Lütfen yeni güvenlik kodu isteyiniz?");
 
         order.setOrderStatus(OrderStatus.SUBMITTED);
         Order model = orderRepository.save(order);

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { GenericService } from 'src/app/services/generic.service';
 import { DxFormComponent } from "devextreme-angular";
 import notify from "devextreme/ui/notify";
+import { GenericService } from '../../../services/generic.service';
 
 @Component({
   selector: 'app-file',
@@ -11,10 +11,9 @@ import notify from "devextreme/ui/notify";
 export class FileComponent implements OnInit {
   @Input() path: any;
   @Input() params: Array<{ 'key': any, 'value': any }> = [];
-
-  fileModel: FileModel = new FileModel();
   @ViewChild(DxFormComponent, { static: false }) form: any = DxFormComponent;
   @Output() fileEmitter: EventEmitter<any> = new EventEmitter();
+  fileModel: FileModel = new FileModel();
   fileService: GenericService;
 
   constructor(public service: GenericService) {

@@ -1,0 +1,33 @@
+<div id="form-container">
+    <dx-form id="form" [formData]="payment">
+        <dxi-item itemType="group" [colCount]="1">
+            <dxi-item dataField="orderNo" [editorOptions]="editorOptions">
+                <dxo-label template="Sipariş No"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="cartNo">
+                <dxo-label template="Kart No"></dxo-label>
+                <dxi-validation-rule type="required" message="Kart no zorunlu"></dxi-validation-rule>
+            </dxi-item>
+        </dxi-item>
+
+        <dxi-item itemType="group" [colCount]="2">
+            <dxi-item dataField="cartExpMonth" editorType="dxSelectBox" [editorOptions]="cartMonthEditor">
+                <dxo-label template="Kart Ay"></dxo-label>
+                <dxi-validation-rule type="required" message="Kart ayı zorunlu"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="cartExpYear" editorType="dxSelectBox" [editorOptions]="cartYearEditor">
+                <dxo-label template="Kart Yıl"></dxo-label>
+                <dxi-validation-rule type="required" message="Kart yılı zorunlu"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="">
+                <button id="button" type="button" class="btn btn-outline-info" (click)="paymentOrder()">Ödeme Yap
+                </button>
+            </dxi-item>
+        </dxi-item>
+    </dx-form>
+
+    <dx-popup [width]="500" [height]="400" [showTitle]="true" title="3D GÜVENLİK" [dragEnabled]="false"
+        [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="popupVisible">
+        <app-submit-scane [paymentData]="paymentData"></app-submit-scane>
+    </dx-popup>
+</div>

@@ -95,7 +95,8 @@
 
               <dx-popup [width]="500" [height]="500" [showTitle]="true" title="Ödeme Ekranı" [dragEnabled]="false"
                 [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="paymentVisible">
-                <app-payment-scane [orderData]="orderData"></app-payment-scane>
+                <app-payment-scane [orderData]="orderData"
+                  (paymentEmitter)="paymentEmitter($event)"></app-payment-scane>
               </dx-popup>
 
             </div>
