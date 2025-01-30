@@ -17,6 +17,7 @@ export class PaymentComponent implements OnInit {
   orderService: GenericService;
   popupVisible = false;
   paymentVisible = false;
+  submitVisible = true;
   orderData: any;
 
   constructor(private service: GenericService) {
@@ -56,7 +57,10 @@ export class PaymentComponent implements OnInit {
   onCellPrepared(e) {
     if (e.rowType === "data") {
       if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'NEW') {
-        e.cellElement.style.cssText = "color: rgb(225, 39, 39);";
+        e.cellElement.style.cssText = "color: red;";
+      }
+      if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'PAID') {
+        e.cellElement.style.cssText = "color: blue;";
       }
       if (e.column.dataField === "paymentButton") {
         e.cellElement.style.cssText = "color: green;text-align: center;font-size: 1.2rem;";
@@ -88,8 +92,11 @@ export class PaymentComponent implements OnInit {
 
   paymentEmitter(event: any) {
     if (event.status == 200) {
-      //this.paymentVisible = false;
       this.refreshDataGrid();
+      this.paymentVisible = false;
+      this.popupVisible = false;
+      this.submitVisible = true;
+      this.orderData = event.data;
     }
   }
 

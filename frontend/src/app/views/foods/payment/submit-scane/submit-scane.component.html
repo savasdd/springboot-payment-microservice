@@ -1,1 +1,19 @@
-<p>submit-scane works!</p>
+<div id="form-container">
+    <dx-form id="form" [formData]="submit">
+        <dxi-item itemType="group" [colCount]="1">
+            <dxi-item dataField="">
+                Timer
+            </dxi-item>
+            <dxi-item dataField="securityCode">
+                <dxo-label template="Güvenlik Kodu"></dxo-label>
+                <dxi-validation-rule type="required" message="Güvenlik kodu zorunlu"></dxi-validation-rule>
+            </dxi-item>
+            <dxi-item dataField="" [cssClass]="submit">
+                <button id="button" type="button" class="btn btn-outline-info" (click)="submitOrder()">TAMAM
+                </button>
+            </dxi-item>
+        </dxi-item>
+
+    </dx-form>
+
+</div>

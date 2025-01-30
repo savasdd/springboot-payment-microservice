@@ -8,10 +8,10 @@ import { MessageService } from '../../../../services/message.service';
   styleUrls: ['./submit-scane.component.scss']
 })
 export class SubmitScaneComponent implements OnInit, OnChanges {
-  @Input() paymentData: any;
+  @Input() orderData: any;
   submit: Submit = new Submit(null, null);
   orderService: GenericService;
-  editorOptions = { disabled: true };
+  editorOptions = { disabled: true};
 
   constructor(private service: GenericService, private notify: MessageService,) {
     this.orderService = this.service.instance('order');
@@ -22,7 +22,14 @@ export class SubmitScaneComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.submit.orderNo = this.paymentData.orderNo;
+    if(this.orderData!==undefined){
+      this.submit.orderNo = this.orderData.orderNo;
+      console.log(this.orderData)
+    }
+  }
+
+  submitOrder() {
+    console.log(this.submit)
   }
 }
 

@@ -18,7 +18,6 @@ export class PaymentScaneComponent implements OnInit, OnChanges {
   cartMonthEditor: Object;
   cartYearEditor: Object;
   editorOptions = { disabled: true };
-  paymentData: any;
 
   constructor(private service: GenericService, private notify: MessageService,) {
     this.orderService = this.service.instance('order');
@@ -32,14 +31,15 @@ export class PaymentScaneComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.payment.orderNo = this.orderData.orderNo;
-    this.payment.cartNo = 'SV22 705S 8188 660L 82Q3 1922';
+    if (this.orderData !== undefined) {
+      this.payment.orderNo = this.orderData.orderNo;
+      this.payment.cartNo = 'SV22 705S 8188 660L 82Q3 1922';
+    }
   }
 
   paymentOrder() {
     this.orderService.customPost('payment', this.payment).then((response: any) => {
       if (response.status == 200) {
-        this.paymentData = response.data;
         this.notify.success("Ödeme Başarıyla Yapıldı: " + response.data.paymentNo);
         this.paymentEmitter.emit(response);
         this.popupVisible = true;

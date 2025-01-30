@@ -99,6 +99,11 @@
                   (paymentEmitter)="paymentEmitter($event)"></app-payment-scane>
               </dx-popup>
 
+              <dx-popup [width]="400" [height]="400" [showTitle]="true" title="3D GÜVENLİK" [dragEnabled]="false"
+                [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="submitVisible">
+                <app-submit-scane [orderData]="orderData"></app-submit-scane>
+              </dx-popup>
+
             </div>
           </div>
         </div>
