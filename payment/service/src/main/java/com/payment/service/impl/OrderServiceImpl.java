@@ -138,7 +138,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         String paymentNo = generatePaymentNo();
         Order order = findOrderNo(v0.getOrderNo());
 
-        if (order.getOrderStatus().equals(OrderStatus.CANCELLED))
+        if (order.getOrderStatus().equals(OrderStatus.CANCELLED) || order.getOrderStatus().equals(OrderStatus.COMPLETED))
             throw new RuntimeException("cannot payment order with id: " + v0.getOrderNo() + " and status: " + order.getOrderStatus());
 
         order.setPaymentNo(paymentNo);

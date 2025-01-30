@@ -17,7 +17,7 @@ export class PaymentComponent implements OnInit {
   orderService: GenericService;
   popupVisible = false;
   paymentVisible = false;
-  submitVisible = true;
+  submitVisible = false;
   orderData: any;
 
   constructor(private service: GenericService) {
@@ -54,22 +54,7 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  onCellPrepared(e) {
-    if (e.rowType === "data") {
-      if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'NEW') {
-        e.cellElement.style.cssText = "color: red;";
-      }
-      if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'PAID') {
-        e.cellElement.style.cssText = "color: blue;";
-      }
-      if (e.column.dataField === "paymentButton") {
-        e.cellElement.style.cssText = "color: green;text-align: center;font-size: 1.2rem;";
-      }
-      if (e.column.dataField === "invoiceButton") {
-        e.cellElement.style.cssText = "color: rgb(225, 39, 39);text-align: center;font-size: 1.2rem;";
-      }
-    }
-  }
+
 
   openPayment(event: any) {
     this.orderData = event;
@@ -97,6 +82,34 @@ export class PaymentComponent implements OnInit {
       this.popupVisible = false;
       this.submitVisible = true;
       this.orderData = event.data;
+    }
+  }
+
+
+  submitEmitter(event: any) {
+    if (event.status == 200) {
+      this.refreshDataGrid();
+      this.submitVisible = false;
+    }
+  }
+
+  onCellPrepared(e) {
+    if (e.rowType === "data") {
+      if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'NEW') {
+        e.cellElement.style.cssText = "color: red;";
+      }
+      if (e.column.dataField === "orderStatus" && e.data.orderStatus == 'PAID') {
+        e.cellElement.style.cssText = "color: blue;";
+      }
+      if (e.column.dataField === "orderStatus" && (e.data.orderStatus == 'SUBMITTED' || e.data.orderStatus == 'COMPLETED')) {
+        e.cellElement.style.cssText = "color: green;";
+      }
+      if (e.column.dataField === "paymentButton") {
+        e.cellElement.style.cssText = "color: green;text-align: center;font-size: 1.2rem;";
+      }
+      if (e.column.dataField === "invoiceButton") {
+        e.cellElement.style.cssText = "color: rgb(225, 39, 39);text-align: center;font-size: 1.2rem;";
+      }
     }
   }
 

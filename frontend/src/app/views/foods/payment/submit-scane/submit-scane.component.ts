@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { GenericService } from '../../../../services/generic.service';
 import { MessageService } from '../../../../services/message.service';
 
@@ -9,9 +9,10 @@ import { MessageService } from '../../../../services/message.service';
 })
 export class SubmitScaneComponent implements OnInit, OnChanges {
   @Input() orderData: any;
+  @Output() submitEmitter: EventEmitter<any> = new EventEmitter();
   submit: Submit = new Submit(null, null);
   orderService: GenericService;
-  editorOptions = { disabled: true};
+  editorOptions = { disabled: true };
 
   constructor(private service: GenericService, private notify: MessageService,) {
     this.orderService = this.service.instance('order');
@@ -22,14 +23,27 @@ export class SubmitScaneComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.orderData!==undefined){
+    if (this.orderData !== undefined) {
       this.submit.orderNo = this.orderData.orderNo;
-      console.log(this.orderData)
     }
   }
 
   submitOrder() {
-    console.log(this.submit)
+    this.orderService.customPost('submit', this.submit).then((response: any) => {
+      if (response.status == 200) {
+        this.orderService.customPost('complete', this.submit).then((response: any) => {
+          if (response.status == 200) {
+            this.notify.success("Ödeme Başarıyla Tamamlandı! Ödeme Faturasını Alabilirsiniz.");
+            this.submitEmitter.emit(response);
+          } else {
+            this.notify.error(response.data);
+          }
+        });
+
+      } else {
+        this.notify.error(response.data);
+      }
+    });
   }
 }
 

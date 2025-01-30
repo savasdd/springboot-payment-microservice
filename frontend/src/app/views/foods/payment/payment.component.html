@@ -101,7 +101,7 @@
 
               <dx-popup [width]="400" [height]="400" [showTitle]="true" title="3D GÜVENLİK" [dragEnabled]="false"
                 [hideOnOutsideClick]="false" [showCloseButton]="true" [(visible)]="submitVisible">
-                <app-submit-scane [orderData]="orderData"></app-submit-scane>
+                <app-submit-scane [orderData]="orderData" (submitEmitter)="submitEmitter($event)"></app-submit-scane>
               </dx-popup>
 
             </div>
